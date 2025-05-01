@@ -1,0 +1,257 @@
+﻿/* icono-circulo-etiqueta */
+.btn-circle.ico_cir_eti {
+    display: inline-flex;
+}
+
+    .btn-circle.ico_cir_eti .c_icon {
+        margin: 0 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+        .btn-circle.ico_cir_eti .c_icon span {
+            position: relative;
+            text-align: center;
+            height: 50px;
+            width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .btn-circle.ico_cir_eti .c_icon.e_inactivo span a {
+            font-size: 30px;
+            line-height: 50px;
+            color: #0e0d0d;
+            transition: color 0.4s, text-shadow 0.4s;
+        }
+
+        .btn-circle.ico_cir_eti .c_icon.e_nuevo span a {
+            font-size: 30px;
+            line-height: 50px;
+            color: #004289;
+            transition: color 0.4s, text-shadow 0.4s;
+        }
+
+        .btn-circle.ico_cir_eti .c_icon.e_editar span a {
+            font-size: 30px;
+            line-height: 50px;
+            color: #337ab7;
+            transition: color 0.4s, text-shadow 0.4s;
+        }
+
+        .btn-circle.ico_cir_eti .c_icon.e_eliminar span a {
+            font-size: 30px;
+            line-height: 50px;
+            color: #E40505;
+            transition: color 0.4s, text-shadow 0.4s;
+        }
+
+        .btn-circle.ico_cir_eti .c_icon.e_buscar span a {
+            font-size: 30px;
+            line-height: 50px;
+            color: #9850FB;
+            transition: color 0.4s, text-shadow 0.4s;
+        }
+
+        .btn-circle.ico_cir_eti .c_icon.e_refresh span a {
+            font-size: 30px;
+            line-height: 50px;
+            color: #2ECC71;
+            transition: color 0.4s, text-shadow 0.4s;
+        }
+
+        .btn-circle.ico_cir_eti .c_icon .tooltip {
+            position: absolute;
+            top: 0px;
+            background: #fff;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            padding: 5px 9px;
+            border-radius: 25px;
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .btn-circle.ico_cir_eti .c_icon:hover .tooltip {
+            opacity: 1;
+            pointer-events: auto;
+            top: -40px;
+        }
+
+        .btn-circle.ico_cir_eti .c_icon .tooltip:before {
+            position: absolute;
+            content: "";
+            height: 15px;
+            width: 15px;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            background: inherit;
+        }
+
+        .btn-circle.ico_cir_eti .c_icon:hover span a {
+            text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.4);
+            color: #fff;
+        }
+
+        .btn-circle.ico_cir_eti .c_icon:hover span {
+            color: #fff;
+            background: #fff;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+        }
+
+    .btn-circle.ico_cir_eti .e_buscar:hover span,
+    .btn-circle.ico_cir_eti .e_buscar:hover .tooltip,
+    .btn-circle.ico_cir_eti .e_buscar:hover .tooltip:before {
+        background: #9850FB;
+    }
+
+    .btn-circle.ico_cir_eti .e_inactivo:hover span,
+    .btn-circle.ico_cir_eti .e_inactivo:hover .tooltip,
+    .btn-circle.ico_cir_eti .e_inactivo:hover .tooltip:before {
+        background: #ffffff;
+    }
+
+    .btn-circle.ico_cir_eti .e_nuevo:hover span,
+    .btn-circle.ico_cir_eti .e_nuevo:hover .tooltip,
+    .btn-circle.ico_cir_eti .e_nuevo:hover .tooltip:before {
+        background: #004289;
+    }
+
+    .btn-circle.ico_cir_eti .e_editar:hover span,
+    .btn-circle.ico_cir_eti .e_editar:hover .tooltip,
+    .btn-circle.ico_cir_eti .e_editar:hover .tooltip:before {
+        background: #337ab7;
+    }
+
+    .btn-circle.ico_cir_eti .e_eliminar:hover span,
+    .btn-circle.ico_cir_eti .e_eliminar:hover .tooltip,
+    .btn-circle.ico_cir_eti .e_eliminar:hover .tooltip:before {
+        background: #E40505;
+    }
+
+    .btn-circle.ico_cir_eti .e_refresh:hover span,
+    .btn-circle.ico_cir_eti .e_refresh:hover .tooltip,
+    .btn-circle.ico_cir_eti .e_refresh:hover .tooltip:before {
+        background: #2ECC71;
+    }
+/* fin icono-circulo-etiqueta */
+
+
+/* etiqueta texto */
+.e_t {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    height: 60px;
+    /*margin: 20px 10px;*/
+}
+
+    .e_t input {
+        /*left:0;*/
+        width: 100%;
+        background: none;
+        border: none;
+        border-bottom: 1px solid #004289;
+        color: #004289;
+        font-size: small;
+        background: transparent;
+    }
+
+    .e_t textarea {
+        position: absolute;
+        left: -15px;
+        top: 0;
+        width: 100%;
+        background: none;
+        border: none;
+        border-bottom: 1px solid #004289;
+        color: #004289;
+        font-size: small;
+        background: transparent;
+        position: relative;
+    }
+
+
+
+    .e_t select {
+        position: absolute;
+        top: -2px;
+        left: -15px;
+        width: 100%;
+        background: none;
+        border: none;
+        border-bottom: 1px solid #004289;
+        color: #004289;
+        background: transparent;
+        position: relative;
+        font-size: small;
+        box-sizing: border-box;
+    }
+
+    .e_t input:focus, textarea:focus, select:focus {
+        outline: none;
+        color: #6200ee;
+    }
+
+
+        .e_t input:focus ~ label,
+        .e_t textarea:focus ~ label {
+            position: absolute;
+            top: -22px;
+            color: #6200ee;
+        }
+
+    .e_t select:focus ~ label {
+        position: absolute;
+        top: -18px;
+        color: #6200ee;
+    }
+
+
+    .e_t label {
+        width: 100%;
+        color: #004289;
+        position: absolute;
+        font-size: small;
+        font-weight: bold;
+        font-style: italic;
+        left: 0px;
+        top: -18px;
+        transition: 0.5s ease all;
+        pointer-events: none;
+    }
+
+    .e_t textarea ~ label {
+        left: 0px;
+    }
+
+    .e_t select ~ label {
+        left: 0px;
+        top: -24px;
+    }
+
+    .e_t input.is-valid ~ label {
+        transform: translateY(-115%) scale(0.90);
+    }
+
+    .e_t input::after {
+        color: #004289;
+    }
+
+    .e_t input:focus ~ .barra::before, textarea:focus ~ .barra_m::before, select:focus ~ .barra_d::before {
+        width: 100%;
+    }
+
+/* fin etiqueta texto */
