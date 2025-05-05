@@ -1,17 +1,29 @@
-﻿//using ClassLibraryMatriculas;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+//----------------------------------------------------------------------------------------------------------------------------
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+//----------------------------------------------------------------------------------------------------------------------------
 
 public partial class MasterPageNuevo : System.Web.UI.MasterPage
 {
+    string cadenaConexion;
+    SqlConnection conexion;
+
     protected void Page_Load(object sender, EventArgs e)
     {
-       // PERSONAL p = new PERSONAL();
+        //------------------------------------------------------------------------------------------------------------------------------
+        this.cadenaConexion = ConfigurationManager.AppSettings["conexionBddProductos"];
+        this.conexion = new SqlConnection(cadenaConexion);
+        //-----------------------------------------------------------------------------------------------------------------------------
+
+        //PERSONAL p = new PERSONAL();
 
         //var lisp = p.LoadPERSONAL("xCedula", Context.User.Identity.Name, "", "", "");
         //if (lisp.Count > 0)
@@ -95,6 +107,24 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         //    }
         //}
 
+        if (IsDocente("xCedula", Context.User.Identity.Name))
+        {
+            var list_menu_docente = ListMenu_LaboratorioDocente();
+            foreach (var item in list_menu_docente)
+            {
+                contenido = string.Concat(contenido, Menu_CD(item));
+            }
+        }
+
+        if (IsLaboratorista("xCedula", Context.User.Identity.Name))
+        {
+            var list_menu_laboratorio = ListMenu_LaboratorioLaboratosista ();
+            foreach (var item in list_menu_laboratorio)
+            {
+                contenido = string.Concat(contenido, Menu_CD(item));
+            }
+        }
+
         //ROLES ELIMINADOS 
         //Roles.IsUserInRole(Context.User.Identity.Name, "DOCENTE")
 
@@ -110,14 +140,14 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         //    }
         //}
 
-        //////////**activar el siguiente código para menu Gestión Académica
+        /////////*activar el siguiente código para menu Gestión Académica
         //var list_menu_gestion_academica = ListMenu_Gestion_Academica();
         //foreach (var item in list_menu_gestion_academica)
         //{
         //    contenido = string.Concat(contenido, Menu_CD(item));
         //}
 
-        //////////**activar el siguiente código para menu calendario
+        ////////activar el siguiente código para menu calendario
         //var list_menu_calendario = ListMenu_Calendario();
         //foreach (var item in list_menu_calendario)
         //{
@@ -163,7 +193,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         item1.Url = "#";
 
         List<Menu_Master> listSubMenu_1 = new List<Menu_Master>();
-        
+
         ///->DATOS DEL ALUMNO
         Menu_Master sub_item2 = new Menu_Master();
         sub_item2.Id = "2";
@@ -417,7 +447,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         sub_item7_1_3.SubMenu_Master = null;
         listSubMenu_7_1.Add(sub_item7_1_3);
         ///->->END REGISTRO DE OTRAS ACTIVIDADES DOCENTE
-        
+
         sub_item7.SubMenu_Master = listSubMenu_7_1;
         listSubMenu_1.Add(sub_item7);
         ///->END SILABO POSG..
@@ -695,7 +725,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         sub_item1_3_7.SubMenu_Master = null;
         listSubMenu_3_1.Add(sub_item1_3_7);
         ///->->END PERDIDA DE GRATUIDAD
-        
+
         sub_item3.SubMenu_Master = listSubMenu_3_1;
         listSubMenu_1.Add(sub_item3);
         ///->END GESTION
@@ -934,7 +964,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         listSubMenu_1.Add(sub_item6);
         ///->END SILABO..
         ///
-        
+
         ///->MATRICULAS
         Menu_Master sub_item7 = new Menu_Master();
         sub_item7.Id = "2";
@@ -954,7 +984,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         sub_item8.SubMenu_Master = null;
         listSubMenu_1.Add(sub_item8);
         ///->END MODIFICAR CALIFICACIONES
-        
+
 
         item1.SubMenu_Master = listSubMenu_1;
         listMenu.Add(item1);
@@ -1052,7 +1082,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         sub_item1_1_7.SubMenu_Master = null;
         listSubMenu_1_1.Add(sub_item1_1_7);
         ///->->END PESO COMPONENTES 
-        
+
         sub_item1.SubMenu_Master = listSubMenu_1_1;
         listSubMenu_1.Add(sub_item1);
         ///->END CONFIGURACION 
@@ -1265,7 +1295,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         sub_item1_7_6.SubMenu_Master = null;
         listSubMenu_7_1.Add(sub_item1_7_6);
         ///->->END POSTULANTES DOCENTES
-         
+
         sub_item7.SubMenu_Master = listSubMenu_7_1;
         listSubMenu_1.Add(sub_item7);
         ///->END POSG
@@ -1573,6 +1603,192 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         return contenido_menu;
     }
 
+    private List<Menu_Master> ListMenu_LaboratorioDocente()
+    {
+        List<Menu_Master> listMenu = new List<Menu_Master>();
+
+        // Ítem principal: Laboratorio
+        Menu_Master item1 = new Menu_Master();
+        item1.Id = "1";
+        item1.Nombre = "Laboratorio";
+        item1.Usuario = "laboratorio";
+        item1.Url = "#";
+
+        List<Menu_Master> listSubMenu_1 = new List<Menu_Master>();
+
+        // Submenú: Docente
+        Menu_Master docente = new Menu_Master();
+        docente.Id = "1";
+        docente.Nombre = "Docente";
+        docente.Usuario = "laboratorio";
+        docente.Url = "#";
+
+        List<Menu_Master> listSubMenu_docente = new List<Menu_Master>();
+        Menu_Master docente_labs = new Menu_Master();
+        docente_labs.Id = "1";
+        docente_labs.Nombre = "Laboratorios";
+        docente_labs.Usuario = "laboratorio";
+        docente_labs.Url = "/sigutc/laboratorio/docente/laboratorios.aspx";
+        docente_labs.SubMenu_Master = null;
+
+        listSubMenu_docente.Add(docente_labs);
+        docente.SubMenu_Master = listSubMenu_docente;
+        listSubMenu_1.Add(docente);
+
+        // Asignar submenús al ítem principal
+        item1.SubMenu_Master = listSubMenu_1;
+
+        // Agregar ítem principal a la lista final
+        listMenu.Add(item1);
+
+        return listMenu;
+    }
+
+    private List<Menu_Master> ListMenu_LaboratorioLaboratosista()
+    {
+        List<Menu_Master> listMenu = new List<Menu_Master>();
+
+        // Ítem principal: Laboratorio
+        Menu_Master item1 = new Menu_Master();
+        item1.Id = "1";
+        item1.Nombre = "Laboratorio";
+        item1.Usuario = "laboratorio";
+        item1.Url = "#";
+
+        List<Menu_Master> listSubMenu_1 = new List<Menu_Master>();
+
+        // Submenú: Laboratorista
+        Menu_Master laboratorista = new Menu_Master();
+        laboratorista.Id = "2";
+        laboratorista.Nombre = "Laboratorista";
+        laboratorista.Usuario = "laboratorio";
+        laboratorista.Url = "#";
+
+        List<Menu_Master> listSubMenu_laboratorista = new List<Menu_Master>();
+
+        Menu_Master lab_labs = new Menu_Master();
+        lab_labs.Id = "1";
+        lab_labs.Nombre = "Laboratorios";
+        lab_labs.Usuario = "laboratorio";
+        lab_labs.Url = "/sigutc/laboratorio/laboratorista/laboratorios.aspx";
+        lab_labs.SubMenu_Master = null;
+
+        Menu_Master lab_reservas = new Menu_Master();
+        lab_reservas.Id = "2";
+        lab_reservas.Nombre = "Reservaciones";
+        lab_reservas.Usuario = "laboratorio";
+        lab_reservas.Url = "/sigutc/laboratorio/laboratorista/reservaciones.aspx";
+        lab_reservas.SubMenu_Master = null;
+
+        Menu_Master lab_software = new Menu_Master();
+        lab_software.Id = "3";
+        lab_software.Nombre = "Software";
+        lab_software.Usuario = "laboratorio";
+        lab_software.Url = "/academic/private/reservalab/Software.aspx";
+        lab_software.SubMenu_Master = null;
+
+        listSubMenu_laboratorista.Add(lab_labs);
+        listSubMenu_laboratorista.Add(lab_reservas);
+        listSubMenu_laboratorista.Add(lab_software);
+
+        laboratorista.SubMenu_Master = listSubMenu_laboratorista;
+        listSubMenu_1.Add(laboratorista);
+
+        // Asignar submenús al ítem principal
+        item1.SubMenu_Master = listSubMenu_1;
+
+        // Agregar ítem principal a la lista final
+        listMenu.Add(item1);
+
+        return listMenu;
+    }
+
+    private bool IsDocente(string comodin, string usr1)
+    {
+        bool validacion = true;
+        //llamado al sp
+        SqlCommand comandoConsulta = new SqlCommand("loginPlataforma", this.conexion);
+        //Envio de parametros
+        comandoConsulta.Parameters.AddWithValue("@Comodin", comodin);
+        comandoConsulta.Parameters.AddWithValue("@FILTRO1", usr1);
+        comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
+        comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
+        comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
+
+        comandoConsulta.CommandType = CommandType.StoredProcedure;
+        try
+        {
+            this.conexion.Open();
+            SqlDataReader dr = comandoConsulta.ExecuteReader();
+            //retorno de parametros una vez validado
+            if (dr.Read())
+            {
+                string rol = dr["strNombre_rol"].ToString();
+
+                // Puedes evaluar si el rol es "DOCENTE"
+                if (rol == "DOCENTE")
+                {
+                    validacion = true;
+                }
+                else
+                {
+                    validacion = false;
+                }
+            }
+            dr.Close();
+            conexion.Close();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro:"+ ex);
+            validacion = false;
+        }
+        return validacion;
+    }
+
+    private bool IsLaboratorista(string comodin, string usr1)
+    {
+        bool validacion = true;
+        //llamado al sp
+        SqlCommand comandoConsulta = new SqlCommand("loginPlataforma", this.conexion);
+        //Envio de parametros
+        comandoConsulta.Parameters.AddWithValue("@Comodin", comodin);
+        comandoConsulta.Parameters.AddWithValue("@FILTRO1", usr1);
+        comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
+        comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
+        comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
+
+        comandoConsulta.CommandType = CommandType.StoredProcedure;
+        try
+        {
+            this.conexion.Open();
+            SqlDataReader dr = comandoConsulta.ExecuteReader();
+            //retorno de parametros una vez validado
+            if (dr.Read())
+            {
+                string rol = dr["strNombre_rol"].ToString();
+
+                // Puedes evaluar si el rol es "DOCENTE"
+                if (rol == "LABORATORISTA" | rol == "ADMINISTRADOR")
+                {
+                    validacion = true;
+                }
+                else
+                {
+                    validacion = false;
+                }
+            }
+            dr.Close();
+            conexion.Close();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro:" + ex);
+            validacion = false;
+        }
+        return validacion;
+    }
+
     //private bool IsSeretarioAcademico(string comodin, string usr1, string sede1, string facultad1, string rol1)// devuelve si es secretario academico este perfil es el único que permite ejecutar este formulario de matriculas con todo sus privilegios
     //{
     //    ClassSedeFacCarr sfc = new ClassSedeFacCarr();
@@ -1623,6 +1839,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
 
     //    return retorno;
     //}
+
 }
 
 public class Menu_Master

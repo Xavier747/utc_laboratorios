@@ -8,9 +8,8 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.Services;
-
 using System.Web.UI.HtmlControls;
-using LabUTC;
+using ClassLibraryLaboratorios;
 
 public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Page
 {
@@ -61,8 +60,8 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                     //lblIdFacultad.Text = Convert.ToString(dt.Rows[0]["strCod_Fac"]);
                 }
 
-                rptFacultades.DataSource = dt;
-                rptFacultades.DataBind();
+                //rptFacultades.DataSource = dt;
+                //rptFacultades.DataBind();
             }
             catch (Exception ex)
             {
@@ -80,7 +79,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
 
                 ViewState["FacultadSeleccionada"] = Convert.ToString(e.CommandArgument);
 
-                txtSearch.Text = "";
+                //txtSearch.Text = "";
                 cargarTabla();
             }
         }
@@ -93,8 +92,8 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                 string filtro = "";
                 DataTable tablaDatos = laboratorio2.obtenerLaboratorios(comodin, filtro);
 
-                listarLaboratorios.DataSource = tablaDatos;
-                listarLaboratorios.DataBind();
+                //listarLaboratorios.DataSource = tablaDatos;
+                //listarLaboratorios.DataBind();
                 conexion.Close();
             }
             catch (Exception ex)
@@ -105,8 +104,8 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
 
         protected void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            string filtro = txtSearch.Text.Trim();
-            cargarTablaFiltrada(filtro);
+            //string filtro = txtSearch.Text.Trim();
+            //cargarTablaFiltrada(filtro);
         }
 
 
@@ -117,8 +116,8 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                 string comodin = "xFacultad";
                 DataTable tablaDatos = laboratorio2.obtenerLaboratorios(comodin, filtro);
 
-                listarLaboratorios.DataSource = tablaDatos;
-                listarLaboratorios.DataBind();
+                //listarLaboratorios.DataSource = tablaDatos;
+                //listarLaboratorios.DataBind();
                 conexion.Close();
             }
             catch (Exception ex)
@@ -141,5 +140,20 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                 Response.Redirect("~/Views/Docentes/InformacionLaboratorios.aspx");
             }
         }
+    }
+
+    protected void rptFacultades_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+
+    }
+
+    protected void listarLaboratorios_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+
+    }
+
+    protected void txtSearch_TextChanged(object sender, EventArgs e)
+    {
+
     }
 }

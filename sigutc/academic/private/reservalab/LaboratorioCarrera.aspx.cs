@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using LabUTC;
+using ClassLibraryLaboratorios;
 
 public partial class academic_private_reservalab_LaboratorioCarrera : System.Web.UI.Page
 {
@@ -44,10 +44,10 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         {
             laboratorio2.strCod_Lab = Session["laboratorioId"].ToString();
             laboratorio2.listarLaboratorioPorId();
-            lblFacultadId.Text = laboratorio2.strCod_Fac;
-            lblSedeId.Text = laboratorio2.strCod_Sede;
+            //lblFacultadId.Text = laboratorio2.strCod_Fac;
+            //lblSedeId.Text = laboratorio2.strCod_Sede;
 
-            nombreLboratorio.InnerText = laboratorio2.strNombre_Lab.ToUpper();
+            //nombreLboratorio.InnerText = laboratorio2.strNombre_Lab.ToUpper();
         }
 
         public void cargarCarreras()
@@ -57,8 +57,8 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
 
             SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetUB_CARRERAS", conexion);
             comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
-            comandoConsulta.Parameters.AddWithValue("@FILTRO1", lblFacultadId.Text);
-            comandoConsulta.Parameters.AddWithValue("@FILTRO2", lblSedeId.Text);
+            //comandoConsulta.Parameters.AddWithValue("@FILTRO1", lblFacultadId.Text);
+            //comandoConsulta.Parameters.AddWithValue("@FILTRO2", lblSedeId.Text);
             comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
             comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
             comandoConsulta.CommandType = CommandType.StoredProcedure;
@@ -69,14 +69,14 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
                 DataTable dt = new DataTable();
                 adaptadorAlbum.Fill(dt);
 
-                ddlCarreras.Items.Clear();
+                //    ddlCarreras.Items.Clear();
 
-                ddlCarreras.Items.Add(new ListItem("-- Seleccione una opcion --", ""));
+                //    ddlCarreras.Items.Add(new ListItem("-- Seleccione una opcion --", ""));
 
-                foreach (DataRow row in dt.Rows)
-                {
-                    ddlCarreras.Items.Add(new ListItem(row["strNombre_Car"].ToString(), row["strCod_Car"].ToString()));
-                }
+                //    foreach (DataRow row in dt.Rows)
+                //    {
+                //        ddlCarreras.Items.Add(new ListItem(row["strNombre_Car"].ToString(), row["strCod_Car"].ToString()));
+                //    }
             }
             catch (Exception ex)
             {
@@ -94,14 +94,14 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
 
             try
             {
-                if (labExc != null && labExc.Rows.Count > 0) // Verificar si tiene datos
-                {
-                    gvCarreras.DataSource = labExc;
-                    gvCarreras.DataBind();
-                    gvCarreras.AllowPaging = false;
-                }
+                //if (labExc != null && labExc.Rows.Count > 0) // Verificar si tiene datos
+                //{
+                //    gvCarreras.DataSource = labExc;
+                //    gvCarreras.DataBind();
+                //    gvCarreras.AllowPaging = false;
+                //}
 
-                lblMsgLstRegistros.Visible = labExc != null && labExc.Rows.Count > 0 ? false : true;
+                //lblMsgLstRegistros.Visible = labExc != null && labExc.Rows.Count > 0 ? false : true;
             }
             catch (Exception ex)
             {
@@ -114,7 +114,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         {
             string tipoConsulta = "xCarreraLabExc";
 
-            labExc1.strCod_Car = ddlCarreras.SelectedValue;
+            //labExc1.strCod_Car = ddlCarreras.SelectedValue;
             int validar = labExc1.validarCarreraUnico(tipoConsulta);
 
             if (validar == 0)
@@ -129,10 +129,10 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
                 labExc1.dtFecha_log = DateTime.Now;
                 labExc1.strUser_log = Session["Cedula"].ToString();
                 labExc1.strCod_lab = laboratorio2.strCod_Lab;
-                labExc1.strCod_Car = ddlCarreras.SelectedValue;
-                labExc1.strCod_Fac = laboratorio2.strCod_Fac;
-                labExc1.strCod_Sede = laboratorio2.strCod_Sede;
-                labExc1.strCod_labEx = laboratorio2.strCod_Sede + '_' + laboratorio2.strCod_Fac + '_' + ddlCarreras.SelectedValue + '_' + num;
+                //labExc1.strCod_Car = ddlCarreras.SelectedValue;
+                //labExc1.strCod_Fac = laboratorio2.strCod_Fac;
+                //labExc1.strCod_Sede = laboratorio2.strCod_Sede;
+                //labExc1.strCod_labEx = laboratorio2.strCod_Sede + '_' + laboratorio2.strCod_Fac + '_' + ddlCarreras.SelectedValue + '_' + num;
 
                 bool registro = labExc1.registrarLaboratorioExclusivo();
 
@@ -165,5 +165,15 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
                 ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
             }
         }
+    }
+
+    protected void btnGuardar_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void gvCarreras_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+
     }
 }

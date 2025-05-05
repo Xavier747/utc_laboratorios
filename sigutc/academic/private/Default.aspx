@@ -19,6 +19,17 @@
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
 
-    <%--aqui javascript--%>
+    <script>
+        document.cookie.split(';').forEach(function (cookie) {
+            if (cookie.trim().startsWith('.ASPXAUTH=')) {  // Asumiendo que la cookie se llama .ASPXAUTH
+                console.log('Cookie de sesión:', cookie);
+            }
+            else {
+                console.log('Error:');
+            }
+        });
+
+    </script>
+
 </asp:Content>
 

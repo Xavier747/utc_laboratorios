@@ -1,6 +1,12 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="Software.aspx.cs" Inherits="academic_private_reservaLab_Software" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
+    <style>
+        td{
+            word-wrap: break-word;
+            white-space: normal;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Listado de softwares
@@ -28,7 +34,7 @@
         </div>
         <br />
         <div class="col-md-12">
-            <div class="table-responsive">
+            <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
                 <asp:GridView ID="gvSoftware" runat="server" AutoGenerateColumns="False" AllowPaging="True" PageSize="10" OnPageIndexChanging="gvSoftware_PageIndexChanging" CssClass="table table-striped table-bordered" OnRowCommand="gvSoftware_RowCommand">
                     <Columns>
                         <asp:BoundField DataField="strNombre_sof" HeaderText="Nombre"></asp:BoundField>
@@ -63,48 +69,29 @@
         </div>
     </div>
 
-    <div class="alert alert-info alert-dismissible text-center" id="lblMsgLstRegistros" runat="server" visible="false">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <span class="mensaje">No existen registros</span>
-    </div>
+    <asp:Label ID="lblMsg" runat="server"></asp:Label>
 
-    <!--Formulario para agregar nuevo software-->
-    <div class="alert alert-info alert-dismissible text-center" id="lblMsgLstUsuario" runat="server">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <span class="mensaje">Seleccione una sede o facultad...!!!</span>
-    </div>
 
     <!-- Ventana Modal -->
     <div class="modal fade" id="form_registrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog  modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cerrar()"><span aria-hidden="true">×</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                     <h4 class="modal-title" id="modalNuevoSoftware">Nuevo Software</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row" id="SedeFacultad" runat="server">
-                        <asp:UpdatePanel ID="UpdatePanel3" runat="server">
-                            <ContentTemplate>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblSede" runat="server" Text="Sedes" CssClass="control-label required"></asp:Label>
-                                    <asp:DropDownList ID="ddlSede" runat="server" CssClass="form-control custom-input" AutoPostBack="True" OnSelectedIndexChanged="ddlSedes_SelectedIndexChanged"></asp:DropDownList>
-                                    <asp:RequiredFieldValidator ID="rfv_ddlListSedes" runat="server" ControlToValidate="ddlSede" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
-                                </div>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblFacultad" runat="server" Text="Facultades" CssClass="control-label required"></asp:Label>
-                                    <asp:DropDownList ID="ddlFacultad" runat="server" CssClass="form-control custom-input"></asp:DropDownList>
-                                    <asp:RequiredFieldValidator ID="rfv_DropDownListFacultades" runat="server" ControlToValidate="ddlFacultad" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" InitialValue="" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
-                                </div>
-                            </ContentTemplate>
-                            <Triggers>
-                                <asp:AsyncPostBackTrigger ControlID="ddlSede" EventName="SelectedIndexChanged" />
-                            </Triggers>
-                        </asp:UpdatePanel>
+                        <div class="col-md-6">
+                            <asp:Label ID="lblSede" runat="server" Text="Sedes" CssClass="control-label required"></asp:Label>
+                            <asp:DropDownList ID="ddlSede" runat="server" CssClass="form-control custom-input" OnSelectedIndexChanged="ddlSede_SelectedIndexChanged"></asp:DropDownList>
+                            <asp:RequiredFieldValidator ID="rfv_ddlListSedes" runat="server" ControlToValidate="ddlSede" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
+                        </div>
+                        <div class="col-md-6">
+                            <asp:Label ID="lblFacultad" runat="server" Text="Facultades" CssClass="control-label required"></asp:Label>
+                            <asp:DropDownList ID="ddlFacultad" runat="server" CssClass="form-control custom-input"></asp:DropDownList>
+                            <asp:RequiredFieldValidator ID="rfv_DropDownListFacultades" runat="server" ControlToValidate="ddlFacultad" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" InitialValue="" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -121,22 +108,18 @@
                         </div>
                     </div>
                     <div class="row">
-                        <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-                            <ContentTemplate>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblTipo" runat="server" Text="Tipo de licencia" CssClass="control-label required"></asp:Label>
-                                    <asp:DropDownList ID="ddlTipo" runat="server" CssClass="form-control custom-input" AutoPostBack="true" OnSelectedIndexChanged="ddlTipo_SelectedIndexChanged"></asp:DropDownList>
-                                    <asp:RequiredFieldValidator ID="rfv_selectTipo" runat="server" ControlToValidate="ddlTipo" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>  
-                                </div>
-                                <div class="col-md-6">
-                                    <div id="content_NombreLicencia" runat="server" visible="false">
-                                        <asp:Label ID="lblNombreLicencia" runat="server" Text="Nombre de la licencia" CssClass="control-label required"></asp:Label>
-                                        <asp:TextBox ID="txtNombreLicencia" runat="server" CssClass="form-control custom-input text-multiple" TextMode="MultiLine" Rows="2"></asp:TextBox>
-                                        <asp:RequiredFieldValidator ID="rvf_txtNombreLicencia" runat="server" ControlToValidate="txtNombreLicencia" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
-                                    </div>                      
-                                </div>
-                            </ContentTemplate>
-                        </asp:UpdatePanel>
+                        <div class="col-md-6">
+                            <asp:Label ID="lblTipo" runat="server" Text="Tipo de licencia" CssClass="control-label required"></asp:Label>
+                            <asp:DropDownList ID="ddlTipo" runat="server" CssClass="form-control custom-input" AutoPostBack="true" OnSelectedIndexChanged="ddlTipo_SelectedIndexChanged"></asp:DropDownList>
+                            <asp:RequiredFieldValidator ID="rfv_selectTipo" runat="server" ControlToValidate="ddlTipo" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>  
+                        </div>
+                        <div class="col-md-6">
+                            <div id="content_NombreLicencia" runat="server" visible="false">
+                                <asp:Label ID="lblNombreLicencia" runat="server" Text="Nombre de la licencia" CssClass="control-label required"></asp:Label>
+                                <asp:TextBox ID="txtNombreLicencia" runat="server" CssClass="form-control custom-input text-multiple" TextMode="MultiLine" Rows="2"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rvf_txtNombreLicencia" runat="server" ControlToValidate="txtNombreLicencia" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
+                            </div>                      
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -153,7 +136,7 @@
                         </div>                                
                         <div class="col-md-6">
                             <asp:Label ID="lblImg1" runat="server" Text="Fotografía 1" CssClass="control-label required"></asp:Label>
-                            <asp:FileUpload ID="fulImg1" runat="server" CausesValidation="true" CssClass="file" accept="image/*" data-show-upload="false"/>
+                            <asp:FileUpload ID="fulImg1" runat="server" CausesValidation="true" CssClass="form-control" accept="image/*" data-show-upload="false"/>
                             <asp:RequiredFieldValidator ID="rfv_img1" runat="server" ControlToValidate="fulImg1" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
                         </div>
                     </div>
@@ -178,23 +161,16 @@
                 </div>
                 <div class="modal-body">
                     <div class="row" id="Div1" runat="server">
-                        <asp:UpdatePanel ID="UpdatePanel4" runat="server">
-                            <ContentTemplate>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblSedeAct" runat="server" Text="Sedes" CssClass="control-label required"></asp:Label>
-                                    <asp:DropDownList ID="ddlSedeAct" runat="server" CssClass="form-control custom-input" AutoPostBack="True" OnSelectedIndexChanged="ddlSedeAct_SelectedIndexChanged"></asp:DropDownList>
-                                    <asp:RequiredFieldValidator ID="rfv_ddlSedeAct" runat="server" ControlToValidate="ddlSedeAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
-                                </div>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblFacultadAct" runat="server" Text="Facultades" CssClass="control-label required"></asp:Label>
-                                    <asp:DropDownList ID="ddlFacultadAct" runat="server" CssClass="form-control custom-input"></asp:DropDownList>
-                                    <asp:RequiredFieldValidator ID="rfv_ddlFacultadAct" runat="server" ControlToValidate="ddlFacultadAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" InitialValue="" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
-                                </div>
-                            </ContentTemplate>
-                            <Triggers>
-                                <asp:AsyncPostBackTrigger ControlID="ddlSede" EventName="SelectedIndexChanged" />
-                            </Triggers>
-                        </asp:UpdatePanel>
+                        <div class="col-md-6">
+                            <asp:Label ID="lblSedeAct" runat="server" Text="Sedes" CssClass="control-label required"></asp:Label>
+                            <asp:DropDownList ID="ddlSedeAct" runat="server" CssClass="form-control custom-input" AutoPostBack="True" OnSelectedIndexChanged="ddlSedeAct_SelectedIndexChanged"></asp:DropDownList>
+                            <asp:RequiredFieldValidator ID="rfv_ddlSedeAct" runat="server" ControlToValidate="ddlSedeAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
+                        </div>
+                        <div class="col-md-6">
+                            <asp:Label ID="lblFacultadAct" runat="server" Text="Facultades" CssClass="control-label required"></asp:Label>
+                            <asp:DropDownList ID="ddlFacultadAct" runat="server" CssClass="form-control custom-input"></asp:DropDownList>
+                            <asp:RequiredFieldValidator ID="rfv_ddlFacultadAct" runat="server" ControlToValidate="ddlFacultadAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" InitialValue="" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -210,22 +186,18 @@
                         </div>
                     </div>
                     <div class="row">
-                        <asp:UpdatePanel ID="UpdatePanel2" runat="server">
-                            <ContentTemplate>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblTipoAct" runat="server" Text="Tipo de licencia" CssClass="control-label required"></asp:Label>
-                                    <asp:DropDownList ID="ddlTipoAct" runat="server" CssClass="form-control custom-input" AutoPostBack="true" OnSelectedIndexChanged="ddlTipo_SelectedIndexChanged"></asp:DropDownList>
-                                    <asp:RequiredFieldValidator ID="rfv_ddlTipoAct" runat="server" ControlToValidate="ddlTipoAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>  
-                                </div>
-                                <div class="col-md-6">
-                                    <div id="content_NombreLicenciaAct" runat="server" visible="false">
-                                        <asp:Label ID="lblNombreLicenciaAct" runat="server" Text="Nombre de la licencia" CssClass="control-label required"></asp:Label>
-                                        <asp:TextBox ID="txtNombreLicenciaAct" runat="server" CssClass="form-control custom-input text-multiple" TextMode="MultiLine" Rows="2"></asp:TextBox>
-                                        <asp:RequiredFieldValidator ID="rfv_txtNombreLicenciaAct" runat="server" ControlToValidate="txtNombreLicenciaAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
-                                    </div>                      
-                                </div>
-                            </ContentTemplate>
-                        </asp:UpdatePanel>
+                        <div class="col-md-6">
+                            <asp:Label ID="lblTipoAct" runat="server" Text="Tipo de licencia" CssClass="control-label required"></asp:Label>
+                            <asp:DropDownList ID="ddlTipoAct" runat="server" CssClass="form-control custom-input" AutoPostBack="true" OnSelectedIndexChanged="ddlTipo_SelectedIndexChanged"></asp:DropDownList>
+                            <asp:RequiredFieldValidator ID="rfv_ddlTipoAct" runat="server" ControlToValidate="ddlTipoAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>  
+                        </div>
+                        <div class="col-md-6">
+                            <div id="content_NombreLicenciaAct" runat="server" visible="false">
+                                <asp:Label ID="lblNombreLicenciaAct" runat="server" Text="Nombre de la licencia" CssClass="control-label required"></asp:Label>
+                                <asp:TextBox ID="txtNombreLicenciaAct" runat="server" CssClass="form-control custom-input text-multiple" TextMode="MultiLine" Rows="2"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfv_txtNombreLicenciaAct" runat="server" ControlToValidate="txtNombreLicenciaAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
+                            </div>                      
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -273,29 +245,7 @@
  
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
-
-       <script type="text/javascript">
-        function showAlertAndReload(title, icon) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
-            });
-
-            Toast.fire({
-                icon: icon,
-                title: title
-            }).then(() => {
-                // Recargar la página una vez que el toast desaparezca
-                window.location.href = window.location.pathname;
-            });
-        }
+    <script>
     </script>
 </asp:Content>
 
