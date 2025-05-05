@@ -16,7 +16,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     private string cadenaConexion;
     private SqlConnection conexion;
 
-    public LAB_LABORATORIOS laboratorio2;
+    public LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     private LAB_RESPONSABLE responsable1;
     private LAB_SOFTWARE software1;
     private LAB_LABSOFTWARE softLab;
@@ -35,13 +35,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     //Metodo principal de la pagina
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Cedula"] == null) Response.Redirect("~/Views/Login.aspx");
-
-        this.cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
-        this.conexion = new SqlConnection(this.cadenaConexion);
-
-        laboratorio2 = new LAB_LABORATORIOS(cadenaConexion);
-
         if (!IsPostBack)
         {
             //llamado a los metodos que se ejecuta al iniciar la pagina     
@@ -65,7 +58,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             laboratorio2.strCod_Lab = e.CommandArgument.ToString();
 
             // Carga los detalles del laboratorio según el ID seleccionado   
-            laboratorio2.listarLaboratorioPorId();
+            //laboratorio2.listarLaboratorioPorId();
 
             // Llena el formulario de actualización con los datos cargados
             llenarFormActualizar();
@@ -79,13 +72,13 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             laboratorio2.strCod_Lab = e.CommandArgument.ToString();
 
             // Carga los detalles del laboratorio según el ID seleccionado   
-            bool eliminar = laboratorio2.eliminarLaboratorio(tipoConsulta);
+            //bool eliminar = laboratorio2.eliminarLaboratorio(tipoConsulta);
 
-            title = eliminar == true ? "Registro eliminado correctamente." : "Registro no eliminado.";
-            icon = eliminar == true ? "success" : "error";
+            //title = eliminar == true ? "Registro eliminado correctamente." : "Registro no eliminado.";
+            //icon = eliminar == true ? "success" : "error";
 
-            string script = $"showAlertAndReload('{title}', '{icon}');";
-            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+            //string script = $"showAlertAndReload('{title}', '{icon}');";
+            //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
         if (e.CommandName == "Laboratoristas")
         {
@@ -108,22 +101,22 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
         filtro = "";
 
-        DataTable tablaDatos = laboratorio2.obtenerLaboratorios(tipoConsulta, filtro);
-        try
-        {
-            if (tablaDatos != null && tablaDatos.Rows.Count > 0) // Verificar si tiene datos
-            {
-                gvLaboratorios.DataSource = tablaDatos;
-                gvLaboratorios.DataBind();
-            }
+        //DataTable tablaDatos = laboratorio2.obtenerLaboratorios(tipoConsulta, filtro);
+        //try
+        //{
+        //    if (tablaDatos != null && tablaDatos.Rows.Count > 0) // Verificar si tiene datos
+        //    {
+        //        gvLaboratorios.DataSource = tablaDatos;
+        //        gvLaboratorios.DataBind();
+        //    }
 
-            lblMsgLstRegistros.Visible = tablaDatos != null && tablaDatos.Rows.Count > 0 ? false : true;
-        }
-        catch (Exception ex)
-        {
-            // Muestra un error si ocurre
-            Console.WriteLine("ERROR: " + ex.Message);
-        }
+        //    lblMsgLstRegistros.Visible = tablaDatos != null && tablaDatos.Rows.Count > 0 ? false : true;
+        //}
+        //catch (Exception ex)
+        //{
+        //    // Muestra un error si ocurre
+        //    Console.WriteLine("ERROR: " + ex.Message);
+        //}
     }
 
     public void cargarTipo()
@@ -329,9 +322,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         softwaresActuales = new List<string>();
 
         laboratorio2.strCod_Lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
-        laboratorio2.strNombre_Lab = txtNombre.Text.ToUpper();
+        //laboratorio2.strNombre_Lab = txtNombre.Text.ToUpper();
         laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
-        laboratorio2.strUbicacion_Lab = txtUbicacion.Text;
+        //laboratorio2.strUbicacion_Lab = txtUbicacion.Text;
         laboratorio2.strCod_tipoLab = ddlTipo.SelectedValue;
         laboratorio2.strCod_areac = ddlCampoAmplio.Text;
         laboratorio2.dtFechaRegistro_lab = DateTime.Now;
@@ -360,7 +353,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 }
 
                 fulImg1.SaveAs(path);
-                laboratorio2.strFotografia1_Lab = newFilename;
+                //laboratorio2.strFotografia1_Lab = newFilename;
             }
             catch (Exception ex)
             {
@@ -388,7 +381,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 }
 
                 fulImg2.SaveAs(path);
-                laboratorio2.strFotografia2_Lab = newFilename;
+                //laboratorio2.strFotografia2_Lab = newFilename;
 
             }
             catch (Exception ex)
@@ -397,7 +390,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             }
         }
 
-        bool registro = laboratorio2.registrarLaboratorio();
+        //bool registro = laboratorio2.registrarLaboratorio();
 
         if (Convert.ToString(Session["Permisos"]) != "ADMINISTRADOR")
         {
@@ -412,17 +405,17 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             actualizarLaboratorista(comodin, tipoResp);
         }
 
-        if (registro)
-        {
-            relacioanarLaboratorioSoftware();
-            guardarLaboratorioSoftware();
-        }
+        //if (registro)
+        //{
+        //    relacioanarLaboratorioSoftware();
+        //    guardarLaboratorioSoftware();
+        //}
 
-        title = registro == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-        icon = registro == true ? "success" : "error";
+        //title = registro == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
+        //icon = registro == true ? "success" : "error";
 
-        string script = $"showAlertAndReload('{title}', '{icon}');";
-        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        //string script = $"showAlertAndReload('{title}', '{icon}');";
+        //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
     }
 
     private string generarIdLab()
@@ -497,13 +490,13 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
         // Llenar los campos del formulario de acuerdo a las propiedades del objeto laboratorio1
         lblCodeLabAct.Text = laboratorio2.strCod_Lab;
-        txtNombreAct.Text = laboratorio2.strNombre_Lab;
+        //txtNombreAct.Text = laboratorio2.strNombre_Lab;
         txtNumeroEquiposAct.Text = laboratorio2.intNumeroEquipos_lab.ToString();
         ddlTipoAct.SelectedValue = laboratorio2.strCod_tipoLab;
-        txtUbicacionAct.Text = laboratorio2.strUbicacion_Lab;
+        //txtUbicacionAct.Text = laboratorio2.strUbicacion_Lab;
         ddlCampoAmplioAct.SelectedValue = laboratorio2.strCod_areac;
-        lblImg1InfAct.Text = laboratorio2.strFotografia1_Lab;
-        lblImg2InfAct.Text = laboratorio2.strFotografia2_Lab;
+        //lblImg1InfAct.Text = laboratorio2.strFotografia1_Lab;
+        //lblImg2InfAct.Text = laboratorio2.strFotografia2_Lab;
         ddlSedeAct.SelectedValue = laboratorio2.strCod_Sede;
 
         cargarFacultad();
@@ -533,9 +526,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     protected void btn_Actualizar_Click(object sender, EventArgs e)
     {
-        laboratorio2.strNombre_Lab = txtNombreAct.Text;
+        //laboratorio2.strNombre_Lab = txtNombreAct.Text;
         laboratorio2.intNumeroEquipos_lab = Convert.ToInt32(txtNumeroEquiposAct.Text);
-        laboratorio2.strUbicacion_Lab = txtUbicacionAct.Text;
+        //laboratorio2.strUbicacion_Lab = txtUbicacionAct.Text;
         laboratorio2.strCod_tipoLab = ddlTipoAct.SelectedValue;
         laboratorio2.strCod_areac = ddlCampoAmplioAct.SelectedValue;
         laboratorio2.dtFecha_log = DateTime.Now;
@@ -564,7 +557,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 }
 
                 fulImg1Act.SaveAs(path);
-                laboratorio2.strFotografia1_Lab = newFilename;
+                //laboratorio2.strFotografia1_Lab = newFilename;
             }
             catch (Exception ex)
             {
@@ -573,7 +566,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         }
         else
         {
-            laboratorio2.strFotografia1_Lab = lblImg1InfAct.Text;
+            //laboratorio2.strFotografia1_Lab = lblImg1InfAct.Text;
         }
 
         if (fulImg2Act.HasFile)
@@ -596,7 +589,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 }
 
                 fulImg2Act.SaveAs(path);
-                laboratorio2.strFotografia2_Lab = fulImg2Act.FileName;
+                //laboratorio2.strFotografia2_Lab = fulImg2Act.FileName;
             }
             catch (Exception ex)
             {
@@ -605,10 +598,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         }
         else
         {
-            laboratorio2.strFotografia2_Lab = lblImg2InfAct.Text;
+            //laboratorio2.strFotografia2_Lab = lblImg2InfAct.Text;
         }
 
-        bool actualizado = laboratorio2.actualizarLaboratorio();
+        //bool actualizado = laboratorio2.actualizarLaboratorio();
 
         obtenerSoftware();
         actualizarSoftware();
@@ -622,11 +615,11 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             actualizarLaboratorista(comodin, tipoResp);
         }
 
-        title = actualizado == true ? "Los datos se han actualizado correctamente." : "Los datos no se han actualizado correctamente.";
-        icon = actualizado == true ? "success" : "error";
+        //title = actualizado == true ? "Los datos se han actualizado correctamente." : "Los datos no se han actualizado correctamente.";
+        //icon = actualizado == true ? "success" : "error";
 
-        string script = $"showAlertAndReload('{title}', '{icon}');";
-        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        //string script = $"showAlertAndReload('{title}', '{icon}');";
+        //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
     }
 
     public void actualizarSoftware()
@@ -714,10 +707,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         tipoConsulta = "xIdLaboratorio";
 
         laboratorio2.strCod_Lab = codLab;
-        laboratorio2.detalleLaboratorio();
+        //laboratorio2.detalleLaboratorio();
 
         lblCodLab.Text = laboratorio2.strCod_Lab;
-        txtLaboratorioNombre.Text = laboratorio2.strNombre_Lab;
+        //txtLaboratorioNombre.Text = laboratorio2.strNombre_Lab;
 
         responsable1.strCod_lab = codLab;
         tipoConsulta = "xLaboratorio";
@@ -742,13 +735,13 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         filtro = lblCodLab.Text;
 
         laboratorio2.strCod_Lab = lblCodLab.Text;
-        laboratorio2.detalleLaboratorio();
+        //laboratorio2.detalleLaboratorio();
 
-        txtLabNuevo.Text = laboratorio2.strNombre_Lab;
+        //txtLabNuevo.Text = laboratorio2.strNombre_Lab;
 
-        DataTable labs = labExc.obtenerLaboratorios(tipoConsulta, filtro);
+        //DataTable labs = labExc.obtenerLaboratorios(tipoConsulta, filtro);
 
-        tipoConsulta = labs.Rows.Count > 0 ? "xResponsable" : "xLaboratorista";
+        //tipoConsulta = labs.Rows.Count > 0 ? "xResponsable" : "xLaboratorista";
         cargarResponsablesAgregar();
 
         ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#Form_NuevoResponsable').modal('show');", true);
@@ -861,13 +854,13 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         tipoConsulta = "xLabExclusivo";
         filtro = lblCodLab.Text;
         laboratorio2.strCod_Lab = filtro;
-        laboratorio2.detalleLaboratorio();
+        //laboratorio2.detalleLaboratorio();
 
-        txtLabActualizar.Text = laboratorio2.strNombre_Lab;
+        //txtLabActualizar.Text = laboratorio2.strNombre_Lab;
 
-        DataTable labs = labExc.obtenerLaboratorios(tipoConsulta, filtro);
+        //DataTable labs = labExc.obtenerLaboratorios(tipoConsulta, filtro);
 
-        tipoConsulta = labs.Rows.Count > 0 ? "xResponsable" : "xLaboratorista";
+        //tipoConsulta = labs.Rows.Count > 0 ? "xResponsable" : "xLaboratorista";
         cargarResponsablesAgregar();
 
         responsable1.strCod_lab = filtro;
