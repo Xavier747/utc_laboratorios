@@ -79,9 +79,6 @@ public partial class academic_private_reservalab_NuevoSoftware : System.Web.UI.P
         ddlTipo.Items.Add(new ListItem("Libre", "Libre"));
 
         ddlTipo.Visible = ddlTipo.SelectedValue == "Propietario" ? true : false;
-
-        //ddlTipoAct.Items.Add(new ListItem("Propietario", "Propietario"));
-        //ddlTipoAct.Items.Add(new ListItem("Libre", "Libre"));
     }
 
     protected void btnCancelar_Click(object sender, EventArgs e)
@@ -91,6 +88,7 @@ public partial class academic_private_reservalab_NuevoSoftware : System.Web.UI.P
     protected void btnGuardar_Click(object sender, EventArgs e)
     {
         decimal precioUnitario = txtCosto.Text != "" ? decimal.Parse(txtCosto.Text) : 0;
+        string rutaCarpeta = crearDirectorio();
 
         software1.strNombre_sof = txtNombre.Text;
         software1.strTipoLicencia_sof = ddlTipo.SelectedValue;
@@ -102,36 +100,35 @@ public partial class academic_private_reservalab_NuevoSoftware : System.Web.UI.P
         software1.strUrl_sof = txtLink.Text;
         software1.dtFechaRegistro_sof = DateTime.Now;
         software1.dtFecha_log = DateTime.Now;
-        software1.strUser_log = Session["Cedula"].ToString();
+        software1.strUser_log = Context.User.Identity.Name;
 
         string codSoft = generarIdSoft();
 
         software1.strCod_Fac = ddlFacultad.SelectedValue;
         software1.strCod_Sede = ddlSede.SelectedValue;
 
-        //software1.strCod_sof = codSoft;
+        software1.strCod_sof = codSoft;
 
         if (fulImg1.HasFile)
         {
             try
             {
-                string folderPath = Server.MapPath("~/images/Software/");
                 string filename = Path.GetFileNameWithoutExtension(fulImg1.FileName);
                 string extension = Path.GetExtension(fulImg1.FileName);
                 string newFilename = filename + extension;
-                string path = Path.Combine(folderPath, newFilename);
+                string path = Path.Combine(rutaCarpeta, newFilename);
 
                 // Verificar si el archivo existe y agregar un sufijo numérico
                 int counter = 1;
                 while (File.Exists(path))
                 {
                     newFilename = $"{filename}_{counter}{extension}";
-                    path = Path.Combine(folderPath, newFilename);
+                    path = Path.Combine(rutaCarpeta, newFilename);
                     counter++;
                 }
 
                 fulImg1.SaveAs(path);
-                software1.strImagen_sof = newFilename; // Guarda el nombre actualizado en la base de datos
+                software1.strImagen_sof = path; // Guarda el nombre actualizado en la base de datos
             }
             catch (Exception ex)
             {
@@ -139,13 +136,39 @@ public partial class academic_private_reservalab_NuevoSoftware : System.Web.UI.P
             }
         }
 
-        //bool registro = software1.guardarSoftware();
+        int registro = software1.AddLAB_SOFTWARE(software1);
 
-        //title = registro == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-        //icon = registro == true ? "success" : "error";
+        string title = registro != -1 ? software1.msg : software1.msg;
+        string icon = registro != -1 ? "success" : "error";
+        string ruta = "Software.aspx";
 
-        //string script = $"showAlertAndReload('{title}', '{icon}');";
-        //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        string script = $"showAlertAndReload('{title}', '{icon}', '{ruta}');";
+        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+    }
+
+    private string crearDirectorio()
+    {
+        string rutaCarpeta = "";
+        try
+        {
+            // Ruta que deseas crear
+            rutaCarpeta = @"C:\images\Laboratorios";
+
+            // Validar si la carpeta ya existe
+            if (!Directory.Exists(rutaCarpeta))
+            {
+                // Crear la carpeta
+                Directory.CreateDirectory(rutaCarpeta);
+            }
+
+            string rutaParaBD = rutaCarpeta;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Ocurrió un error al crear la carpeta: " + ex.Message);
+        }
+
+        return rutaCarpeta;
     }
 
     private string generarIdSoft()

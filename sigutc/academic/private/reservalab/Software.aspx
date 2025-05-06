@@ -31,7 +31,7 @@
         </div>
         <br />
         <div class="col-md-12">
-            <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
+            <div class="table-responsive">
                 <asp:GridView ID="gvSoftware" runat="server" AutoGenerateColumns="False" AllowPaging="True" PageSize="10" OnPageIndexChanging="gvSoftware_PageIndexChanging" CssClass="table table-striped table-bordered" OnRowCommand="gvSoftware_RowCommand">
                     <Columns>
                         <asp:BoundField DataField="strNombre_sof" HeaderText="Nombre"></asp:BoundField>

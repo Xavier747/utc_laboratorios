@@ -18,6 +18,7 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
     {
         if (!IsPostBack)
         {
+            cargarTipoLicencia();
             cargarSede();
             cargarFacultad();
             consultarRegistro();
@@ -27,6 +28,14 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
     protected void ddlSedeAct_SelectedIndexChanged(object sender, EventArgs e)
     {
         ddlFacultadAct.Items.Clear();
+    }
+
+    public void cargarTipoLicencia()
+    {
+        ddlTipoAct.Items.Add(new ListItem("Propietario", "Propietario"));
+        ddlTipoAct.Items.Add(new ListItem("Libre", "Libre"));
+
+        ddlTipoAct.Visible = ddlTipoAct.SelectedValue == "Propietario" ? true : false;
     }
 
     public void cargarSede()
@@ -73,6 +82,11 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         {
             lblMsg.Text = software1.msg;
         }
+    }
+
+    protected void ddlTipoAct_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        content_NombreLicenciaAct.Visible = ddlTipoAct.SelectedValue == "Propietario" ? true : false;
     }
 
     protected void btnCancelar_Click(object sender, EventArgs e)
@@ -136,8 +150,4 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
     }
 
-    protected void ddlTipoAct_SelectedIndexChanged(object sender, EventArgs e)
-    {
-
-    }
 }

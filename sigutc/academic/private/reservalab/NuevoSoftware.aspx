@@ -1,6 +1,14 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="NuevoSoftware.aspx.cs" Inherits="academic_private_reservalab_NuevoSoftware" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
+    <style>
+        .required::after{
+            content: '*';
+            margin-left:2px;
+            color:red;
+            font-size: 15px;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Nuevo software
@@ -79,5 +87,28 @@
     <asp:Label ID="lblMsg" runat="server"></asp:Label>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
+    <script>
+        function showAlertAndReload(title, icon, ruta) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            });
+
+            Toast.fire({
+                icon: icon,
+                title: title
+            }).then(() => {
+                // Recargar la página una vez que el toast desaparezca
+                window.location.href = ruta;
+            });
+        }
+    </script>
 </asp:Content>
 
