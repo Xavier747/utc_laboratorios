@@ -28,7 +28,7 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
         //responsable1 = new LAB_RESPONSABLE(cadenaConexion);
         //tipo1 = new LAB_TIPO(cadenaConexion);
 
-        if (Session["Cedula"] == null) Response.Redirect("~/Views/Login.aspx");
+        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/private/Login.aspx");
 
         if (!IsPostBack)
         {

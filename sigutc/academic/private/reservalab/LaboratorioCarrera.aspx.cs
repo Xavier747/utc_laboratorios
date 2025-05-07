@@ -24,7 +24,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["Cedula"] == null) Response.Redirect("~/Views/Login.aspx");
+            if (Context.User.Identity.Name == null) Response.Redirect("~/academic/private/Login.aspx");
 
             this.cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
             this.conexion = new SqlConnection(this.cadenaConexion);

@@ -17,7 +17,7 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
 
     protected void Page_Load(object sender, EventArgs e)
     {
-       
+        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/private/Login.aspx");
 
         if (!IsPostBack)
         {
