@@ -16,8 +16,6 @@ using ClassLibraryTesis;
 
 public partial class academic_private_reservalab_ReservaLaboratorio : System.Web.UI.Page
 {
-    public partial class ReservaLaboratorio : System.Web.UI.Page
-    {
         string cadenaConexion;
         SqlConnection conexion;
 
@@ -230,75 +228,75 @@ public partial class academic_private_reservalab_ReservaLaboratorio : System.Web
         [WebMethod]
         public static void guardarReservacion(object[] resbLab)
         {
-            string cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
-            LAB_RESERVA reservacion1 = new LAB_RESERVA(cadenaConexion);
+            //string cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
+            //LAB_RESERVA reservacion1 = new LAB_RESERVA(cadenaConexion);
 
-            reservacion1.strCod_reser = HttpContext.Current.Session["laboratorioId"].ToString() + resbLab[4];
-            reservacion1.strTema_reser = resbLab[0].ToString();
-            reservacion1.strDescripcion_reser = resbLab[1].ToString();
-            reservacion1.strMateriales_reser = resbLab[2].ToString();
-            reservacion1.dtFechaInicio_reser = Convert.ToDateTime(resbLab[3]);
-            reservacion1.dtFechaFin_reser = Convert.ToDateTime(resbLab[4]);
-            reservacion1.strTipo_rese = resbLab[5].ToString();
-            reservacion1.intTotalAsistente_reser = Convert.ToInt32(resbLab[6]);
-            reservacion1.strId_HORARIO = resbLab[7].ToString();
-            reservacion1.strCod_lab = HttpContext.Current.Session["laboratorioId"].ToString();
+            //reservacion1.strCod_reser = HttpContext.Current.Session["laboratorioId"].ToString() + resbLab[4];
+            //reservacion1.strTema_reser = resbLab[0].ToString();
+            //reservacion1.strDescripcion_reser = resbLab[1].ToString();
+            //reservacion1.strMateriales_reser = resbLab[2].ToString();
+            //reservacion1.dtFechaInicio_reser = Convert.ToDateTime(resbLab[3]);
+            //reservacion1.dtFechaFin_reser = Convert.ToDateTime(resbLab[4]);
+            //reservacion1.strTipo_rese = resbLab[5].ToString();
+            //reservacion1.intTotalAsistente_reser = Convert.ToInt32(resbLab[6]);
+            //reservacion1.strId_HORARIO = resbLab[7].ToString();
+            //reservacion1.strCod_lab = HttpContext.Current.Session["laboratorioId"].ToString();
 
-            reservacion1.registrarReservacion();
+            //reservacion1.registrarReservacion();
         }
 
-        [WebMethod]
-        public static string listarReservas()
-        {
-            string cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
-            LAB_RESERVA reservar1 = new LAB_RESERVA(cadenaConexion);
+        //[WebMethod]
+        //public static string listarReservas()
+        //{
+        //string cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
+        //LAB_RESERVA reservar1 = new LAB_RESERVA(cadenaConexion);
 
-            try
-            {
-                string tipoConsulta = "xLaboratorio";
-                string codLab = HttpContext.Current.Session["laboratorioId"].ToString();
+        //try
+        //{
+        //    string tipoConsulta = "xLaboratorio";
+        //    string codLab = HttpContext.Current.Session["laboratorioId"].ToString();
 
-                List<LAB_RESERVA> eventos = reservar1.ObtenerReservas(tipoConsulta, codLab);
+        //    List<LAB_RESERVA> eventos = reservar1.ObtenerReservas(tipoConsulta, codLab);
 
-                // Modificar las fechas dentro de la lista de eventos
-                var eventosFormateados = new List<object>();
-                foreach (var evento in eventos)
-                {
-                    eventosFormateados.Add(new
-                    {
-                        id = evento.strCod_reser,
-                        titulo = evento.strTema_reser,
-                        inicio = evento.dtFechaInicio_reser.ToString("yyyy-MM-ddTHH:mm:ss"),
-                        fin = evento.dtFechaFin_reser.ToString("yyyy-MM-ddTHH:mm:ss")
-                    });
-                }
+        //    // Modificar las fechas dentro de la lista de eventos
+        //    var eventosFormateados = new List<object>();
+        //    foreach (var evento in eventos)
+        //    {
+        //        eventosFormateados.Add(new
+        //        {
+        //            id = evento.strCod_reser,
+        //            titulo = evento.strTema_reser,
+        //            inicio = evento.dtFechaInicio_reser.ToString("yyyy-MM-ddTHH:mm:ss"),
+        //            fin = evento.dtFechaFin_reser.ToString("yyyy-MM-ddTHH:mm:ss")
+        //        });
+        //    }
 
-                return new JavaScriptSerializer().Serialize(eventosFormateados);
-            }
-            catch (Exception ex)
-            {
-                return new JavaScriptSerializer().Serialize(new { error = ex.Message });
-            }
-        }
+        //    return new JavaScriptSerializer().Serialize(eventosFormateados);
+        //}
+        //catch (Exception ex)
+        //{
+        //    return new JavaScriptSerializer().Serialize(new { error = ex.Message });
+        //}
+        //}
 
-        [WebMethod]
-        public static Object[] detallarEvento(string id)
-        {
-            Object[] evento = new Object[13];
-            string cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
+        //[WebMethod]
+        //public static Object[] detallarEvento(string id)
+        //{
+        //Object[] evento = new Object[13];
+        //string cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
 
-            try
-            {
-                LAB_RESERVA reservacion1 = new LAB_RESERVA(cadenaConexion);
-                evento = reservacion1.detarEvento(id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex);
-            }
-            return evento;
-        }
-    }
+        //try
+        //{
+        //    LAB_RESERVA reservacion1 = new LAB_RESERVA(cadenaConexion);
+        //    evento = reservacion1.detarEvento(id);
+        //}
+        //catch (Exception ex)
+        //{
+        //    Console.WriteLine("Error: " + ex);
+        //}
+        //return evento;
+        //    }
+    //}
 
     public class Asignatura
     {

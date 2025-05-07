@@ -62,6 +62,7 @@
             </div>
             <div class="col-md-6">
                 <asp:Label ID="lblImg1Act" runat="server" Text="Fotografía 1" CssClass="control-label"></asp:Label>
+                <asp:Label ID="lblImgActInfo" runat="server" Text="" Visible="false"></asp:Label>
                 <asp:FileUpload ID="fulImg1Act" runat="server" CausesValidation="true" CssClass="form-control" accept="image/*" data-show-upload="false"/>
                 <asp:Label ID="lblImg1NameAct" runat="server" Text="Label" Visible="false"></asp:Label>
             </div>

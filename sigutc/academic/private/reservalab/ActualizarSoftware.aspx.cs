@@ -19,8 +19,7 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         if (!IsPostBack)
         {
             cargarTipoLicencia();
-            cargarSede();
-            cargarFacultad();
+            cargarSede();            
             consultarRegistro();
         }
     }
@@ -60,8 +59,24 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
     public void consultarRegistro()
     {
         string codLab = Session["codSoft"].ToString();
-
         var registroLab = software1.LoadLAB_SOFTWARE("xPK", codLab, "", "", "");
+
+        ddlSedeAct.SelectedValue = registroLab[0].strCod_Sede;
+
+        cargarFacultad();
+
+        ddlFacultadAct.SelectedValue = registroLab[0].strCod_Fac;
+        txtNombreAct.Text = registroLab[0].strNombre_sof;
+        txtCantidadAct.Text = registroLab[0].intCantidad_sof.ToString();
+        ddlTipoAct.SelectedValue = registroLab[0].strTipoLicencia_sof;
+
+        txtNombreLicenciaAct.Visible = ddlTipoAct.SelectedValue == "Propietario" ? true : false;
+
+        txtNombreLicenciaAct.Text = registroLab[0].strNombreLicencia_sof;
+        txtCostoAct.Text = registroLab[0].decCostoUnitario_sof.ToString();
+        txtDescripcionAct.Text = registroLab[0].strDescripcion_sof;
+        txtLinkAct.Text = registroLab[0].strUrl_sof;
+        lblImgActInfo.Text = registroLab[0].strImagen_sof;
     }
 
     public void cargarFacultad()
@@ -99,6 +114,8 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         string rutaCarpeta = @"C:\images\Laboratorios";
         decimal precioUnitario = txtCostoAct.Text != "" ? decimal.Parse(txtCostoAct.Text) : 0;
 
+        software1.strCod_Fac = ddlFacultadAct.SelectedValue;
+        software1.strCod_Sede = ddlSedeAct.SelectedValue;
         software1.strNombre_sof = txtNombreAct.Text;
         software1.strTipoLicencia_sof = ddlTipoAct.SelectedValue;
         software1.strNombreLicencia_sof = txtNombreLicenciaAct.Text;
@@ -107,9 +124,9 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         software1.decCostoTotal_sof = decimal.Parse(txtCantidadAct.Text) * precioUnitario;
         software1.strDescripcion_sof = txtDescripcionAct.Text;
         software1.strUrl_sof = txtLinkAct.Text;
-        software1.strCod_sof = lblIdSoftAct.Text;
+        software1.strCod_sof = Session["codSoft"].ToString();
         software1.dtFecha_log = DateTime.Now;
-        software1.strUser_log = Session["Cedula"].ToString();
+        software1.strUser_log = Context.User.Identity.Name;
 
         if (fulImg1Act.HasFile)
         {
@@ -130,7 +147,7 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
                 }
 
                 fulImg1Act.SaveAs(path);
-                lblImg1NameAct.Text = path; // Guarda el nombre actualizado en la base de datos
+                lblImgActInfo.Text = path; // Guarda el nombre actualizado en la base de datos
             }
             catch (Exception ex)
             {
@@ -138,9 +155,7 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
             }
         }
 
-        software1.strImagen_sof = lblImg1NameAct.Text;
-        software1.strCod_Fac = ddlFacultadAct.SelectedValue;
-        software1.strCod_Sede = ddlSedeAct.SelectedValue;
+        software1.strImagen_sof = lblImgActInfo.Text;
 
         int actualizar = software1.UpdateLAB_SOFTWARE(software1);
 
