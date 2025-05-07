@@ -122,19 +122,18 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         }
         if (e.CommandName == "Eliminar")
         {
-            //software1.strCod_sof = e.CommandArgument.ToString();
+            string codSftware = e.CommandArgument.ToString();
 
-            //// Carga los detalles del laboratorio según el ID seleccionado 
-            //string comodin = "xCodSof";
-            //software1.dtFecha_log = DateTime.Now;
-            //software1.strUser_log = Session["Cedula"].ToString();
-            ////bool eliminar = software1.eliminarSoftware(comodin);
+            // Carga los detalles del laboratorio según el ID seleccionado 
+            string fecha = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            string responsable = Context.User.Identity.Name;
+            int eliminar = software1.DelLAB_SOFTWARE("xCodSof", codSftware, fecha, responsable, "");
 
-            ////title = eliminar == true ? "Registro eliminado correctamente." : "Registro no eliminado.";
-            ////icon = eliminar == true ? "success" : "error";
+            string title = eliminar != -1 ? "Registro eliminado correctamente." : "Registro no eliminado.";
+            string icon = eliminar != -1 ? "success" : "error";
 
-            //string script = $"showAlertAndReload('{title}', '{icon}');";
-            //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+            string script = $"showAlertAndReload('{title}', '{icon}');";
+            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
     }
 
