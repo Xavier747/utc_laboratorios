@@ -18,15 +18,11 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
         string cadenaConexion;
         SqlConnection conexion;
 
-        LAB_LABORATORIOS laboratorio2;
+        LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["Cedula"] == null) Response.Redirect("~/Views/Login.aspx");
-
             this.cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
             this.conexion = new SqlConnection(this.cadenaConexion);
-
-            laboratorio2 = new LAB_LABORATORIOS(cadenaConexion);
 
             if (!IsPostBack)
             {
@@ -90,7 +86,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
             {
                 string comodin = "xFacultad";
                 string filtro = "";
-                DataTable tablaDatos = laboratorio2.obtenerLaboratorios(comodin, filtro);
+                //DataTable tablaDatos = laboratorio2.obtenerLaboratorios(comodin, filtro);
 
                 //listarLaboratorios.DataSource = tablaDatos;
                 //listarLaboratorios.DataBind();
@@ -114,7 +110,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
             try
             {
                 string comodin = "xFacultad";
-                DataTable tablaDatos = laboratorio2.obtenerLaboratorios(comodin, filtro);
+                //DataTable tablaDatos = laboratorio2.obtenerLaboratorios(comodin, filtro);
 
                 //listarLaboratorios.DataSource = tablaDatos;
                 //listarLaboratorios.DataBind();

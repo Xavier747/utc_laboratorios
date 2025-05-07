@@ -19,8 +19,8 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         private string cadenaConexion;
         private SqlConnection conexion;
 
-        LAB_LABORATORIOS laboratorio2;
-        LAB_EXCLUSIVO labExc1;
+        LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
+        LAB_EXCLUSIVO labExc1= new LAB_EXCLUSIVO();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -28,9 +28,6 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
 
             this.cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
             this.conexion = new SqlConnection(this.cadenaConexion);
-
-            laboratorio2 = new LAB_LABORATORIOS(cadenaConexion);
-            labExc1 = new LAB_EXCLUSIVO(cadenaConexion);
 
             if (!IsPostBack)
             {
@@ -43,7 +40,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         public void cargarLaboratorio()
         {
             laboratorio2.strCod_Lab = Session["laboratorioId"].ToString();
-            laboratorio2.listarLaboratorioPorId();
+            //laboratorio2.listarLaboratorioPorId();
             //lblFacultadId.Text = laboratorio2.strCod_Fac;
             //lblSedeId.Text = laboratorio2.strCod_Sede;
 
@@ -90,7 +87,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             string tipoConsulta = "xLabExclusivo";
             string filtro = Session["laboratorioId"].ToString();
 
-            DataTable labExc = labExc1.obtenerLaboratorios(tipoConsulta, filtro);
+            //DataTable labExc = labExc1.obtenerLaboratorios(tipoConsulta, filtro);
 
             try
             {
@@ -115,38 +112,38 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             string tipoConsulta = "xCarreraLabExc";
 
             //labExc1.strCod_Car = ddlCarreras.SelectedValue;
-            int validar = labExc1.validarCarreraUnico(tipoConsulta);
+            ////int validar = labExc1.validarCarreraUnico(tipoConsulta);
 
-            if (validar == 0)
-            {
-                Random rand = new Random();
-                int num = rand.Next(0, 1000);
+            //if (validar == 0)
+            //{
+            //    Random rand = new Random();
+            //    int num = rand.Next(0, 1000);
 
-                laboratorio2.strCod_Lab = Session["laboratorioId"].ToString();
-                laboratorio2.listarLaboratorioPorId();
+            //    laboratorio2.strCod_Lab = Session["laboratorioId"].ToString();
+            //    laboratorio2.listarLaboratorioPorId();
 
-                labExc1.dtFechaRegistro_labEx = DateTime.Now;
-                labExc1.dtFecha_log = DateTime.Now;
-                labExc1.strUser_log = Session["Cedula"].ToString();
-                labExc1.strCod_lab = laboratorio2.strCod_Lab;
-                //labExc1.strCod_Car = ddlCarreras.SelectedValue;
-                //labExc1.strCod_Fac = laboratorio2.strCod_Fac;
-                //labExc1.strCod_Sede = laboratorio2.strCod_Sede;
-                //labExc1.strCod_labEx = laboratorio2.strCod_Sede + '_' + laboratorio2.strCod_Fac + '_' + ddlCarreras.SelectedValue + '_' + num;
+            //    labExc1.dtFechaRegistro_labEx = DateTime.Now;
+            //    labExc1.dtFecha_log = DateTime.Now;
+            //    labExc1.strUser_log = Session["Cedula"].ToString();
+            //    labExc1.strCod_lab = laboratorio2.strCod_Lab;
+            //    //labExc1.strCod_Car = ddlCarreras.SelectedValue;
+            //    //labExc1.strCod_Fac = laboratorio2.strCod_Fac;
+            //    //labExc1.strCod_Sede = laboratorio2.strCod_Sede;
+            //    //labExc1.strCod_labEx = laboratorio2.strCod_Sede + '_' + laboratorio2.strCod_Fac + '_' + ddlCarreras.SelectedValue + '_' + num;
 
-                bool registro = labExc1.registrarLaboratorioExclusivo();
+            //    bool registro = labExc1.registrarLaboratorioExclusivo();
 
-                title = registro == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-                icon = registro == true ? "success" : "error";
-            }
-            else
-            {
-                title = "La carrera ya se encuentra relaciodado en este laboratorio.";
-                icon = "error";
-            }
+            //    title = registro == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
+            //    icon = registro == true ? "success" : "error";
+            //}
+            //else
+            //{
+            //    title = "La carrera ya se encuentra relaciodado en este laboratorio.";
+            //    icon = "error";
+            //}
 
-            string script = $"showAlertAndReload('{title}', '{icon}');";
-            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+            //string script = $"showAlertAndReload('{title}', '{icon}');";
+            //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
 
         protected void gvCarreras_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -156,13 +153,13 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
                 labExc1.strCod_labEx = e.CommandArgument.ToString();
                 labExc1.dtFecha_log = DateTime.Now;
                 labExc1.strUser_log = Session["Cedula"].ToString();
-                bool eliminar = labExc1.eliminarCarrera();
+                //bool eliminar = labExc1.eliminarCarrera();
 
-                title = eliminar == true ? "Registro eliminado correctamente." : "Registro no eliminado.";
-                icon = eliminar == true ? "success" : "error";
+                //title = eliminar == true ? "Registro eliminado correctamente." : "Registro no eliminado.";
+                //icon = eliminar == true ? "success" : "error";
 
-                string script = $"showAlertAndReload('{title}', '{icon}');";
-                ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+                //string script = $"showAlertAndReload('{title}', '{icon}');";
+                //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
             }
         }
     }
