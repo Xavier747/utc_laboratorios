@@ -96,6 +96,7 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
 
     protected void btnActualizar_Click(object sender, EventArgs e)
     {
+        string rutaCarpeta = @"C:\images\Laboratorios";
         decimal precioUnitario = txtCostoAct.Text != "" ? decimal.Parse(txtCostoAct.Text) : 0;
 
         software1.strNombre_sof = txtNombreAct.Text;
@@ -106,7 +107,7 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         software1.decCostoTotal_sof = decimal.Parse(txtCantidadAct.Text) * precioUnitario;
         software1.strDescripcion_sof = txtDescripcionAct.Text;
         software1.strUrl_sof = txtLinkAct.Text;
-        //software1.strCod_sof = lblIdSoftAct.Text;
+        software1.strCod_sof = lblIdSoftAct.Text;
         software1.dtFecha_log = DateTime.Now;
         software1.strUser_log = Session["Cedula"].ToString();
 
@@ -114,40 +115,41 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         {
             try
             {
-                string folderPath = Server.MapPath("~/images/Software/");
                 string filename = Path.GetFileNameWithoutExtension(fulImg1Act.FileName);
                 string extension = Path.GetExtension(fulImg1Act.FileName);
                 string newFilename = filename + extension;
-                string path = Path.Combine(folderPath, newFilename);
+                string path = Path.Combine(rutaCarpeta, newFilename);
 
                 // Verificar si el archivo existe y agregar un sufijo numérico
                 int counter = 1;
                 while (File.Exists(path))
                 {
                     newFilename = $"{filename}_{counter}{extension}";
-                    path = Path.Combine(folderPath, newFilename);
+                    path = Path.Combine(rutaCarpeta, newFilename);
                     counter++;
                 }
 
                 fulImg1Act.SaveAs(path);
-                lblImg1NameAct.Text = newFilename; // Guarda el nombre actualizado en la base de datos
+                lblImg1NameAct.Text = path; // Guarda el nombre actualizado en la base de datos
             }
             catch (Exception ex)
             {
                 Response.Write("La carga falló: " + ex.Message);
             }
         }
+
         software1.strImagen_sof = lblImg1NameAct.Text;
         software1.strCod_Fac = ddlFacultadAct.SelectedValue;
         software1.strCod_Sede = ddlSedeAct.SelectedValue;
 
-        //bool actualizar = software1.actualizarSoftware();
+        int actualizar = software1.UpdateLAB_SOFTWARE(software1);
 
-        //title = actualizar == true ? "Los datos se han actualizado correctamente." : "Los datos no se han actualizado correctamente.";
-        //icon = actualizar == true ? "success" : "error";
+        string title = actualizar != -1 ? software1.msg : software1.msg;
+        string icon = actualizar != -1 ? "success" : "error";
+        string url = "Software.aspx";
 
-        //string script = $"showAlertAndReload('{title}', '{icon}');";
-        //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        string script = $"showAlertAndReload('{title}', '{icon}', '{url}');";
+        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
     }
 
 }
