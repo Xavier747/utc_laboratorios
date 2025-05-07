@@ -35,16 +35,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     //Metodo principal de la pagina
     protected void Page_Load(object sender, EventArgs e)
     {
-<<<<<<< HEAD
-        //if (Session["Cedula"] == null) Response.Redirect("~/Views/Login.aspx");
-
-        this.cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
-        this.conexion = new SqlConnection(this.cadenaConexion);
-
-        laboratorio2 = new LAB_LABORATORIOS(cadenaConexion);
-
-=======
->>>>>>> 91fed4315a68b8a9da355685f874a9aa5c81cb4d
         if (!IsPostBack)
         {
             //llamado a los metodos que se ejecuta al iniciar la pagina     
@@ -336,7 +326,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //string codLab = generarIdLab();
         softwaresActuales = new List<string>();
 
-<<<<<<< HEAD
         //laboratorio2.strCod_Lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
         //laboratorio2.strNombre_Lab = txtNombre.Text.ToUpper();
         //laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
@@ -348,19 +337,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //laboratorio2.strUser_log = Session["Cedula"].ToString();
         //laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
         //laboratorio2.strCod_Sede = ddlSede.SelectedValue;
-=======
-        laboratorio2.strCod_Lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
-        //laboratorio2.strNombre_Lab = txtNombre.Text.ToUpper();
-        laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
-        //laboratorio2.strUbicacion_Lab = txtUbicacion.Text;
-        laboratorio2.strCod_tipoLab = ddlTipo.SelectedValue;
-        laboratorio2.strCod_areac = ddlCampoAmplio.Text;
-        laboratorio2.dtFechaRegistro_lab = DateTime.Now;
-        laboratorio2.dtFecha_log = DateTime.Now;
-        laboratorio2.strUser_log = Session["Cedula"].ToString();
-        laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
-        laboratorio2.strCod_Sede = ddlSede.SelectedValue;
->>>>>>> 91fed4315a68b8a9da355685f874a9aa5c81cb4d
 
         //if (fulImg1.HasFile)
         //{
@@ -381,7 +357,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //            counter++;
         //        }
 
-<<<<<<< HEAD
+
         //        fulImg1.SaveAs(path);
         //        laboratorio2.strFotografia1_Lab = newFilename;
         //    }
@@ -389,17 +365,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //    {
         //        Response.Write("La carga falló: " + ex.Message);
         //    }
-        //}
-=======
-                fulImg1.SaveAs(path);
-                //laboratorio2.strFotografia1_Lab = newFilename;
-            }
-            catch (Exception ex)
-            {
-                Response.Write("La carga falló: " + ex.Message);
-            }
-        }
->>>>>>> 91fed4315a68b8a9da355685f874a9aa5c81cb4d
 
         //if (fulImg2.HasFile)
         //{
@@ -420,13 +385,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //            counter++;
         //        }
 
-<<<<<<< HEAD
+
         //        fulImg2.SaveAs(path);
         //        laboratorio2.strFotografia2_Lab = newFilename;
-=======
-                fulImg2.SaveAs(path);
-                //laboratorio2.strFotografia2_Lab = newFilename;
->>>>>>> 91fed4315a68b8a9da355685f874a9aa5c81cb4d
+
 
         //    }
         //    catch (Exception ex)
@@ -1044,6 +1006,5 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
     }
-
   
 }
