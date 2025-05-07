@@ -139,9 +139,9 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
     protected void btnVistaCompleta_Click(object sender, ImageClickEventArgs e)
     {
-        //    //ImageButton btn = (ImageButton)sender;
-        //    //string rutaImagen = btn.CommandArgument;
-        //    //vistaCompletaImagen.ImageUrl = rutaImagen;
-        //    //ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#view-image').modal('show');", true);
+        ImageButton btn = (ImageButton)sender;
+        string rutaImagen = btn.CommandArgument;
+        vistaCompletaImagen.ImageUrl = rutaImagen;
+        ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#view-image').modal('show');", true);
     }
 }

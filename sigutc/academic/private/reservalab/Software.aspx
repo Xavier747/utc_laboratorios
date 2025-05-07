@@ -1,12 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="Software.aspx.cs" Inherits="academic_private_reservaLab_Software" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
-    <style>
-        td{
-            word-wrap: break-word;
-            white-space: normal;
-        }
-    </style>
+    <link href="../../../Styles/Nuevo/assets/css/laboratorio-style.css" rel="stylesheet" /> 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Listado de softwares
@@ -42,11 +37,11 @@
                                 <div class="content">
                                     <div class="content-img">
                                         <!--Ruta de la imagen envia desde el codigo para mostrar la imagen -->
-                                        <img src='<%= ResolveUrl("~/images/Software/") %><%# Eval("strImagen_sof") %>' />
+                                        <asp:Image ID="imgSoftware" runat="server" ImageUrl='<%# "ImageHandlerSoftware.ashx?image=" + System.IO.Path.GetFileName(Eval("strImagen_sof").ToString()) %>' CssClass="img-personalized"/>
                                     </div>
                                     <br />
                                     <!--Boton para mostrar la imagen en grande atraves de una ventana modal -->
-                                    <asp:ImageButton ID="imgbtnVistaCompleta" runat="server" CssClass="btn btn-info" ImageUrl="~/images/static/display.svg" OnClick="btnVistaCompleta_Click" CommandArgument='<%# ResolveUrl("~/images/Software/") + Eval("strImagen_sof") %>' data-toggle="tooltip" data-placement="bottom" title="Ver imagen"/>
+                                    <asp:ImageButton ID="imgbtnVistaCompleta" runat="server" CssClass="btn btn-info" ImageUrl="~/images/static/display.svg" OnClick="btnVistaCompleta_Click" CommandArgument='<%# "ImageHandlerSoftware.ashx?image=" + System.IO.Path.GetFileName(Eval("strImagen_sof").ToString()) %>' data-toggle="tooltip" data-placement="bottom" title="Ver imagen"/>
                                 </div>
                             </ItemTemplate>
                         </asp:TemplateField>

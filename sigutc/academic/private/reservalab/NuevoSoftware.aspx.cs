@@ -152,7 +152,7 @@ public partial class academic_private_reservalab_NuevoSoftware : System.Web.UI.P
         try
         {
             // Ruta que deseas crear
-            rutaCarpeta = @"C:\images\Laboratorios";
+            rutaCarpeta = @"C:\images\Software";
 
             // Validar si la carpeta ya existe
             if (!Directory.Exists(rutaCarpeta))

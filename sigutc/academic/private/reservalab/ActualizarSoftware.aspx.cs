@@ -111,7 +111,7 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
 
     protected void btnActualizar_Click(object sender, EventArgs e)
     {
-        string rutaCarpeta = @"C:\images\Laboratorios";
+        string rutaCarpeta = crearDirectorio();
         decimal precioUnitario = txtCostoAct.Text != "" ? decimal.Parse(txtCostoAct.Text) : 0;
 
         software1.strCod_Fac = ddlFacultadAct.SelectedValue;
@@ -167,4 +167,28 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
     }
 
+    private string crearDirectorio()
+    {
+        string rutaCarpeta = "";
+        try
+        {
+            // Ruta que deseas crear
+            rutaCarpeta = @"C:\images\Software";
+
+            // Validar si la carpeta ya existe
+            if (!Directory.Exists(rutaCarpeta))
+            {
+                // Crear la carpeta
+                Directory.CreateDirectory(rutaCarpeta);
+            }
+
+            string rutaParaBD = rutaCarpeta;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Ocurrió un error al crear la carpeta: " + ex.Message);
+        }
+
+        return rutaCarpeta;
+    }
 }

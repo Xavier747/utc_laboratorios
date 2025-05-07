@@ -1,0 +1,22 @@
+﻿td{
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.content{
+    text-align:center !important;
+}
+
+.content-img{
+    display: flex;
+    justify-content: center;
+    height:50px !important; 
+    width: 75px;
+    margin:auto;
+    overflow:hidden;
+}
+
+.content .content-img .img-personalized{
+    height: 100% !important; 
+    text-align:center;
+}
