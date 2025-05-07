@@ -19,8 +19,7 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         if (!IsPostBack)
         {
             cargarTipoLicencia();
-            cargarSede();
-            cargarFacultad();
+            cargarSede();            
             consultarRegistro();
         }
     }
@@ -60,8 +59,24 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
     public void consultarRegistro()
     {
         string codLab = Session["codSoft"].ToString();
-
         var registroLab = software1.LoadLAB_SOFTWARE("xPK", codLab, "", "", "");
+
+        ddlSedeAct.SelectedValue = registroLab[0].strCod_Sede;
+
+        cargarFacultad();
+
+        ddlFacultadAct.SelectedValue = registroLab[0].strCod_Fac;
+        txtNombreAct.Text = registroLab[0].strNombre_sof;
+        txtCantidadAct.Text = registroLab[0].intCantidad_sof.ToString();
+        ddlTipoAct.SelectedValue = registroLab[0].strTipoLicencia_sof;
+
+        txtNombreLicenciaAct.Visible = ddlTipoAct.SelectedValue == "Propietario" ? true : false;
+
+        txtNombreLicenciaAct.Text = registroLab[0].strNombreLicencia_sof;
+        txtCostoAct.Text = registroLab[0].decCostoUnitario_sof.ToString();
+        txtDescripcionAct.Text = registroLab[0].strDescripcion_sof;
+        txtLinkAct.Text = registroLab[0].strUrl_sof;
+        lblImgActInfo.Text = registroLab[0].strImagen_sof;
     }
 
     public void cargarFacultad()
@@ -107,9 +122,9 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         software1.decCostoTotal_sof = decimal.Parse(txtCantidadAct.Text) * precioUnitario;
         software1.strDescripcion_sof = txtDescripcionAct.Text;
         software1.strUrl_sof = txtLinkAct.Text;
-        software1.strCod_sof = lblIdSoftAct.Text;
+        //software1.strCod_sof = lblIdSoftAct.Text;
         software1.dtFecha_log = DateTime.Now;
-        software1.strUser_log = Session["Cedula"].ToString();
+        software1.strUser_log = Context.User.Identity.Name;
 
         if (fulImg1Act.HasFile)
         {
