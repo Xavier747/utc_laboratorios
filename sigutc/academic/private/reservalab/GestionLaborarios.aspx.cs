@@ -35,10 +35,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     //Metodo principal de la pagina
     protected void Page_Load(object sender, EventArgs e)
     {
-<<<<<<< HEAD
 
-=======
->>>>>>> 5aa2e7a9ad1409f85e1d6b8bb2f6de898bee8a65
         if (!IsPostBack)
         {
             //llamado a los metodos que se ejecuta al iniciar la pagina     
@@ -330,10 +327,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //string codLab = generarIdLab();
         softwaresActuales = new List<string>();
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 5aa2e7a9ad1409f85e1d6b8bb2f6de898bee8a65
         //laboratorio2.strCod_Lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
         //laboratorio2.strNombre_Lab = txtNombre.Text.ToUpper();
         //laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
@@ -345,10 +339,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //laboratorio2.strUser_log = Session["Cedula"].ToString();
         //laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
         //laboratorio2.strCod_Sede = ddlSede.SelectedValue;
-<<<<<<< HEAD
 
-=======
->>>>>>> 5aa2e7a9ad1409f85e1d6b8bb2f6de898bee8a65
 
         //if (fulImg1.HasFile)
         //{
@@ -377,11 +368,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //    {
         //        Response.Write("La carga falló: " + ex.Message);
         //    }
-<<<<<<< HEAD
-        //}
 
-=======
->>>>>>> 5aa2e7a9ad1409f85e1d6b8bb2f6de898bee8a65
 
         //if (fulImg2.HasFile)
         //{
@@ -406,10 +393,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //        fulImg2.SaveAs(path);
         //        laboratorio2.strFotografia2_Lab = newFilename;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 5aa2e7a9ad1409f85e1d6b8bb2f6de898bee8a65
 
         //    }
         //    catch (Exception ex)

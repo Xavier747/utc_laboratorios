@@ -17,8 +17,7 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Cedula"] == null)
-            Response.Redirect("~/Views/Login.aspx");
+       
 
         if (!IsPostBack)
         {
@@ -54,31 +53,19 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
 
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(txtNombre.Text))
-        {
-            ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", "showAlertAndReload('El nombre no puede estar vacío.', 'error');", true);
-            return;
-        }
-
+       
         string codTipo = generarIdSoft(txtNombre.Text.ToUpper());
         tipoLaboratorio1.strNombre_tipoLab = txtNombre.Text.ToUpper();
         tipoLaboratorio1.dtFechaRegistro_tipoLab = DateTime.Now;
         tipoLaboratorio1.dtFecha_log = DateTime.Now;
-        tipoLaboratorio1.strUser_log = Session["Cedula"].ToString();
+        tipoLaboratorio1.strUser_log = Context.User.Identity.Name;
         tipoLaboratorio1.strCod_tipoLab = codTipo;
-
-        try
-        {
-            bool creado = tipoLaboratorio1.SIGUTC_AddLAB_TIPO();
-            string title = creado ? "Los datos se han guardado correctamente." : "No se pudo guardar.";
-            string icon = creado ? "success" : "error";
+        
+            int creado = tipoLaboratorio1.AddLAB_TIPO(tipoLaboratorio1);
+            string title = creado !=-1 ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
+            string icon = creado != -1 ? "success" : "error";
             ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
-        }
-        catch (Exception ex)
-        {
-            // Log the error
-            ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", "showAlertAndReload('Ocurrió un error al guardar los datos.', 'error');", true);
-        }
+        
     }
 
 
@@ -86,25 +73,26 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
     protected void gvTipoLaboratorio_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         string codigo = e.CommandArgument.ToString();
-        tipoLaboratorio1.strCod_tipoLab = codigo;
-
+     
         if (e.CommandName == "Select")
         {
-            tipoLaboratorio1.LoadLAB_TIPO("xCodTipoLab", codigo, "", "", "");
+            
+            var tipo = tipoLaboratorio1.LoadLAB_TIPO("xPK", codigo, "", "", "");
 
-            lblCodeTipoLabAct.Text = tipoLaboratorio1.strCod_tipoLab;
-            txtNombreAct.Text = tipoLaboratorio1.strNombre_tipoLab;
+            lblCodeTipoLabAct.Text = tipo[0].strCod_tipoLab;
+            txtNombreAct.Text = tipo[0].strNombre_tipoLab;
+
 
             ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar').modal('show');", true);
         }
         else if (e.CommandName == "Eliminar")
         {
             tipoLaboratorio1.dtFecha_log = DateTime.Now;
-            tipoLaboratorio1.strUser_log = Session["Cedula"].ToString();
+            tipoLaboratorio1.strUser_log = Context.User.Identity.Name;
 
-            bool eliminado = tipoLaboratorio1.SIGUTC_DelLAB_TIPO("xCodTipoLab", codigo);
-            string title = eliminado ? "Registro eliminado correctamente." : "Registro no eliminado.";
-            string icon = eliminado ? "success" : "error";
+            int eliminado = tipoLaboratorio1.DelLAB_TIPO("xCodTipoLab", codigo,"","","");
+            string title = eliminado != -1 ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
+            string icon = eliminado != -1 ? "success" : "error";
 
             ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
         }
@@ -117,12 +105,12 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
         tipoLaboratorio1.strCod_tipoLab = lblCodeTipoLabAct.Text;
         tipoLaboratorio1.strNombre_tipoLab = txtNombreAct.Text;
         tipoLaboratorio1.dtFecha_log = DateTime.Now;
-        tipoLaboratorio1.strUser_log = Session["Cedula"].ToString();
+        tipoLaboratorio1.strUser_log = Context.User.Identity.Name;
 
-        bool actualizado = tipoLaboratorio1.SIGUTC_UpdateLAB_TIPO();
+        int actualizado = tipoLaboratorio1.UpdateLAB_TIPO(tipoLaboratorio1);
 
-        string title = actualizado ? "Actualizado correctamente." : "No se pudo actualizar.";
-        string icon = actualizado ? "success" : "error";
+        string title = actualizado != -1 ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
+        string icon = actualizado != -1 ? "success" : "error";
         ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
     }
 
