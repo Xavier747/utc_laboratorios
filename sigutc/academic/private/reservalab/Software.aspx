@@ -101,7 +101,9 @@
             Toast.fire({
                 icon: icon,
                 title: title
-            })
+            }).then(() => {
+                window.location.href = window.location.href;
+            });
         }
     </script>
 </asp:Content>
