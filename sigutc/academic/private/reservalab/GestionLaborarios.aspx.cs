@@ -35,6 +35,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     //Metodo principal de la pagina
     protected void Page_Load(object sender, EventArgs e)
     {
+
         if (!IsPostBack)
         {
             //llamado a los metodos que se ejecuta al iniciar la pagina     
@@ -326,6 +327,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //string codLab = generarIdLab();
         softwaresActuales = new List<string>();
 
+
         //laboratorio2.strCod_Lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
         //laboratorio2.strNombre_Lab = txtNombre.Text.ToUpper();
         //laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
@@ -337,6 +339,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //laboratorio2.strUser_log = Session["Cedula"].ToString();
         //laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
         //laboratorio2.strCod_Sede = ddlSede.SelectedValue;
+
 
         //if (fulImg1.HasFile)
         //{
@@ -365,6 +368,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //    {
         //        Response.Write("La carga falló: " + ex.Message);
         //    }
+
 
         //if (fulImg2.HasFile)
         //{
