@@ -7,10 +7,6 @@
     Listado de laboratorios
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
-    <!--Titulo de la pagina-->
-    <div class="title-content">
-        <h5 class="title">Listado de los Laboratorios</h5>
-    </div>
     <div class="row">
         <!--Boton para agregar un nuevo laboratorio-->
         <div class="col-md-12 text-right">
@@ -19,13 +15,7 @@
             </button>
         </div>  
     </div>  
-    <div class="alert alert-info alert-dismissible text-center" id="lblMsgLstRegistros" runat="server" visible="false">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <span class="mensaje">No existen registros</span>
-    </div>
-
+    <br />
     <!-- GridView para listar laboratorios -->
     <div class="table-responsive">
         <asp:GridView ID="gvLaboratorios" runat="server" AutoGenerateColumns="false" AllowPaging="True" PageSize="10" OnPageIndexChanging="gvLaboratorios_PageIndexChanging" CssClass="table table-striped table-bordered" OnRowCommand="gvLaboratorios_RowCommand">
@@ -38,11 +28,11 @@
                         <div class="content">
                             <div class="content-img">
                                 <!--Ruta de la imagen envia desde el codigo para mostrar la imagen -->
-                                <img src='<%= ResolveUrl("~/images/Laboratorio/") %><%# Eval("strFotografia1_lab") %>'/>
+                                <asp:Image ID="imgLaboratorio1" runat="server" ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' />
                             </div>
                             <br />
                             <!--Boton para mostrar la imagen en grande atraves de una ventana modal -->
-                            <asp:ImageButton ID="imgbtnViewImage1" runat="server" OnClick="btnViewImage1_Click" CssClass="btn btn-info" ImageUrl="~/images/static/display.svg" CommandArgument='<%# ResolveUrl("~/images/Laboratorio/") + Eval("strFotografia1_lab") %>' data-toggle="tooltip" data-placement="bottom" title="Ver imagen"/>
+                            <asp:Button ID="btnViewImage1" CssClass="btn btn-info" OnClick="btnViewImage1_Click" CommandArgument='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' runat="server" Text="Ver Imagen" />
                         </div>
                     </ItemTemplate>
                 </asp:TemplateField>
@@ -50,10 +40,10 @@
                     <ItemTemplate>
                         <div class="content">
                             <div class="content-img">
-                                <img src='<%= ResolveUrl("~/images/Laboratorio/") %><%# Eval("strFotografia2_lab") %>' />
+                                <asp:Image ID="imgLaboratorio2" runat="server" ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia2_lab").ToString()) %>'/>
                             </div>
                             <br />
-                            <asp:ImageButton ID="imgbtnViewImage2" runat="server" OnClick="btnViewImage2_Click" CssClass="btn btn-info btn-img" ImageUrl="~/images/static/display.svg" CommandArgument='<%# ResolveUrl("~/images/Laboratorio/") + Eval("strFotografia2_lab") %>' data-toggle="tooltip" data-placement="bottom" title="Ver imagen"/>
+                            <asp:Button ID="btnViewImage2" CssClass="btn btn-info" OnClick="btnViewImage2_Click" CommandArgument='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia2_lab").ToString()) %>' runat="server" Text="Ver Imagen" />
                         </div>
                     </ItemTemplate>
                 </asp:TemplateField>
@@ -68,17 +58,19 @@
                     <ItemTemplate>
                         <div style="display:flex;">
                             <!--Boton que refleja formulario para actualizar el laboratorio-->
-                            <asp:ImageButton ID="imgbtnEditar" runat="server" CausesValidation="False" CommandName="Select" CssClass="btn btn-warning" ImageUrl="~/images/static/edit.svg" CommandArgument ='<%# Eval("strCod_lab") %>' data-toggle="tooltip" data-placement="left" title="Editar"/>&nbsp;&nbsp;
+                            <asp:Button ID="btnEditar" runat="server" CommandName="Select" CssClass="btn btn-warning" CommandArgument ='<%# Eval("strCod_lab") %>' Text="Editar" />&nbsp;&nbsp;
                             <!--Boton para eliminar el laboratorio-->
-                            <asp:ImageButton ID="imgbtnDelete" runat="server" CausesValidation="False" CommandName="Eliminar" CssClass="btn btn-danger" ImageUrl="~/images/static/delete.svg" CommandArgument ='<%# Eval("strCod_lab") %>' OnClientClick="return confirm('¿Seguro que desea eliminar?');" data-toggle="tooltip" data-placement="bottom" title="Eliminar"/>&nbsp;&nbsp;
+                            <asp:Button ID="btnDelete" runat="server" CommandName="Eliminar" CssClass="btn btn-danger" CommandArgument ='<%# Eval("strCod_lab") %>' OnClientClick="return confirm('¿Seguro que desea eliminar?');" Text="Eliminar" />&nbsp;&nbsp;
                             <!--Boton que refleja formulario para asignar responsable el laboratorio-->
-                            <asp:ImageButton ID="imgbtnLaboratoristas" runat="server"  CausesValidation="False" CommandName="Laboratoristas" CssClass="btn btn-primary" ImageUrl="~/images/static/add-person.svg" CommandArgument='<%# Eval("strCod_lab") %>' data-toggle="tooltip" data-placement="bottom" title="Asignar laboratorista" />
+                            <asp:Button ID="btnLaboratoristas" runat="server" CommandName="Laboratoristas" CssClass="btn btn-success" CommandArgument='<%# Eval("strCod_lab") %>' Text="Responsable" />
                         </div>
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
         </asp:GridView> 
-    </div>    
+    </div>   
+    
+    <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
 
     <!--Formulario para agregar nuevo laboratorio-->
     <!-- Ventana Modal -->
@@ -120,11 +112,15 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <asp:Label ID="lblUbicacion" runat="server" Text="Ubicación" CssClass="control-label required"></asp:Label>
-                                <asp:TextBox ID="txtUbicacion" runat="server" CssClass="form-control custom-input text-multiple" placeholder="Ubicación" TextMode="MultiLine" Rows="3"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="rfv_txtUbicacion" runat="server" ControlToValidate="txtUbicacion" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
+                                <asp:Label ID="lblImg1" runat="server" Text="Fotografía 1" CssClass="control-label required"></asp:Label>
+                                <asp:FileUpload ID="fulImg1" runat="server" CausesValidation="true" CssClass="form-control" accept="image/*" data-show-upload="false"/>
+                                <asp:RequiredFieldValidator ID="rfv_fulImg1" runat="server" ControlToValidate="fulImg1" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
                             </div>
-
+                            <div class="col-md-6">
+                                <asp:Label ID="lblImg2" runat="server" Text="Fotografía 2" CssClass="control-label required"></asp:Label>
+                                <asp:FileUpload ID="fulImg2" runat="server" CausesValidation="true" CssClass="form-control" accept="image/*" data-show-upload="false"/>
+                                <asp:RequiredFieldValidator ID="rfv_fulImg2" runat="server" ControlToValidate="fulImg2" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -150,10 +146,12 @@
                                 </asp:UpdatePanel>
                             </div>
 
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <asp:UpdatePanel ID="upRepeaterSoftware" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
-                                        <div id="listSoftware" runat="server">
+                                        <div id="listSoftware" runat="server" visible="false">
                                             <asp:Label ID="lblSoftware" runat="server" Text="Software" CssClass="control-label"></asp:Label>
                                             <div class="softwareContainer">
                                                 <asp:Repeater ID="rptSoftware" runat="server">
@@ -172,25 +170,17 @@
                                     </Triggers>
                                 </asp:UpdatePanel>
                             </div>
-                        </div>
-
-                        <div class="row">
                             <div class="col-md-6">
-                                <asp:Label ID="lblImg1" runat="server" Text="Fotografía 1" CssClass="control-label required"></asp:Label>
-                                <asp:FileUpload ID="fulImg1" runat="server" CausesValidation="true" CssClass="file" accept="image/*" data-show-upload="false"/>
-                                <asp:RequiredFieldValidator ID="rfv_fulImg1" runat="server" ControlToValidate="fulImg1" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
-                            </div>
-                            <div class="col-md-6">
-                                <asp:Label ID="lblImg2" runat="server" Text="Fotografía 2" CssClass="control-label required"></asp:Label>
-                                <asp:FileUpload ID="fulImg2" runat="server" CausesValidation="true" CssClass="file" accept="image/*" data-show-upload="false"/>
-                                <asp:RequiredFieldValidator ID="rfv_fulImg2" runat="server" ControlToValidate="fulImg2" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
+                                <asp:Label ID="lblUbicacion" runat="server" Text="Ubicación" CssClass="control-label required"></asp:Label>
+                                <asp:TextBox ID="txtUbicacion" runat="server" CssClass="form-control custom-input text-multiple" placeholder="Ubicación" TextMode="MultiLine" Rows="3"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfv_txtUbicacion" runat="server" ControlToValidate="txtUbicacion" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default border-radius" data-dismiss="modal" onclick="cerrar()">Cerrar</button>
-                    <asp:Button ID="btnSubmit" runat="server" Text="Enviar" ValidationGroup="formulario" CssClass="btn btn-primary" OnClick="btnSubmit_Click"/>
+                    <asp:Button ID="btnSubmit" runat="server" Text="Enviar" ValidationGroup="formulario" CssClass="btn btn-primary" OnClientClick="return validarArchivo();" OnClick="btnSubmit_Click"/>
                 </div>
             </div>
         </div>
@@ -468,6 +458,57 @@
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
     <script>
+        function validarArchivo() {
+            var input1 = document.getElementById('<%= fulImg1.ClientID %>');
+            var input2 = document.getElementById('<%= fulImg2.ClientID %>');
+            var maxMB = 4; // Límite permitido (ajustable)
+
+            if (input1.files.length > 0 || input2.files.length) {
+                var file1 = input1.files[0];
+                var file2 = input2.files[0];
+
+                var sizeMB1 = file1.size / (1024 * 1024);
+                var sizeMB2 = file2.size / (1024 * 1024);
+
+                if (sizeMB1 > maxMB && sizeMB2 > maxMB) {
+                    showAlertImageBig("Las imagenes han excedido el tamaño máximo permitido de " + maxMB + " MB.", "error");
+                    return false; // evita que se envíe el formulario
+                }
+                else if (sizeMB1 > maxMB) {
+                    showAlertImageBig("La imagen 1 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
+                    return false; // evita que se envíe el formulario
+                }
+                else if (sizeMB2 > maxMB) {
+                    showAlertImageBig("La imagen 2 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
+                    return false; // evita que se envíe el formulario
+                }
+
+            }
+
+            return true; // permite enviar si pasa la validación
+        }
+
+        //Notificacion imagen muy grande
+        function showAlertImageBig(title, icon) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            });
+
+            Toast.fire({
+                icon: icon,
+                title: title
+            });
+        }
+
+
         //Metodo para mostrar mensajes de exito o error
         function showAlertAndReload(title, icon) {
             const Toast = Swal.mixin({

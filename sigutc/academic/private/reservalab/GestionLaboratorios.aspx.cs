@@ -44,6 +44,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             //llamado a los metodos que se ejecuta al iniciar la pagina     
             cargarTabla();
             cargarSede();
+            cargarFacultad();
+            cargarSoftware();
             cargarTipo();
             cargarCampoAmplio();
         }
@@ -207,41 +209,36 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     public void cargarFacultad()
     {
-        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetUB_FACULTADES", conexion);
-        tipoConsulta = "xPK";
-        string sedeId = "";
+        string strCod_Sede = ddlSedeAct.SelectedValue;
+        var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
 
-        if (ddlSede.SelectedValue != "") sedeId = ddlSede.SelectedValue;
-        else if (ddlSedeAct.SelectedValue != "") sedeId = ddlSedeAct.SelectedValue;
-
-        comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO1", sedeId);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
-        comandoConsulta.CommandType = CommandType.StoredProcedure;
-
-        try
+        if (listFacultad.Count != 0)
         {
-            conexion.Open();
-            SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
-            DataTable dt = new DataTable();
-            adaptadorAlbum.Fill(dt);
+            ddlFacultad.DataSource = listFacultad;
+            ddlFacultad.DataTextField = "strNombre_fac";
+            ddlFacultad.DataValueField = "strCod_fac";
+            ddlFacultad.DataBind();
 
-            ddlFacultad.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
-            ddlFacultadAct.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
-
-            foreach (DataRow row in dt.Rows)
-            {
-                ddlFacultad.Items.Add(new ListItem(row["strNombre_Fac"].ToString(), row["strCod_Fac"].ToString()));
-                ddlFacultadAct.Items.Add(new ListItem(row["strNombre_Fac"].ToString(), row["strCod_Fac"].ToString()));
-            }
+            lblMsg.Text = software1.msg;
         }
-        catch (Exception ex)
+        else
         {
-            Response.Write("TIENES UN ERROR: " + ex.Message);
+            lblMsg.Text = software1.msg;
         }
-        conexion.Close();
+
+        if (listFacultad.Count != 0)
+        {
+            ddlFacultadAct.DataSource = listFacultad;
+            ddlFacultadAct.DataTextField = "strNombre_fac";
+            ddlFacultadAct.DataValueField = "strCod_fac";
+            ddlFacultadAct.DataBind();
+
+            lblMsg.Text = software1.msg;
+        }
+        else
+        {
+            lblMsg.Text = software1.msg;
+        }
     }
 
     protected void ddlSedes_SelectedIndexChanged(object sender, EventArgs e)
@@ -281,7 +278,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string codLab = generarIdLab();
         string rutaCarpeta = crearDirectorio();
 
-        laboratorio2.strCod_Lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
+        laboratorio2.strCod_lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
         laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
         laboratorio2.strCod_Sede = ddlSede.SelectedValue;
         laboratorio2.strNombre_lab = txtNombre.Text.ToUpper();
@@ -456,9 +453,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 softLab.dtFechaRegistro_labSoft = DateTime.Now;
                 softLab.dtFecha_log = DateTime.Now;
                 softLab.strUser_log = Context.User.Identity.Name;
-                softLab.strCod_lab = laboratorio2.strCod_Lab;
+                softLab.strCod_lab = laboratorio2.strCod_lab;
                 softLab.strCod_sof = codSoftware;
-                softLab.strCod_labSoft = laboratorio2.strCod_Lab + "_" + softLab.strCod_sof + "_" + softLab.dtFecha_log;
+                softLab.strCod_labSoft = laboratorio2.strCod_lab + "_" + softLab.strCod_sof + "_" + softLab.dtFecha_log;
                 softLab.AddLAB_LABSOFTWARE(softLab);
             }
         }
@@ -473,7 +470,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         softwaresActuales = new List<string>();
 
         // Llenar los campos del formulario de acuerdo a las propiedades del objeto laboratorio1
-        lblCodeLabAct.Text = listLaboratoiros[0].strCod_Lab;
+        lblCodeLabAct.Text = listLaboratoiros[0].strCod_lab;
         txtNombreAct.Text = listLaboratoiros[0].strNombre_lab;
         txtNumeroEquiposAct.Text = listLaboratoiros[0].intNumeroEquipos_lab.ToString();
         ddlTipoAct.SelectedValue = listLaboratoiros[0].strCod_tipoLab;
@@ -516,7 +513,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         laboratorio2.strUser_log = Session["Cedula"].ToString();
         laboratorio2.strCod_Sede = ddlSedeAct.SelectedValue;
         laboratorio2.strCod_Fac = ddlFacultadAct.SelectedValue;
-        laboratorio2.strCod_Lab = lblCodeLabAct.Text;
+        laboratorio2.strCod_lab = lblCodeLabAct.Text;
 
         if (fulImg1Act.HasFile)
         {
@@ -621,16 +618,16 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         return idSoftLab;
     }
 
-    protected void btnViewImage1_Click(object sender, ImageClickEventArgs e)
+    protected void btnViewImage1_Click(object sender, EventArgs e)
     {
-        ImageButton btn = (ImageButton)sender;
+        Button btn = (Button)sender;
         vistaCompletaImagen.ImageUrl = btn.CommandArgument;
         ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#view-image').modal('show');", true);
     }
 
-    protected void btnViewImage2_Click(object sender, ImageClickEventArgs e)
+    protected void btnViewImage2_Click(object sender, EventArgs e)
     {
-        ImageButton btn = (ImageButton)sender;
+        Button btn = (Button)sender;
         vistaCompletaImagen.ImageUrl = btn.CommandArgument;
         ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#view-image').modal('show');", true);
     }
@@ -673,10 +670,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     {
         tipoConsulta = "xIdLaboratorio";
 
-        laboratorio2.strCod_Lab = codLab;
+        laboratorio2.strCod_lab = codLab;
         //laboratorio2.detalleLaboratorio();
 
-        lblCodLab.Text = laboratorio2.strCod_Lab;
+        lblCodLab.Text = laboratorio2.strCod_lab;
         //txtLaboratorioNombre.Text = laboratorio2.strNombre_Lab;
 
         responsable1.strCod_lab = codLab;
@@ -701,7 +698,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         tipoConsulta = "xLabExclusivo";
         filtro = lblCodLab.Text;
 
-        laboratorio2.strCod_Lab = lblCodLab.Text;
+        laboratorio2.strCod_lab = lblCodLab.Text;
         //laboratorio2.detalleLaboratorio();
 
         txtLabNuevo.Text = laboratorio2.strNombre_lab;
@@ -820,7 +817,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     {
         tipoConsulta = "xLabExclusivo";
         filtro = lblCodLab.Text;
-        laboratorio2.strCod_Lab = filtro;
+        laboratorio2.strCod_lab = filtro;
         //laboratorio2.detalleLaboratorio();
 
         txtLabActualizar.Text = laboratorio2.strNombre_lab;

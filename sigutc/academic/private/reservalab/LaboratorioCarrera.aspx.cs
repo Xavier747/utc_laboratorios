@@ -39,7 +39,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
 
         public void cargarLaboratorio()
         {
-            laboratorio2.strCod_Lab = Session["laboratorioId"].ToString();
+            laboratorio2.strCod_lab = Session["laboratorioId"].ToString();
             //laboratorio2.listarLaboratorioPorId();
             //lblFacultadId.Text = laboratorio2.strCod_Fac;
             //lblSedeId.Text = laboratorio2.strCod_Sede;
