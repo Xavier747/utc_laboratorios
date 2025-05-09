@@ -138,10 +138,10 @@ public partial class academic_private_reservalab_NuevoSoftware : System.Web.UI.P
             }
         }
 
-        int registro = software1.AddLAB_SOFTWARE(software1);
+        software1.AddLAB_SOFTWARE(software1);
 
-        string title = registro != -1 ? software1.msg : software1.msg;
-        string icon = registro != -1 ? "success" : "error";
+        string title = software1.resultado ? software1.msg : software1.msg;
+        string icon = software1.resultado ? "success" : "error";
         string ruta = "Software.aspx";
 
         string script = $"showAlertAndReload('{title}', '{icon}', '{ruta}');";

@@ -158,11 +158,10 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         }
 
         software1.strImagen_sof = lblImgActInfo.Text;
+        software1.UpdateLAB_SOFTWARE(software1);
 
-        int actualizar = software1.UpdateLAB_SOFTWARE(software1);
-
-        string title = actualizar != -1 ? software1.msg : software1.msg;
-        string icon = actualizar != -1 ? "success" : "error";
+        string title = software1.resultado ? software1.msg : software1.msg;
+        string icon = software1.resultado ? "success" : "error";
         string url = "Software.aspx";
 
         string script = $"showAlertAndReload('{title}', '{icon}', '{url}');";

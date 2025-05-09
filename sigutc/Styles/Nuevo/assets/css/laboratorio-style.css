@@ -20,3 +20,16 @@
     height: 100% !important; 
     text-align:center;
 }
+
+.softwareContainer{
+    max-height: 75px; 
+    overflow-y: auto; 
+    border: 1px solid #cccccc; 
+    border-radius: 5px;
+}
+
+.softwareContainer .item{
+    width:100%; 
+    border:none; 
+    box-shadow:none;
+}

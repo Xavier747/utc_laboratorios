@@ -1,17 +1,18 @@
-﻿<%@ WebHandler Language="C#" Class="ImageHandler" %>
+﻿<%@ WebHandler Language="C#" Class="ImageHandlerLaboratorio" %>
 
 using System;
 using System.Web;
 using System.IO;
 
-public class ImageHandler : IHttpHandler {
+public class ImageHandlerLaboratorio : IHttpHandler {
+    
     public bool IsReusable { get { return false; } }
     
     public void ProcessRequest (HttpContext context) {
         string imageName = context.Request.QueryString["image"];
         if (!string.IsNullOrEmpty(imageName) && Path.GetFileName(imageName) == imageName)
         {
-            string imagePath = Path.Combine(@"C:\images\Software", imageName);
+            string imagePath = Path.Combine(@"C:\images\Laboratorios", imageName);
             if (File.Exists(imagePath))
             {
                 string mimeType = System.Web.MimeMapping.GetMimeMapping(imagePath);
@@ -31,4 +32,5 @@ public class ImageHandler : IHttpHandler {
             context.Response.StatusDescription = "Solicitud inválida";
         }
     }
+
 }
