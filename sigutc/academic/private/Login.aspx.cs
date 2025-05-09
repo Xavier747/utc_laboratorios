@@ -59,7 +59,7 @@ public partial class academic_private_Login : System.Web.UI.Page
     /*Metodo con parametros para iniciar sesion y con retorno booleano*/
     public bool iniarSecion(string usuario, string password)
     {
-        bool validacion = true;
+        bool validacion = false;
         /*llamado al sp*/
         SqlCommand comandoConsulta = new SqlCommand("loginPlataforma", this.conexion);
         /*Envio de parametros*/
@@ -78,7 +78,6 @@ public partial class academic_private_Login : System.Web.UI.Page
             if (dr.Read())
             {
                 validacion = true;
-                Session["usuario"] = usuario;
             }
             dr.Close();
             conexion.Close();

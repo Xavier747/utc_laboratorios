@@ -17,11 +17,13 @@
     </div>   
     <div class=" row">
         <div class="col-md-6">
+            <!--ddl para mostrar y seleccionar SEDES -->
             <asp:Label ID="lblSedeSoft" runat="server" Text="Sede" CssClass="control-label required"></asp:Label>
             <asp:DropDownList ID="ddlSedeSoft" runat="server" CssClass="form-control custom-input" AutoPostBack="True" OnSelectedIndexChanged="ddlSedeSoft_SelectedIndexChanged"></asp:DropDownList>
             <asp:RequiredFieldValidator ID="rfv_ddlSedeSoft" runat="server" ControlToValidate="ddlSedeSoft" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
         </div>
         <div class="col-md-6">
+            <!--ddl para mostrar y seleccionar FACULTADES -->
             <asp:Label ID="lblFacultadSoft" runat="server" Text="Facultades" CssClass="control-label required"></asp:Label>
             <asp:DropDownList ID="ddlFacultadSoft" runat="server" CssClass="form-control custom-input"  AutoPostBack="True" OnSelectedIndexChanged="ddlFacultadSoft_SelectedIndexChanged"></asp:DropDownList>
             <asp:RequiredFieldValidator ID="rfv_ddlFacultadSoft" runat="server" ControlToValidate="ddlFacultadSoft" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
@@ -29,6 +31,7 @@
         <br />
         <div class="col-md-12">
             <div class="table-responsive">
+                <!--Tabla donde se muestran los registros-->
                 <asp:GridView ID="gvSoftware" runat="server" AutoGenerateColumns="False" AllowPaging="True" PageSize="10" OnPageIndexChanging="gvSoftware_PageIndexChanging" CssClass="table table-striped table-bordered" OnRowCommand="gvSoftware_RowCommand">
                     <Columns>
                         <asp:BoundField DataField="strNombre_sof" HeaderText="Nombre"></asp:BoundField>
@@ -43,7 +46,9 @@
                                     </div>
                                     <br />
                                     <!--Boton para mostrar la imagen en grande atraves de una ventana modal -->
-                                    <asp:ImageButton ID="imgbtnVistaCompleta" runat="server" CssClass="btn btn-info" ImageUrl="~/images/static/display.svg" OnClick="btnVistaCompleta_Click" CommandArgument='<%# ResolveUrl("~/images/Software/") + Eval("strImagen_sof") %>' data-toggle="tooltip" data-placement="bottom" title="Ver imagen"/>
+
+                                    <asp:Button ID="btnVistaCompleta" CssClass="btn btn-info" OnClick="btnVistaCompleta_Click" CommandArgument='<%# "ImageHandlerSoftware.ashx?image=" + System.IO.Path.GetFileName(Eval("strImagen_sof").ToString()) %>' runat="server" Text="Ver Imagen" />
+
                                 </div>
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -259,7 +264,9 @@
 
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
+
     <script type="text/javascript">
+
         function showAlertAndReload(title, icon) {
             const Toast = Swal.mixin({
                 toast: true,

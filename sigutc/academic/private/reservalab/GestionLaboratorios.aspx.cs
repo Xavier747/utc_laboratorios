@@ -4,24 +4,26 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using ClassLibraryLaboratorios;
+using ClassLibraryTesis;
+using System.Web.Configuration;
 
 public partial class academic_private_reservalab_GestionLaborarios : System.Web.UI.Page
 {
     //Definicion de las variable de coneccion con la base de datos
-    private string cadenaConexion;
-    private SqlConnection conexion;
+    SqlConnection conexion = new SqlConnection(WebConfigurationManager.AppSettings["conexionBddProductos"]);
 
-    public LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
-    private LAB_RESPONSABLE responsable1;
-    private LAB_SOFTWARE software1;
-    private LAB_LABSOFTWARE softLab;
-    private LAB_EXCLUSIVO labExc;
-    private LAB_TIPO tipoLaboratorio1;
+    LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
+    LAB_RESPONSABLE responsable1 = new LAB_RESPONSABLE();
+    LAB_SOFTWARE software1 = new LAB_SOFTWARE();
+    LAB_LABSOFTWARE softLab = new LAB_LABSOFTWARE();
+    LAB_EXCLUSIVO labExc = new LAB_EXCLUSIVO();
+    LAB_TIPO tipoLaboratorio1 = new LAB_TIPO();
+    UB_FACULTADES facultad = new UB_FACULTADES();
+    UB_SEDES sede = new UB_SEDES();
 
     private Random rand = new Random();
     public static List<string> softwareSeleccionado;
@@ -35,7 +37,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     //Metodo principal de la pagina
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/private/Login.aspx");
+        if (Context.User.Identity.Name == null) Response.Redirect("~/Views/Login.aspx");
 
         if (!IsPostBack)
         {
@@ -53,19 +55,14 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         cargarTabla();
     }
 
-    //redireccion del formulario nuevo laboratorio
-    protected void btnNuevoLab_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("~/academic/private/reservalab/nuevoLaboratorio.aspx");
-    }
     protected void gvLaboratorios_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         if (e.CommandName == "Select")
         {
-            laboratorio2.strCod_Lab = e.CommandArgument.ToString();
+            string codLab = e.CommandArgument.ToString();
 
             // Carga los detalles del laboratorio según el ID seleccionado   
-            //laboratorio2.listarLaboratorioPorId();
+            laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
             // Llena el formulario de actualización con los datos cargados
             llenarFormActualizar();
@@ -75,17 +72,16 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         }
         if (e.CommandName == "Eliminar")
         {
-            string tipoConsulta = "xPkLab";
-            laboratorio2.strCod_Lab = e.CommandArgument.ToString();
+            string codLab = e.CommandArgument.ToString();
 
-            // Carga los detalles del laboratorio según el ID seleccionado   
-            //bool eliminar = laboratorio2.eliminarLaboratorio(tipoConsulta);
+            //Carga los detalles del laboratorio según el ID seleccionado
+            laboratorio2.DelLAB_LABORATORIOS("xPkLab", codLab, "", "", "");
 
-            //title = eliminar == true ? "Registro eliminado correctamente." : "Registro no eliminado.";
-            //icon = eliminar == true ? "success" : "error";
+            string title = laboratorio2.resultado ? laboratorio2.msg : laboratorio2.msg;
+            string icon = laboratorio2.resultado ? "success" : "error";
 
-            //string script = $"showAlertAndReload('{title}', '{icon}');";
-            //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+            string script = $"showAlertAndReload('{title}', '{icon}');";
+            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
         if (e.CommandName == "Laboratoristas")
         {
@@ -103,51 +99,37 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     public void cargarTabla()
     {
-        laboratorio2.strCod_Fac = Session["Permisos"].ToString() == "ADMINISTRADOR" ? "" : Session["Cedula"].ToString();
-        tipoConsulta = Session["Permisos"] != null && Convert.ToString(Session["Permisos"]) == "ADMINISTRADOR" ? "ALL" : "xIdPersonal";
+        laboratorio2.strCod_Fac = Session["ROL"].ToString() == "ADMINISTRADOR" ? "" : Context.User.Identity.Name;
+        string tipoConsulta = Session["ROL"] != null && Convert.ToString(Session["ROL"]) == "ADMINISTRADOR" ? "ALL" : "xIdPersonal";
+        string cedula = Context.User.Identity.Name;
 
-        filtro = "";
-
-        //DataTable tablaDatos = laboratorio2.obtenerLaboratorios(tipoConsulta, filtro);
-        //try
-        //{
-        //    if (tablaDatos != null && tablaDatos.Rows.Count > 0) // Verificar si tiene datos
-        //    {
-        //        gvLaboratorios.DataSource = tablaDatos;
-        //        gvLaboratorios.DataBind();
-        //    }
-
-        //    lblMsgLstRegistros.Visible = tablaDatos != null && tablaDatos.Rows.Count > 0 ? false : true;
-        //}
-        //catch (Exception ex)
-        //{
-        //    // Muestra un error si ocurre
-        //    Console.WriteLine("ERROR: " + ex.Message);
-        //}
+        var tablaDatos = laboratorio2.LoadLAB_LABORATORIOS(tipoConsulta, cedula, "", "", "");
+        if (tablaDatos != null && tablaDatos.Count > 0)
+        {
+            gvLaboratorios.DataSource = tablaDatos;
+            gvLaboratorios.DataBind();
+        }
     }
 
     public void cargarTipo()
     {
-        //ddlTipo.Items.Clear();
-        ddlTipoAct.Items.Clear();
+        var tipo = tipoLaboratorio1.LoadLAB_TIPO("ALL", "", "", "", "");
 
-        //ddlTipo.Items.Add(new ListItem("-- Seleccione una opcion --", ""));
-        ddlTipoAct.Items.Add(new ListItem("-- Seleccione una opcion --", ""));
+        if (tipo.Count > 0)
+        {
+            ddlTipo.DataSource = tipo;
+            ddlTipo.DataTextField = "strNombre_tipoLab";
+            ddlTipo.DataValueField = "strCod_tipoLab";
+            ddlTipo.DataBind();
+        }
 
-        // Añade cada tipo a los DropdownList
-        string tipoConsulta = "ALL";
-        tipoLaboratorio1.strCod_tipoLab = "";
-
-        //DataTable tablaDatos = tipoLaboratorio1.consultarTipoLaboratorio(tipoConsulta);
-
-        //foreach (DataRow row in tablaDatos.Rows)
-        //{
-        //    string codTipo = row["strCod_tipoLab"].ToString();
-        //    string nombreTipo = row["strNombre_tipoLab"].ToString();
-
-        //    ddlTipo.Items.Add(new ListItem(nombreTipo, codTipo));
-        //    ddlTipoAct.Items.Add(new ListItem(nombreTipo, codTipo));
-        //}
+        if (tipo.Count > 0)
+        {
+            ddlTipoAct.DataSource = tipo;
+            ddlTipoAct.DataTextField = "strNombre_tipoLab";
+            ddlTipoAct.DataValueField = "strCod_tipoLab";
+            ddlTipoAct.DataBind();
+        }
     }
 
     public void cargarCampoAmplio()
@@ -168,12 +150,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             DataTable dt = new DataTable();
             adaptadorAlbum.Fill(dt);
 
-            //ddlCampoAmplio.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
-            ddlCampoAmplioAct.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
-
             foreach (DataRow row in dt.Rows)
             {
-                //ddlCampoAmplio.Items.Add(new ListItem(row["strNombre_areac"].ToString(), row["strCod_areac"].ToString()));
+                ddlCampoAmplio.Items.Add(new ListItem(row["strNombre_areac"].ToString(), row["strCod_areac"].ToString()));
                 ddlCampoAmplioAct.Items.Add(new ListItem(row["strNombre_areac"].ToString(), row["strCod_areac"].ToString()));
             }
         }
@@ -186,70 +165,44 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     public void cargarSoftware()
     {
-        tipoConsulta = "xSedeFacultad";
-        //software1.strCod_Fac = ddlFacultad.SelectedValue;
-        //software1.strCod_Sede = ddlSede.SelectedValue;
+        string strCod_Fac = ddlFacultadAct.SelectedValue;
+        string strCod_Sede = ddlSedeAct.SelectedValue;
+        var software = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
 
-        //DataTable software = software1.obtenerSoftware(tipoConsulta);
+        listSoftware.Visible = software.Count > 0 ? true : false;
 
-        //    listSoftware.Visible = software.Rows.Count > 0 ? true : false;
-
-        //    rptSoftware.DataSource = software;
-        //    rptSoftware.DataBind();
+        rptSoftware.DataSource = software;
+        rptSoftware.DataBind();
     }
 
     public void cargarSoftwareAct()
     {
-        tipoConsulta = "xSedeFacultad";
-        software1.strCod_Fac = ddlFacultadAct.SelectedValue;
-        software1.strCod_Sede = ddlSedeAct.SelectedValue;
+        string strCod_Fac = ddlFacultadAct.SelectedValue;
+        string strCod_Sede = ddlSedeAct.SelectedValue;
+        var software = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
 
-        //DataTable software = software1.obtenerSoftware(tipoConsulta);
+        listSoftwareAct.Visible = software.Count > 0 ? true : false;
 
-        //listSoftwareAct.Visible = software.Rows.Count > 0 ? true : false;
-
-        //rptSoftwareAct.DataSource = software;
-        //rptSoftwareAct.DataBind();
+        rptSoftwareAct.DataSource = software;
+        rptSoftwareAct.DataBind();
     }
 
     public void cargarSede()
     {
-        string idFacultad = "";
+        var listSede = sede.LoadUB_SEDES("ALL", "", "", "", "");
 
-        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetUB_SEDES", conexion);
-        tipoConsulta = "ALL";
-
-        comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO1", idFacultad);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
-        comandoConsulta.CommandType = CommandType.StoredProcedure;
-        try
+        if (listSede.Count > 0)
         {
-            this.conexion.Open();
-            SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
-            DataTable dt = new DataTable();
-            adaptadorAlbum.Fill(dt);
+            ddlSede.DataSource = listSede;
+            ddlSede.DataTextField = "strNombre_Sede";
+            ddlSede.DataValueField = "strCod_Sede";
+            ddlSede.DataBind();
 
-            cargarSoftware();
-            cargarSoftwareAct();
-
-            //ddlSede.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
-            ddlSedeAct.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
-            //ddlFacultad.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
-
-            foreach (DataRow row in dt.Rows)
-            {
-                //ddlSede.Items.Add(new ListItem(row["strNombre_Sede"].ToString(), row["strCod_Sede"].ToString()));
-                ddlSedeAct.Items.Add(new ListItem(row["strNombre_Sede"].ToString(), row["strCod_Sede"].ToString()));
-            }
+            ddlSedeAct.DataSource = listSede;
+            ddlSedeAct.DataTextField = "strNombre_Sede";
+            ddlSedeAct.DataValueField = "strCod_Sede";
+            ddlSedeAct.DataBind();
         }
-        catch (Exception ex)
-        {
-            Response.Write("TIENES UN ERROR: " + ex.Message);
-        }
-        conexion.Close();
     }
 
     public void cargarFacultad()
@@ -258,8 +211,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         tipoConsulta = "xPK";
         string sedeId = "";
 
-        //if (ddlSede.SelectedValue != "") sedeId = ddlSede.SelectedValue;
-        //else if (ddlSedeAct.SelectedValue != "") sedeId = ddlSedeAct.SelectedValue;
+        if (ddlSede.SelectedValue != "") sedeId = ddlSede.SelectedValue;
+        else if (ddlSedeAct.SelectedValue != "") sedeId = ddlSedeAct.SelectedValue;
 
         comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
         comandoConsulta.Parameters.AddWithValue("@FILTRO1", sedeId);
@@ -275,12 +228,12 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             DataTable dt = new DataTable();
             adaptadorAlbum.Fill(dt);
 
-            //ddlFacultad.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
+            ddlFacultad.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
             ddlFacultadAct.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
 
             foreach (DataRow row in dt.Rows)
             {
-                //ddlFacultad.Items.Add(new ListItem(row["strNombre_Fac"].ToString(), row["strCod_Fac"].ToString()));
+                ddlFacultad.Items.Add(new ListItem(row["strNombre_Fac"].ToString(), row["strCod_Fac"].ToString()));
                 ddlFacultadAct.Items.Add(new ListItem(row["strNombre_Fac"].ToString(), row["strCod_Fac"].ToString()));
             }
         }
@@ -293,21 +246,21 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     protected void ddlSedes_SelectedIndexChanged(object sender, EventArgs e)
     {
-        //rptSoftware.DataSource = null;
-        //rptSoftware.DataBind();
+        rptSoftware.DataSource = null;
+        rptSoftware.DataBind();
 
-        //listSoftware.Visible = rptSoftware.DataSource == null ? false : true;
+        listSoftware.Visible = rptSoftware.DataSource == null ? false : true;
 
-        //ddlFacultad.Items.Clear();
+        ddlFacultad.Items.Clear();
         cargarFacultad();
     }
 
     protected void ddlSedeAct_SelectedIndexChanged(object sender, EventArgs e)
     {
-        //rptSoftware.DataSource = null;
-        //rptSoftware.DataBind();
+        rptSoftware.DataSource = null;
+        rptSoftware.DataBind();
 
-        //listSoftwareAct.Visible = rptSoftware.DataSource == null ? false : true;
+        listSoftwareAct.Visible = rptSoftware.DataSource == null ? false : true;
 
         ddlFacultadAct.Items.Clear();
         cargarFacultad();
@@ -325,141 +278,157 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        //string codLab = generarIdLab();
-        softwaresActuales = new List<string>();
+        string codLab = generarIdLab();
+        string rutaCarpeta = crearDirectorio();
+
+        laboratorio2.strCod_Lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
+        laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
+        laboratorio2.strCod_Sede = ddlSede.SelectedValue;
+        laboratorio2.strNombre_lab = txtNombre.Text.ToUpper();
+        laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
+        laboratorio2.strUbicacion_lab = txtUbicacion.Text;
+        laboratorio2.strCod_tipoLab = ddlTipo.SelectedValue;
+        laboratorio2.strCod_areac = ddlCampoAmplio.Text;
+        laboratorio2.dtFechaRegistro_lab = DateTime.Now;
+        laboratorio2.bitEstado_lab = true;
+        laboratorio2.dtFecha_log = DateTime.Now;
+        laboratorio2.strUser_log = Context.User.Identity.Name;
+        laboratorio2.strObs1_lab = string.Empty;
+        laboratorio2.strObs2_lab = string.Empty;
+        laboratorio2.bitObs1_lab = false;
+        laboratorio2.bitObs2_lab = false;
+        laboratorio2.decObs1_lab = -1;
+        laboratorio2.decObs2_lab = -1;
+        laboratorio2.dtObs1_lab = DateTime.Parse("1900 - 01 - 01");
+        laboratorio2.dtObs2_lab = DateTime.Parse("1900 - 01 - 01");
+
+        if (fulImg1.HasFile)
+        {
+            try
+            {
+                string filename = Path.GetFileNameWithoutExtension(fulImg1.FileName);
+                string extension = Path.GetExtension(fulImg1.FileName);
+                string newFilename = filename + extension;
+                string path = Path.Combine(rutaCarpeta, newFilename);
+
+                // Verificar si el archivo existe y agregar un sufijo numérico
+                int counter = 1;
+                while (File.Exists(path))
+                {
+                    newFilename = $"{filename}_{counter}{extension}";
+                    path = Path.Combine(rutaCarpeta, newFilename);
+                    counter++;
+                }
 
 
-        //laboratorio2.strCod_Lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
-        //laboratorio2.strNombre_Lab = txtNombre.Text.ToUpper();
-        //laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
-        //laboratorio2.strUbicacion_Lab = txtUbicacion.Text;
-        //laboratorio2.strCod_tipoLab = ddlTipo.SelectedValue;
-        //laboratorio2.strCod_areac = ddlCampoAmplio.Text;
-        //laboratorio2.dtFechaRegistro_lab = DateTime.Now;
-        //laboratorio2.dtFecha_log = DateTime.Now;
-        //laboratorio2.strUser_log = Session["Cedula"].ToString();
-        //laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
-        //laboratorio2.strCod_Sede = ddlSede.SelectedValue;
+                fulImg1.SaveAs(path);
+                laboratorio2.strFotografia1_lab = path;
+            }
+            catch (Exception ex)
+            {
+                Response.Write("La carga falló: " + ex.Message);
+            }
+        }
 
+        if (fulImg2.HasFile)
+        {
+            try
+            {
+                string filename = Path.GetFileNameWithoutExtension(fulImg2.FileName);
+                string extension = Path.GetExtension(fulImg2.FileName);
+                string newFilename = filename + extension;
+                string path = Path.Combine(rutaCarpeta, newFilename);
 
-        //if (fulImg1.HasFile)
-        //{
-        //    try
-        //    {
-        //        string folderPath = Server.MapPath("~/images/Laboratorio/");
-        //        string filename = Path.GetFileNameWithoutExtension(fulImg1.FileName);
-        //        string extension = Path.GetExtension(fulImg1.FileName);
-        //        string newFilename = filename + extension;
-        //        string path = Path.Combine(folderPath, newFilename);
+                // Verificar si el archivo existe y agregar un sufijo numérico
+                int counter = 1;
+                while (File.Exists(path))
+                {
+                    newFilename = $"{filename}_{counter}{extension}";
+                    path = Path.Combine(rutaCarpeta, newFilename);
+                    counter++;
+                }
 
-        //        // Verificar si el archivo existe y agregar un sufijo numérico
-        //        int counter = 1;
-        //        while (File.Exists(path))
-        //        {
-        //            newFilename = $"{filename}_{counter}{extension}";
-        //            path = Path.Combine(folderPath, newFilename);
-        //            counter++;
-        //        }
+                fulImg2.SaveAs(path);
+                laboratorio2.strFotografia2_lab = path;
+            }
+            catch (Exception ex)
+            {
+                Response.Write("La carga falló: " + ex.Message);
+            }
+        }
 
+        laboratorio2.AddLAB_LABORATORIOS(laboratorio2);
 
-        //        fulImg1.SaveAs(path);
-        //        laboratorio2.strFotografia1_Lab = newFilename;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Response.Write("La carga falló: " + ex.Message);
-        //    }
+        if (Session["ROL"].ToString() != "ADMINISTRADOR") actualizarLaboratorista("xTipoResponsable", "Administrativo");
 
+        if (laboratorio2.resultado)
+        {
+            relacioanarLaboratorioSoftware();
+            guardarLaboratorioSoftware();
+        }
 
-        //if (fulImg2.HasFile)
-        //{
-        //    try
-        //    {
-        //        string folderPath = Server.MapPath("~/images/Laboratorio/");
-        //        string filename = Path.GetFileNameWithoutExtension(fulImg2.FileName);
-        //        string extension = Path.GetExtension(fulImg2.FileName);
-        //        string newFilename = filename + extension;
-        //        string path = Path.Combine(folderPath, newFilename);
+        string title = laboratorio2.resultado ? laboratorio2.msg : laboratorio2.msg;
+        string icon = laboratorio2.resultado ? "success" : "error";
 
-        //        // Verificar si el archivo existe y agregar un sufijo numérico
-        //        int counter = 1;
-        //        while (File.Exists(path))
-        //        {
-        //            newFilename = $"{filename}_{counter}{extension}";
-        //            path = Path.Combine(folderPath, newFilename);
-        //            counter++;
-        //        }
-
-
-        //        fulImg2.SaveAs(path);
-        //        laboratorio2.strFotografia2_Lab = newFilename;
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Response.Write("La carga falló: " + ex.Message);
-        //    }
-        //}
-
-        //bool registro = laboratorio2.registrarLaboratorio();
-
-        //if (Convert.ToString(Session["Permisos"]) != "ADMINISTRADOR")
-        //{
-        //    string tipoResp = "Administrativo";
-        //    string comodin = "xTipoResponsable";
-
-        //    responsable1.strCod_lab = laboratorio2.strCod_Lab;
-        //    responsable1.strCod_res = Session["Cedula"].ToString();
-        //    responsable1.strUser_log = Session["Cedula"].ToString();
-        //    responsable1.strTipo_respo = "Responsable Administrativo";
-        //    responsable1.strCod_res = Session["Cedula"].ToString(); ;
-        //    actualizarLaboratorista(comodin, tipoResp);
-        //}
-
-        //if (registro)
-        //{
-        //    relacioanarLaboratorioSoftware();
-        //    guardarLaboratorioSoftware();
-        //}
-
-        //title = registro == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-        //icon = registro == true ? "success" : "error";
-
-        //string script = $"showAlertAndReload('{title}', '{icon}');";
-        //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        string script = $"showAlertAndReload('{title}', '{icon}');";
+        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
     }
 
-    //private string generarIdLab()
-    //{
-    //    //string frase = txtNombre.Text.ToUpper();
-    //    //string[] palabras = frase.Split(' ');
+    private string crearDirectorio()
+    {
+        string rutaCarpeta = "";
+        try
+        {
+            // Ruta que deseas crear
+            rutaCarpeta = @"C:\images\Laboratorios";
 
-    //    //List<string> partes = new List<string>();
+            // Validar si la carpeta ya existe
+            if (!Directory.Exists(rutaCarpeta))
+            {
+                // Crear la carpeta
+                Directory.CreateDirectory(rutaCarpeta);
+            }
 
-    //    //foreach (string palabra in palabras)
-    //    //{
-    //    //    // Si tiene más de 5 caracteres, tomamos solo los primeros 5
-    //    //    string parte = palabra.Length > 3 ? palabra.Substring(0, 3) : palabra;
-    //    //    partes.Add(parte);
-    //    //}
+            string rutaParaBD = rutaCarpeta;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Ocurrió un error al crear la carpeta: " + ex.Message);
+        }
 
-    //    //string resultado = string.Join("", partes);
-    //    //return resultado;
-    //}
+        return rutaCarpeta;
+    }
+
+    private string generarIdLab()
+    {
+        string frase = txtNombre.Text.ToUpper();
+        string[] palabras = frase.Split(' ');
+
+        List<string> partes = new List<string>();
+
+        foreach (string palabra in palabras)
+        {
+            // Si tiene más de 5 caracteres, tomamos solo los primeros 5
+            string parte = palabra.Length > 3 ? palabra.Substring(0, 3) : palabra;
+            partes.Add(parte);
+        }
+
+        string resultado = string.Join("", partes);
+        return resultado;
+    }
 
     public void relacioanarLaboratorioSoftware()
     {
         softwareSeleccionado = new List<string>();
 
-        //foreach (RepeaterItem item in rptSoftware.Items)
-        //{
-        //    CheckBox chkSoftware = (CheckBox)item.FindControl("chkSoftware");
-        //    if (chkSoftware.Checked)
-        //    {
-        //        softwareSeleccionado.Add(chkSoftware.ToolTip);
-        //    }
-        //}
+        foreach (RepeaterItem item in rptSoftware.Items)
+        {
+            CheckBox chkSoftware = (CheckBox)item.FindControl("chkSoftware");
+            if (chkSoftware.Checked)
+            {
+                softwareSeleccionado.Add(chkSoftware.ToolTip);
+            }
+        }
     }
 
     public void obtenerSoftware()
@@ -482,47 +451,47 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         {
             foreach (string codSoftware in nuevosSoftwares)
             {
-                softLab.dtFechaRegistro_labSoft = DateTime.Now;
-                softLab.dtFecha_log = DateTime.Now;
-                softLab.strUser_log = Session["Cedula"].ToString();
-                softLab.strCod_lab = laboratorio2.strCod_Lab;
-                softLab.strCod_sof = codSoftware;
                 softLab.strCod_Fac = laboratorio2.strCod_Fac;
                 softLab.strCod_Sede = laboratorio2.strCod_Sede;
+                softLab.dtFechaRegistro_labSoft = DateTime.Now;
+                softLab.dtFecha_log = DateTime.Now;
+                softLab.strUser_log = Context.User.Identity.Name;
+                softLab.strCod_lab = laboratorio2.strCod_Lab;
+                softLab.strCod_sof = codSoftware;
                 softLab.strCod_labSoft = laboratorio2.strCod_Lab + "_" + softLab.strCod_sof + "_" + softLab.dtFecha_log;
-                softLab.relacionarSoftwareLaboratorio();
+                softLab.AddLAB_LABSOFTWARE(softLab);
             }
         }
     }
 
     public void llenarFormActualizar()
     {
+        string PkLab = Session["codLab"].ToString();
+        var listLaboratoiros = laboratorio2.LoadLAB_LABORATORIOS("xPK", PkLab, "", "", "");
+
         // Inicializamos la lista de softwares actuales
         softwaresActuales = new List<string>();
 
         // Llenar los campos del formulario de acuerdo a las propiedades del objeto laboratorio1
-        lblCodeLabAct.Text = laboratorio2.strCod_Lab;
-        //txtNombreAct.Text = laboratorio2.strNombre_Lab;
-        txtNumeroEquiposAct.Text = laboratorio2.intNumeroEquipos_lab.ToString();
-        ddlTipoAct.SelectedValue = laboratorio2.strCod_tipoLab;
-        //txtUbicacionAct.Text = laboratorio2.strUbicacion_Lab;
-        ddlCampoAmplioAct.SelectedValue = laboratorio2.strCod_areac;
-        //lblImg1InfAct.Text = laboratorio2.strFotografia1_Lab;
-        //lblImg2InfAct.Text = laboratorio2.strFotografia2_Lab;
-        ddlSedeAct.SelectedValue = laboratorio2.strCod_Sede;
+        lblCodeLabAct.Text = listLaboratoiros[0].strCod_Lab;
+        txtNombreAct.Text = listLaboratoiros[0].strNombre_lab;
+        txtNumeroEquiposAct.Text = listLaboratoiros[0].intNumeroEquipos_lab.ToString();
+        ddlTipoAct.SelectedValue = listLaboratoiros[0].strCod_tipoLab;
+        txtUbicacionAct.Text = listLaboratoiros[0].strUbicacion_lab;
+        ddlCampoAmplioAct.SelectedValue = listLaboratoiros[0].strCod_areac;
+        lblImg1InfAct.Text = listLaboratoiros[0].strFotografia1_lab;
+        lblImg2InfAct.Text = listLaboratoiros[0].strFotografia2_lab;
+        ddlSedeAct.SelectedValue = listLaboratoiros[0].strCod_Sede;
 
         cargarFacultad();
 
-        ddlFacultadAct.SelectedValue = laboratorio2.strCod_Fac;
+        ddlFacultadAct.SelectedValue = listLaboratoiros[0].strCod_Fac;
 
         cargarSoftwareAct();
 
-        tipoConsulta = "xLaboratorioSoftware";
-        softLab.strCod_lab = lblCodeLabAct.Text;
-        softLab.strCod_sof = "";
-        softLab.strCod_labSoft = "";
-        DataTable listaSoftLab = softLab.consultarRelacion(tipoConsulta);
-        softwaresActuales = listaSoftLab.AsEnumerable().Select(row => row["strCod_sof"].ToString()).ToList();
+        string strCod_lab = lblCodeLabAct.Text;
+        var listaSoftLab = softLab.LoadLAB_LABSOFTWARE("xLaboratorioSoftware", strCod_lab, "", "", "");
+        softwaresActuales = listaSoftLab.Select(item => item.strCod_sof).ToList();
 
         foreach (RepeaterItem item in rptSoftwareAct.Items)
         {
@@ -538,9 +507,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     protected void btn_Actualizar_Click(object sender, EventArgs e)
     {
-        //laboratorio2.strNombre_Lab = txtNombreAct.Text;
+        laboratorio2.strNombre_lab = txtNombreAct.Text;
         laboratorio2.intNumeroEquipos_lab = Convert.ToInt32(txtNumeroEquiposAct.Text);
-        //laboratorio2.strUbicacion_Lab = txtUbicacionAct.Text;
+        laboratorio2.strUbicacion_lab = txtUbicacionAct.Text;
         laboratorio2.strCod_tipoLab = ddlTipoAct.SelectedValue;
         laboratorio2.strCod_areac = ddlCampoAmplioAct.SelectedValue;
         laboratorio2.dtFecha_log = DateTime.Now;
@@ -569,16 +538,12 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 }
 
                 fulImg1Act.SaveAs(path);
-                //laboratorio2.strFotografia1_Lab = newFilename;
+                laboratorio2.strFotografia1_lab = newFilename;
             }
             catch (Exception ex)
             {
                 Response.Write("La carga de la Imagen 1 falló: " + ex.Message);
             }
-        }
-        else
-        {
-            //laboratorio2.strFotografia1_Lab = lblImg1InfAct.Text;
         }
 
         if (fulImg2Act.HasFile)
@@ -601,37 +566,28 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 }
 
                 fulImg2Act.SaveAs(path);
-                //laboratorio2.strFotografia2_Lab = fulImg2Act.FileName;
+                laboratorio2.strFotografia2_lab = fulImg2Act.FileName;
             }
             catch (Exception ex)
             {
                 Response.Write("La carga de la Imagen 2 falló: " + ex.Message);
             }
         }
-        else
-        {
-            //laboratorio2.strFotografia2_Lab = lblImg2InfAct.Text;
-        }
 
-        //bool actualizado = laboratorio2.actualizarLaboratorio();
+        laboratorio2.strFotografia1_lab = lblImg1InfAct.Text;
+        laboratorio2.strFotografia2_lab = lblImg2InfAct.Text;
+
+        laboratorio2.UpdateLAB_LABORATORIOS(laboratorio2);
 
         obtenerSoftware();
         actualizarSoftware();
 
-        if (Convert.ToString(Session["Permisos"]) != "ADMINISTRADOR")
-        {
-            string tipoResp = "Administrativo";
-            string comodin = "xTipoResponsable";
+        string title = laboratorio2.resultado ? "Los datos se han actualizado correctamente." : "Los datos no se han actualizado correctamente.";
+        string icon = laboratorio2.resultado ? "success" : "error";
+        string ruta = "GestionLaboratorios.aspx";
 
-            responsable1.strCod_res = Session["IdPersonal"].ToString();
-            actualizarLaboratorista(comodin, tipoResp);
-        }
-
-        //title = actualizado == true ? "Los datos se han actualizado correctamente." : "Los datos no se han actualizado correctamente.";
-        //icon = actualizado == true ? "success" : "error";
-
-        //string script = $"showAlertAndReload('{title}', '{icon}');";
-        //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        string script = $"showAlertAndReload('{title}', '{icon}', '{ruta}');";
+        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
     }
 
     public void actualizarSoftware()
@@ -643,14 +599,14 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         foreach (string codSoftware in softwaresEliminados)
         {
             softLab.dtFecha_log = DateTime.Now;
-            softLab.strUser_log = Session["Cedula"].ToString();
+            softLab.strUser_log = Context.User.Identity.Name;
             softLab.strCod_lab = lblCodeLabAct.Text;
             softLab.strCod_sof = codSoftware;
             string idSoftLab = consultarSoftwareLaboratorio();
             if (idSoftLab != "")
             {
                 softLab.strCod_labSoft = idSoftLab;
-                softLab.eliminarRelacion(tipoConsulta);
+                softLab.DelLAB_LABSOFTWARE(tipoConsulta, "", "", "", "");
             }
         }
 
@@ -659,9 +615,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     public string consultarSoftwareLaboratorio()
     {
-        tipoConsulta = "xEstadoLabSoft";
-        DataTable tablaDatos = softLab.consultarRelacion(tipoConsulta);
-        string idSoftLab = tablaDatos.Rows.Count > 0 ? tablaDatos.Rows[0]["strCod_labSoft"].ToString() : "";
+        var tablaDatos = softLab.LoadLAB_LABSOFTWARE("xEstadoLabSoft", "", "", "", "");
+        string idSoftLab = tablaDatos.Count > 0 ? tablaDatos[0].strCod_labSoft : "";
 
         return idSoftLab;
     }
@@ -749,7 +704,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         laboratorio2.strCod_Lab = lblCodLab.Text;
         //laboratorio2.detalleLaboratorio();
 
-        //txtLabNuevo.Text = laboratorio2.strNombre_Lab;
+        txtLabNuevo.Text = laboratorio2.strNombre_lab;
 
         //DataTable labs = labExc.obtenerLaboratorios(tipoConsulta, filtro);
 
@@ -849,9 +804,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             responsable1.strCod_lab = lblCodLab.Text;
             responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-            //guardado = responsable1.guardarResponsables();
+            responsable1.AddLAB_RESPONSABLE(responsable1);
 
-            //if (guardado == true) ++acum;
+            if (guardado == true) ++acum;
         }
 
         title = acum == 2 ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
@@ -868,7 +823,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         laboratorio2.strCod_Lab = filtro;
         //laboratorio2.detalleLaboratorio();
 
-        //txtLabActualizar.Text = laboratorio2.strNombre_Lab;
+        txtLabActualizar.Text = laboratorio2.strNombre_lab;
 
         //DataTable labs = labExc.obtenerLaboratorios(tipoConsulta, filtro);
 
@@ -898,7 +853,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //    }
         //}
 
-        //ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#Form_ActualizarResponsable').modal('show');", true);
+        ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#Form_ActualizarResponsable').modal('show');", true);
     }
 
     protected void btnActualizar_Click(object sender, EventArgs e)
@@ -917,7 +872,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             {
                 responsable1.strCod_respo = codResp[i].ToString();
                 responsable1.strTipo_respo = "";
-                //responsable1.actualizarResponsables(tipoConsulta);
+                responsable1.UpdateLAB_RESPONSABLE(responsable1);
             }
 
             responsable1.strCod_lab = lblCodLab.Text;
@@ -932,7 +887,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             responsable1.dtFecha_log = DateTime.Now;
             responsable1.strUser_log = Session["Cedula"].ToString();
             responsable1.strCod_respo = lblIdRespAcad.Text;
-            //responsable1.actualizarResponsables(tipoConsulta);
+            responsable1.UpdateLAB_RESPONSABLE(responsable1);
 
             responsable1.strCod_lab = lblCodLab.Text;
             actualizarLaboratorista(tipoConsulta, tipoResp);
@@ -946,7 +901,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             responsable1.dtFecha_log = DateTime.Now;
             responsable1.strUser_log = Session["Cedula"].ToString();
             responsable1.strCod_respo = lblIdRespAdmin.Text;
-            //responsable1.actualizarResponsables(tipoConsulta);
+            responsable1.UpdateLAB_RESPONSABLE(responsable1);
 
             responsable1.strCod_res = ddlRespAdminActualizar.SelectedValue;
             responsable1.strCod_lab = lblCodLab.Text;
@@ -971,7 +926,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 responsable1.strCod_res = i % 2 == 0 ? ddlRespAdminActualizar.SelectedValue : ddlRespAcadActualizar.SelectedValue;
                 responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"); ;
 
-                //guardado = responsable1.guardarResponsables();
+                responsable1.AddLAB_RESPONSABLE(responsable1);
 
                 if (guardado == true) ++count;
             }
@@ -989,20 +944,20 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             responsable1.strCod_res = ddlRespAcadActualizar.SelectedValue;
             responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"); ;
 
-            //guardado = responsable1.guardarResponsables();
+            responsable1.AddLAB_RESPONSABLE(responsable1);
 
-            //title = guardado == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-            //icon = guardado == true ? "success" : "error";
+            title = guardado == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
+            icon = guardado == true ? "success" : "error";
 
-            //string script = $"showAlertAndReload('{title}', '{icon}');";
-            //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+            string script = $"showAlertAndReload('{title}', '{icon}');";
+            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
         else if (comodin == "xTipoResponsable" && tipoResp == "Administrativo")
         {
             responsable1.dtFechaInicio_respo = DateTime.Now;
             responsable1.dtFecha_log = DateTime.Now;
             responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"); ;
-            //guardado = responsable1.guardarResponsables();
+            responsable1.AddLAB_RESPONSABLE(responsable1);
 
             title = guardado == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
             icon = guardado == true ? "success" : "error";
@@ -1011,5 +966,4 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
     }
-  
 }

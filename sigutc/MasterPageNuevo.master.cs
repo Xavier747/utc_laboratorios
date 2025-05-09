@@ -1614,16 +1614,9 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         item1.Usuario = "laboratorio";
         item1.Url = "#";
 
-        List<Menu_Master> listSubMenu_1 = new List<Menu_Master>();
+        List<Menu_Master> listSubMenu = new List<Menu_Master>();
 
-        // Submenú: Docente
-        Menu_Master docente = new Menu_Master();
-        docente.Id = "1";
-        docente.Nombre = "Docente";
-        docente.Usuario = "laboratorio";
-        docente.Url = "#";
-
-        List<Menu_Master> listSubMenu_docente = new List<Menu_Master>();
+        // Ítems del docente (directos)
         Menu_Master docente_labs = new Menu_Master();
         docente_labs.Id = "1";
         docente_labs.Nombre = "Laboratorios";
@@ -1631,18 +1624,13 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         docente_labs.Url = "/sigutc/laboratorio/docente/laboratorios.aspx";
         docente_labs.SubMenu_Master = null;
 
-        listSubMenu_docente.Add(docente_labs);
-        docente.SubMenu_Master = listSubMenu_docente;
-        listSubMenu_1.Add(docente);
+        listSubMenu.Add(docente_labs);
+        item1.SubMenu_Master = listSubMenu;
 
-        // Asignar submenús al ítem principal
-        item1.SubMenu_Master = listSubMenu_1;
-
-        // Agregar ítem principal a la lista final
         listMenu.Add(item1);
-
         return listMenu;
     }
+
 
     private List<Menu_Master> ListMenu_LaboratorioLaboratosista()
     {
@@ -1655,29 +1643,21 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         item1.Usuario = "laboratorio";
         item1.Url = "#";
 
-        List<Menu_Master> listSubMenu_1 = new List<Menu_Master>();
+        List<Menu_Master> listSubMenu = new List<Menu_Master>();
 
-        // Submenú: Laboratorista
-        Menu_Master laboratorista = new Menu_Master();
-        laboratorista.Id = "2";
-        laboratorista.Nombre = "Laboratorista";
-        laboratorista.Usuario = "laboratorio";
-        laboratorista.Url = "#";
-
-        List<Menu_Master> listSubMenu_laboratorista = new List<Menu_Master>();
-
+        // Ítems del laboratorista (directos)
         Menu_Master lab_labs = new Menu_Master();
         lab_labs.Id = "1";
         lab_labs.Nombre = "Laboratorios";
         lab_labs.Usuario = "laboratorio";
-        lab_labs.Url = "/sigutc/laboratorio/laboratorista/laboratorios.aspx";
+        lab_labs.Url = "/academic/private/reservalab/GestionLaboratorios.aspx";
         lab_labs.SubMenu_Master = null;
 
         Menu_Master lab_reservas = new Menu_Master();
         lab_reservas.Id = "2";
         lab_reservas.Nombre = "Reservaciones";
         lab_reservas.Usuario = "laboratorio";
-        lab_reservas.Url = "/sigutc/laboratorio/laboratorista/reservaciones.aspx";
+        lab_reservas.Url = "/academic/private/reservalab/reservaciones.aspx";
         lab_reservas.SubMenu_Master = null;
 
         Menu_Master lab_software = new Menu_Master();
@@ -1687,21 +1667,16 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         lab_software.Url = "/academic/private/reservalab/Software.aspx";
         lab_software.SubMenu_Master = null;
 
-        listSubMenu_laboratorista.Add(lab_labs);
-        listSubMenu_laboratorista.Add(lab_reservas);
-        listSubMenu_laboratorista.Add(lab_software);
+        listSubMenu.Add(lab_labs);
+        listSubMenu.Add(lab_reservas);
+        listSubMenu.Add(lab_software);
 
-        laboratorista.SubMenu_Master = listSubMenu_laboratorista;
-        listSubMenu_1.Add(laboratorista);
-
-        // Asignar submenús al ítem principal
-        item1.SubMenu_Master = listSubMenu_1;
-
-        // Agregar ítem principal a la lista final
+        item1.SubMenu_Master = listSubMenu;
         listMenu.Add(item1);
 
         return listMenu;
     }
+
 
     private bool IsDocente(string comodin, string usr1)
     {
@@ -1729,10 +1704,6 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
                 if (rol == "DOCENTE")
                 {
                     validacion = true;
-                }
-                else
-                {
-                    validacion = false;
                 }
             }
             dr.Close();
@@ -1772,10 +1743,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
                 if (rol == "LABORATORISTA" | rol == "ADMINISTRADOR")
                 {
                     validacion = true;
-                }
-                else
-                {
-                    validacion = false;
+                    Session["ROL"] = rol;
                 }
             }
             dr.Close();
