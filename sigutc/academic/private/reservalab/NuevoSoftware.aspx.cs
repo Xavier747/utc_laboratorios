@@ -96,8 +96,8 @@ public partial class academic_private_reservalab_NuevoSoftware : System.Web.UI.P
         software1.strTipoLicencia_sof = ddlTipo.SelectedValue;
         software1.strNombreLicencia_sof = txtNombreLicencia.Text;
         software1.intCantidad_sof = int.Parse(txtCantidad.Text);
-        software1.decCostoUnitario_sof = precioUnitario;
-        software1.decCostoTotal_sof = decimal.Parse(txtCantidad.Text) * precioUnitario;
+        software1.decCostoUnitario = precioUnitario;
+        software1.decCostoTotal = decimal.Parse(txtCantidad.Text) * precioUnitario;
         software1.strDescripcion_sof = txtDescripcion.Text;
         software1.strUrl_sof = txtLink.Text;
         software1.dtFechaRegistro_sof = DateTime.Now;
