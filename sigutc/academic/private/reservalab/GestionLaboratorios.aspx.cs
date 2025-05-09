@@ -282,16 +282,25 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string rutaCarpeta = crearDirectorio();
 
         laboratorio2.strCod_Lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
+        laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
+        laboratorio2.strCod_Sede = ddlSede.SelectedValue;
         laboratorio2.strNombre_lab = txtNombre.Text.ToUpper();
         laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
         laboratorio2.strUbicacion_lab = txtUbicacion.Text;
         laboratorio2.strCod_tipoLab = ddlTipo.SelectedValue;
         laboratorio2.strCod_areac = ddlCampoAmplio.Text;
         laboratorio2.dtFechaRegistro_lab = DateTime.Now;
+        laboratorio2.bitEstado_lab = true;
         laboratorio2.dtFecha_log = DateTime.Now;
         laboratorio2.strUser_log = Context.User.Identity.Name;
-        laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
-        laboratorio2.strCod_Sede = ddlSede.SelectedValue;
+        laboratorio2.strObs1_lab = string.Empty;
+        laboratorio2.strObs2_lab = string.Empty;
+        laboratorio2.bitObs1_lab = false;
+        laboratorio2.bitObs2_lab = false;
+        laboratorio2.decObs1_lab = -1;
+        laboratorio2.decObs2_lab = -1;
+        laboratorio2.dtObs1_lab = DateTime.Parse("1900 - 01 - 01");
+        laboratorio2.dtObs2_lab = DateTime.Parse("1900 - 01 - 01");
 
         if (fulImg1.HasFile)
         {
@@ -442,13 +451,13 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         {
             foreach (string codSoftware in nuevosSoftwares)
             {
+                softLab.strCod_Fac = laboratorio2.strCod_Fac;
+                softLab.strCod_Sede = laboratorio2.strCod_Sede;
                 softLab.dtFechaRegistro_labSoft = DateTime.Now;
                 softLab.dtFecha_log = DateTime.Now;
                 softLab.strUser_log = Context.User.Identity.Name;
                 softLab.strCod_lab = laboratorio2.strCod_Lab;
                 softLab.strCod_sof = codSoftware;
-                softLab.strCod_Fac = laboratorio2.strCod_Fac;
-                softLab.strCod_Sede = laboratorio2.strCod_Sede;
                 softLab.strCod_labSoft = laboratorio2.strCod_Lab + "_" + softLab.strCod_sof + "_" + softLab.dtFecha_log;
                 softLab.AddLAB_LABSOFTWARE(softLab);
             }
