@@ -119,53 +119,61 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <asp:Label ID="lblUbicacion" runat="server" Text="Ubicación" CssClass="control-label required"></asp:Label>
                                 <asp:TextBox ID="txtUbicacion" runat="server" CssClass="form-control custom-input text-multiple" placeholder="Ubicación" TextMode="MultiLine" Rows="3"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfv_txtUbicacion" runat="server" ControlToValidate="txtUbicacion" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
                             </div>
+
                         </div>
                         <div class="row">
-                            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-                                <ContentTemplate>
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
+                                <asp:UpdatePanel ID="upSede" runat="server">
+                                    <ContentTemplate>
                                         <asp:Label ID="lblSede" runat="server" Text="Sedes" CssClass="control-label required"></asp:Label>
-                                        <asp:DropDownList ID="ddlSede" runat="server" CssClass="form-control custom-input" AutoPostBack="True" OnSelectedIndexChanged="ddlSedes_SelectedIndexChanged"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlSede" runat="server" CssClass="form-control" AutoPostBack="True" OnSelectedIndexChanged="ddlSedes_SelectedIndexChanged"></asp:DropDownList>
                                         <asp:RequiredFieldValidator ID="rfv_ddlListSedes" runat="server" ControlToValidate="ddlSede" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
-                                    </div>
-                                    <div class="col-md-6">
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+
+                            <div class="col-md-6">
+                                <asp:UpdatePanel ID="upFacultad" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
                                         <asp:Label ID="lblFacultad" runat="server" Text="Facultades" CssClass="control-label required"></asp:Label>
-                                        <asp:DropDownList ID="ddlFacultad" runat="server" CssClass="form-control custom-input"  AutoPostBack="True" OnSelectedIndexChanged="ddlFacultad_SelectedIndexChanged"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlFacultad" runat="server" CssClass="form-control custom-input" AutoPostBack="True" OnSelectedIndexChanged="ddlFacultad_SelectedIndexChanged"></asp:DropDownList>
                                         <asp:RequiredFieldValidator ID="rfv_DropDownListFacultades" runat="server" ControlToValidate="ddlFacultad" CssClass="alert alert-danger form-control" ValidationGroup="formulario" InitialValue="" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
-                                    </div>
-                                    <div class="col-md-6">
+                                    </ContentTemplate>
+                                    <Triggers>
+                                        <asp:AsyncPostBackTrigger ControlID="ddlSede" EventName="SelectedIndexChanged" />
+                                    </Triggers>
+                                </asp:UpdatePanel>
+                            </div>
+
+                            <div class="col-md-6">
+                                <asp:UpdatePanel ID="upRepeaterSoftware" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
                                         <div id="listSoftware" runat="server">
                                             <asp:Label ID="lblSoftware" runat="server" Text="Software" CssClass="control-label"></asp:Label>
                                             <div class="softwareContainer">
-                                                <asp:UpdatePanel ID="upRepeaterSoftware" runat="server" UpdateMode="Conditional">
-                                                    <ContentTemplate>
-                                                        <asp:Repeater ID="rptSoftware" runat="server">
-                                                            <ItemTemplate>
-                                                                <div class="form-control item">
-                                                                    <asp:CheckBox ID="chkSoftware" runat="server" ToolTip='<%# Eval("strCod_sof") %>' />
-                                                                    <label><%# Eval("strNombre_sof") %></label>
-                                                                </div>
-                                                            </ItemTemplate>
-                                                        </asp:Repeater>
-                                                    </ContentTemplate>
-                                                    <Triggers>
-                                                        <asp:AsyncPostBackTrigger ControlID="ddlFacultad" EventName="SelectedIndexChanged" />
-                                                    </Triggers>
-                                                </asp:UpdatePanel>
+                                                <asp:Repeater ID="rptSoftware" runat="server">
+                                                    <ItemTemplate>
+                                                        <div class="form-control item">
+                                                            <asp:CheckBox ID="chkSoftware" runat="server" ToolTip='<%# Eval("strCod_sof") %>' />
+                                                            <label><%# Eval("strNombre_sof") %></label>
+                                                        </div>
+                                                    </ItemTemplate>
+                                                </asp:Repeater>
                                             </div>
                                         </div>
-                                    </div>
-                                </ContentTemplate>
-                                <Triggers>
-                                    <asp:AsyncPostBackTrigger ControlID="ddlSede" EventName="SelectedIndexChanged" />
-                                </Triggers>
-                            </asp:UpdatePanel>
+                                    </ContentTemplate>
+                                    <Triggers>
+                                        <asp:AsyncPostBackTrigger ControlID="ddlFacultad" EventName="SelectedIndexChanged" />
+                                    </Triggers>
+                                </asp:UpdatePanel>
+                            </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6">
                                 <asp:Label ID="lblImg1" runat="server" Text="Fotografía 1" CssClass="control-label required"></asp:Label>

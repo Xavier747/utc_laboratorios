@@ -122,6 +122,36 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
         if (listFacultad.Count != 0)
         {
+            ddlFacultad.DataSource = listFacultad;
+            ddlFacultad.DataTextField = "strNombre_fac";
+            ddlFacultad.DataValueField = "strCod_fac";
+            ddlFacultad.DataBind();
+
+            //muestra mensajes devuelto en la consulta
+            lblMsg.Text = software1.msg;
+        }
+        else
+        {
+            lblMsg.Text = software1.msg;
+        }
+
+        if (listFacultad.Count != 0)
+        {
+            ddlFacultadAct.DataSource = listFacultad;
+            ddlFacultadAct.DataTextField = "strNombre_fac";
+            ddlFacultadAct.DataValueField = "strCod_fac";
+            ddlFacultadAct.DataBind();
+
+            //muestra mensajes devuelto en la consulta
+            lblMsg.Text = software1.msg;
+        }
+        else
+        {
+            lblMsg.Text = software1.msg;
+        }
+
+        if (listFacultad.Count != 0)
+        {
             ddlFacultadSoft.DataSource = listFacultad;
             ddlFacultadSoft.DataTextField = "strNombre_fac";
             ddlFacultadSoft.DataValueField = "strCod_fac";
