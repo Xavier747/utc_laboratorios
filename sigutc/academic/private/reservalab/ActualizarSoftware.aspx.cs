@@ -75,7 +75,7 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         txtNombreLicenciaAct.Visible = ddlTipoAct.SelectedValue == "Propietario" ? true : false;
 
         txtNombreLicenciaAct.Text = registroLab[0].strNombreLicencia_sof;
-        txtCostoAct.Text = registroLab[0].decCostoUnitario.ToString();
+        txtCostoAct.Text = registroLab[0].decCostoUnitario_sof.ToString();
         txtDescripcionAct.Text = registroLab[0].strDescripcion_sof;
         txtLinkAct.Text = registroLab[0].strUrl_sof;
         lblImgActInfo.Text = registroLab[0].strImagen_sof;
@@ -122,8 +122,8 @@ public partial class academic_private_reservalab_ActualizarSoftware : System.Web
         software1.strTipoLicencia_sof = ddlTipoAct.SelectedValue;
         software1.strNombreLicencia_sof = txtNombreLicenciaAct.Text;
         software1.intCantidad_sof = int.Parse(txtCantidadAct.Text);
-        software1.decCostoUnitario = precioUnitario;
-        software1.decCostoTotal = decimal.Parse(txtCantidadAct.Text) * precioUnitario;
+        software1.decCostoUnitario_sof = precioUnitario;
+        software1.decCostoTotal_sof = decimal.Parse(txtCantidadAct.Text) * precioUnitario;
         software1.strDescripcion_sof = txtDescripcionAct.Text;
         software1.strUrl_sof = txtLinkAct.Text;
         software1.strCod_sof = Session["codSoft"].ToString();
