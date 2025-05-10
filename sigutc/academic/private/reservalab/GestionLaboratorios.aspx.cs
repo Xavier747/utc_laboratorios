@@ -63,11 +63,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         {
             string codLab = e.CommandArgument.ToString();
 
-            // Carga los detalles del laboratorio según el ID seleccionado   
-            laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
-
             // Llena el formulario de actualización con los datos cargados
-            llenarFormActualizar();
+            llenarFormActualizar(codLab);
 
             // Muestra el modal para actualizar los datos
             ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar').modal('show');", true);
@@ -167,8 +164,11 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     public void cargarSoftware()
     {
-        string strCod_Fac = ddlFacultadAct.SelectedValue;
-        string strCod_Sede = ddlSedeAct.SelectedValue;
+        rptSoftware.DataSource = null;
+        rptSoftware.DataBind();
+
+        string strCod_Fac = ddlFacultad.SelectedValue;
+        string strCod_Sede = ddlSede.SelectedValue;
         var software = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
 
         listSoftware.Visible = software.Count > 0 ? true : false;
@@ -179,6 +179,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     public void cargarSoftwareAct()
     {
+        rptSoftwareAct.DataSource = null;
+        rptSoftwareAct.DataBind();
+
         string strCod_Fac = ddlFacultadAct.SelectedValue;
         string strCod_Sede = ddlSedeAct.SelectedValue;
         var software = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
@@ -209,7 +212,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     public void cargarFacultad()
     {
-        string strCod_Sede = ddlSedeAct.SelectedValue;
+        ddlFacultad.Items.Clear();
+
+        string strCod_Sede = ddlSede.SelectedValue;
         var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
 
         if (listFacultad.Count != 0)
@@ -225,6 +230,14 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         {
             lblMsg.Text = software1.msg;
         }
+    }
+
+    public void cargarFacultadAct()
+    {
+        ddlFacultadAct.Items.Clear();
+
+        string strCod_Sede = ddlSedeAct.SelectedValue;
+        var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
 
         if (listFacultad.Count != 0)
         {
@@ -243,24 +256,19 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     protected void ddlSedes_SelectedIndexChanged(object sender, EventArgs e)
     {
-        rptSoftware.DataSource = null;
-        rptSoftware.DataBind();
-
         listSoftware.Visible = rptSoftware.DataSource == null ? false : true;
 
-        ddlFacultad.Items.Clear();
         cargarFacultad();
+        cargarSoftware();
     }
 
     protected void ddlSedeAct_SelectedIndexChanged(object sender, EventArgs e)
     {
-        rptSoftware.DataSource = null;
-        rptSoftware.DataBind();
-
-        listSoftwareAct.Visible = rptSoftware.DataSource == null ? false : true;
-
-        ddlFacultadAct.Items.Clear();
-        cargarFacultad();
+        listSoftwareAct.Visible = rptSoftwareAct.DataSource == null ? false : true;
+        
+        cargarFacultadAct();
+        cargarSoftwareAct();
+        isSelectSoftware();
     }
 
     protected void ddlFacultad_SelectedIndexChanged(object sender, EventArgs e)
@@ -271,6 +279,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     protected void ddlFacultadAct_SelectedIndexChanged(object sender, EventArgs e)
     {
         cargarSoftwareAct();
+        isSelectSoftware();
     }
 
     protected void btnSubmit_Click(object sender, EventArgs e)
@@ -448,23 +457,32 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         {
             foreach (string codSoftware in nuevosSoftwares)
             {
-                softLab.strCod_Fac = laboratorio2.strCod_Fac;
                 softLab.strCod_Sede = laboratorio2.strCod_Sede;
+                softLab.strCod_Fac = laboratorio2.strCod_Fac;
+                softLab.strCod_sof = codSoftware;
+                softLab.strCod_lab = laboratorio2.strCod_lab;
                 softLab.dtFechaRegistro_labSoft = DateTime.Now;
+                softLab.bitEstado_labSoft = true;
                 softLab.dtFecha_log = DateTime.Now;
                 softLab.strUser_log = Context.User.Identity.Name;
-                softLab.strCod_lab = laboratorio2.strCod_lab;
-                softLab.strCod_sof = codSoftware;
+                softLab.strObs1_labSoft = string.Empty;
+                softLab.strObs2_labSoft = string.Empty;
+                softLab.bitObs1_labSoft = false;
+                softLab.bitObs2_labSoft = false;
+                softLab.decObs1_labSoft = -1;
+                softLab.decObs2_labSoft = -1;
+                softLab.dtObs1_labSoft = DateTime.Parse("1900-01-01");
+                softLab.dtObs2_labSoft = DateTime.Parse("1900-01-01");
                 softLab.strCod_labSoft = laboratorio2.strCod_lab + "_" + softLab.strCod_sof + "_" + softLab.dtFecha_log;
                 softLab.AddLAB_LABSOFTWARE(softLab);
             }
         }
     }
 
-    public void llenarFormActualizar()
+    public void llenarFormActualizar(string codLab)
     {
-        string PkLab = Session["codLab"].ToString();
-        var listLaboratoiros = laboratorio2.LoadLAB_LABORATORIOS("xPK", PkLab, "", "", "");
+        // Carga los detalles del laboratorio según el ID seleccionado   
+        var listLaboratoiros = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
         // Inicializamos la lista de softwares actuales
         softwaresActuales = new List<string>();
@@ -480,7 +498,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         lblImg2InfAct.Text = listLaboratoiros[0].strFotografia2_lab;
         ddlSedeAct.SelectedValue = listLaboratoiros[0].strCod_Sede;
 
-        cargarFacultad();
+        cargarFacultadAct();
 
         ddlFacultadAct.SelectedValue = listLaboratoiros[0].strCod_Fac;
 
@@ -490,6 +508,11 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         var listaSoftLab = softLab.LoadLAB_LABSOFTWARE("xLaboratorioSoftware", strCod_lab, "", "", "");
         softwaresActuales = listaSoftLab.Select(item => item.strCod_sof).ToList();
 
+        isSelectSoftware();
+    }
+
+    public void isSelectSoftware()
+    {
         foreach (RepeaterItem item in rptSoftwareAct.Items)
         {
             CheckBox chkSoftware = (CheckBox)item.FindControl("chkSoftwareAct");
@@ -510,7 +533,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         laboratorio2.strCod_tipoLab = ddlTipoAct.SelectedValue;
         laboratorio2.strCod_areac = ddlCampoAmplioAct.SelectedValue;
         laboratorio2.dtFecha_log = DateTime.Now;
-        laboratorio2.strUser_log = Session["Cedula"].ToString();
+        laboratorio2.strUser_log = Context.User.Identity.Name;
         laboratorio2.strCod_Sede = ddlSedeAct.SelectedValue;
         laboratorio2.strCod_Fac = ddlFacultadAct.SelectedValue;
         laboratorio2.strCod_lab = lblCodeLabAct.Text;
@@ -597,22 +620,22 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         {
             softLab.dtFecha_log = DateTime.Now;
             softLab.strUser_log = Context.User.Identity.Name;
-            softLab.strCod_lab = lblCodeLabAct.Text;
-            softLab.strCod_sof = codSoftware;
-            string idSoftLab = consultarSoftwareLaboratorio();
+            string strCod_lab = lblCodeLabAct.Text;
+            string strCod_sof = codSoftware;
+            string idSoftLab = consultarSoftwareLaboratorio(strCod_lab, strCod_sof);
             if (idSoftLab != "")
             {
                 softLab.strCod_labSoft = idSoftLab;
-                softLab.DelLAB_LABSOFTWARE(tipoConsulta, "", "", "", "");
+                softLab.DelLAB_LABSOFTWARE(tipoConsulta, strCod_lab, strCod_sof, "", "");
             }
         }
 
         guardarLaboratorioSoftware();
     }
 
-    public string consultarSoftwareLaboratorio()
+    public string consultarSoftwareLaboratorio(string strCod_lab, string strCod_sof)
     {
-        var tablaDatos = softLab.LoadLAB_LABSOFTWARE("xEstadoLabSoft", "", "", "", "");
+        var tablaDatos = softLab.LoadLAB_LABSOFTWARE("xEstadoLabSoft", strCod_lab, strCod_sof, "", "");
         string idSoftLab = tablaDatos.Count > 0 ? tablaDatos[0].strCod_labSoft : "";
 
         return idSoftLab;
