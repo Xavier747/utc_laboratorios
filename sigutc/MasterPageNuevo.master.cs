@@ -1646,27 +1646,35 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         List<Menu_Master> listSubMenu = new List<Menu_Master>();
 
         // Ítems del laboratorista (directos)
+        Menu_Master lab_tipo = new Menu_Master();
+        lab_tipo.Id = "1";
+        lab_tipo.Nombre = "Tipo de Laboratorio";
+        lab_tipo.Usuario = "laboratorio";
+        lab_tipo.Url = "/academic/private/reservalab/TipoLaboratorio.aspx";
+        lab_tipo.SubMenu_Master = null;
+
         Menu_Master lab_labs = new Menu_Master();
-        lab_labs.Id = "1";
+        lab_labs.Id = "2";
         lab_labs.Nombre = "Laboratorios";
         lab_labs.Usuario = "laboratorio";
         lab_labs.Url = "/academic/private/reservalab/GestionLaboratorios.aspx";
         lab_labs.SubMenu_Master = null;
 
         Menu_Master lab_reservas = new Menu_Master();
-        lab_reservas.Id = "2";
+        lab_reservas.Id = "3";
         lab_reservas.Nombre = "Reservaciones";
         lab_reservas.Usuario = "laboratorio";
         lab_reservas.Url = "/academic/private/reservalab/reservaciones.aspx";
         lab_reservas.SubMenu_Master = null;
 
         Menu_Master lab_software = new Menu_Master();
-        lab_software.Id = "3";
+        lab_software.Id = "4";
         lab_software.Nombre = "Software";
         lab_software.Usuario = "laboratorio";
         lab_software.Url = "/academic/private/reservalab/Software.aspx";
         lab_software.SubMenu_Master = null;
 
+        listSubMenu.Add(lab_tipo);
         listSubMenu.Add(lab_labs);
         listSubMenu.Add(lab_reservas);
         listSubMenu.Add(lab_software);

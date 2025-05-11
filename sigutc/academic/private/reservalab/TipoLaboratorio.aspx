@@ -14,12 +14,8 @@
             </button>
         </div>  
     </div>  
-    <div class="alert alert-info alert-dismissible text-center" id="lblMsgLstRegistros" runat="server" visible="false">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <span class="mensaje">No existen registros</span>
-    </div>
+    <br />
+    <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
     <div class="table-responsive">
         <asp:GridView ID="gvTipoLaboratorio" runat="server" AutoGenerateColumns="False" AllowPaging="True" PageSize="10" OnPageIndexChanging="gvTipoLaboratorio_PageIndexChanging" CssClass="table table-striped table-bordered" OnRowCommand="gvTipoLaboratorio_RowCommand">
             <Columns>
@@ -28,9 +24,9 @@
                     <ItemTemplate>
                         <div style="display:flex;">
                             <!--Boton que refleja formulario para actualizar el laboratorio-->
-                            <asp:ImageButton ID="imgbtnSelect" runat="server" CausesValidation="False" CommandName="Select" CssClass="btn btn-warning" ImageUrl="~/images/static/edit.svg" CommandArgument ='<%# Eval("strCod_tipoLab") %>' />&nbsp;&nbsp;
+                            <asp:Button ID="btnSelect" runat="server" Text="Editar" CssClass="btn btn-warning" CommandName="Select"  CommandArgument ='<%# Eval("strCod_tipoLab") %>' />&nbsp;&nbsp;
                             <!--Boton para eliminar el laboratorio-->
-                            <asp:ImageButton ID="imgbtnDelete" runat="server" CausesValidation="False" CommandName="Eliminar" CssClass="btn btn-danger" ImageUrl="~/images/static/delete.svg" CommandArgument ='<%# Eval("strCod_tipoLab") %>' OnClientClick="return confirm('¿Seguro que desea eliminar?');" />
+                            <asp:Button ID="btnDelete" runat="server" Text="Eliminar" CssClass="btn btn-danger" CommandName="Eliminar" CommandArgument ='<%# Eval("strCod_tipoLab") %>' OnClientClick="return confirm('¿Seguro que desea eliminar?');" />
                         </div>
                     </ItemTemplate>
                 </asp:TemplateField>
@@ -49,13 +45,11 @@
                     <h4 class="modal-title" id="modalNuevoLaboratorio">Nuevo Laboratorio</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <asp:Label ID="lblNombre" runat="server" Text="Nombre" CssClass="control-label required"></asp:Label>
-                                <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control custom-input" placeholder="Nombre"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="rfv_tbxNombre" runat="server" ControlToValidate="txtNombre" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <asp:Label ID="lblNombre" runat="server" Text="Nombre" CssClass="control-label required"></asp:Label>
+                            <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control custom-input" placeholder="Nombre"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfv_tbxNombre" runat="server" ControlToValidate="txtNombre" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
                         </div>
                     </div>
                 </div>

@@ -213,7 +213,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <asp:Label ID="lblTipoAct" runat="server" Text="Tipo" CssClass="control-label required"></asp:Label>
-                            <asp:DropDownList ID="ddlTipoAct" runat="server" CssClass="form-control custom-input"</asp:DropDownList>
+                            <asp:DropDownList ID="ddlTipoAct" runat="server" CssClass="form-control custom-input"></asp:DropDownList>
                             <asp:RequiredFieldValidator ID="rfv_ddlTipoAct" runat="server" ControlToValidate="ddlTipoAct" CssClass="alert alert-danger form-control" ValidationGroup="formularioActualizar" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
                         </div>         
                         <div class="col-md-6">
