@@ -291,7 +291,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerrar()">Cerrar</button>
-                    <asp:Button ID="btn_Actualizar" runat="server" Text="Actualizar" ValidationGroup="formularioActualizar" CssClass="btn btn-success" OnClick="btn_Actualizar_Click"/>
+                    <asp:Button ID="btn_Actualizar" runat="server" Text="Actualizar" ValidationGroup="formularioActualizar" CssClass="btn btn-success" OnClientClick="return validarArchivoAct();" OnClick="btn_Actualizar_Click"/>
                 </div>
             </div>
         </div>
@@ -462,6 +462,36 @@
         function validarArchivo() {
             var input1 = document.getElementById('<%= fulImg1.ClientID %>');
             var input2 = document.getElementById('<%= fulImg2.ClientID %>');
+            var maxMB = 4; // Límite permitido (ajustable)
+
+            if (input1.files.length > 0 || input2.files.length) {
+                var file1 = input1.files[0];
+                var file2 = input2.files[0];
+
+                var sizeMB1 = file1.size / (1024 * 1024);
+                var sizeMB2 = file2.size / (1024 * 1024);
+
+                if (sizeMB1 > maxMB && sizeMB2 > maxMB) {
+                    showAlertImageBig("Las imagenes han excedido el tamaño máximo permitido de " + maxMB + " MB.", "error");
+                    return false; // evita que se envíe el formulario
+                }
+                else if (sizeMB1 > maxMB) {
+                    showAlertImageBig("La imagen 1 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
+                    return false; // evita que se envíe el formulario
+                }
+                else if (sizeMB2 > maxMB) {
+                    showAlertImageBig("La imagen 2 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
+                    return false; // evita que se envíe el formulario
+                }
+
+            }
+
+            return true; // permite enviar si pasa la validación
+        }
+
+        function validarArchivoAct() {
+            var input1 = document.getElementById('<%= fulImg1Act.ClientID %>');
+            var input2 = document.getElementById('<%= fulImg2Act.ClientID %>');
             var maxMB = 4; // Límite permitido (ajustable)
 
             if (input1.files.length > 0 || input2.files.length) {
