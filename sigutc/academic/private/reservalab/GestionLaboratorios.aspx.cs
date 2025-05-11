@@ -29,7 +29,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     public static List<string> softwareSeleccionado;
     public static List<string> nuevosSoftwares;
     public static List<string> softwaresActuales;
-    private string tipoConsulta;
     private string filtro;
     private string title;
     private string icon;
@@ -87,7 +86,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         if (e.CommandName == "Laboratoristas")
         {
             string codLab = e.CommandArgument.ToString();
-            tipoConsulta = "xIdLaboratorio";
             obtenerFacultadSede(codLab);
             gestionarResponsable(codLab);
         }
@@ -135,7 +133,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     public void cargarCampoAmplio()
     {
-        tipoConsulta = "ALL";
+        string tipoConsulta = "ALL";
 
         SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetAREAC", conexion);
         comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
@@ -204,7 +202,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             ddlSede.DataTextField = "strNombre_Sede";
             ddlSede.DataValueField = "strCod_Sede";
             ddlSede.DataBind();
+        }
 
+        if (listSede.Count > 0)
+        {
             ddlSedeAct.DataSource = listSede;
             ddlSedeAct.DataTextField = "strNombre_Sede";
             ddlSedeAct.DataValueField = "strCod_Sede";
@@ -660,40 +661,22 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     //Responsables de laboratorio
     private void obtenerFacultadSede(string codLab)
     {
-        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetUB_SEDES", conexion);
-        comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO1", codLab);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
-        comandoConsulta.CommandType = CommandType.StoredProcedure;
+        var listSede = sede.LoadUB_SEDES("xIdLaboratorio", codLab, "", "", "");
 
-        try
-        {
-            conexion.Open();
-            SqlDataReader reader = comandoConsulta.ExecuteReader();
-            while (reader.Read())
-            {
-                txtSedeNombre.Text = reader["strNombre_Sede"].ToString();
-                txtSedeNuevo.Text = reader["strNombre_Sede"].ToString();
-                txtSedeActualizar.Text = reader["strNombre_Sede"].ToString();
-                txtFacultadNombre.Text = reader["strNombre_Fac"].ToString();
-                txtFacNuevo.Text = reader["strNombre_Fac"].ToString();
-                txtFacActualizar.Text = reader["strNombre_Fac"].ToString();
-            }
-            reader.Close();
+        if (listSede.Count > 0) txtSedeNombre.Text = listSede[0].strnombre_sede;
 
-        }
-        catch (Exception ex)
-        {
-            Console.Write("ERROR: " + ex.Message);
-        }
-        conexion.Close();
+        var listFacultad = facultad.LoadUB_FACULTADES("xIdLaboratorio", codLab, "", "", "");
+
+        if(listFacultad.Count > 0) txtFacultadNombre.Text = listFacultad[0].strnombre_fac;
+
+        var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
+
+        if (listLaboratorio.Count > 0) txtLaboratorioNombre.Text = listLaboratorio[0].strNombre_lab;
     }
 
     protected void gestionarResponsable(string codLab)
     {
-        tipoConsulta = "xIdLaboratorio";
+        string tipoConsulta = "xIdLaboratorio";
 
         laboratorio2.strCod_lab = codLab;
         //laboratorio2.detalleLaboratorio();
@@ -702,7 +685,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //txtLaboratorioNombre.Text = laboratorio2.strNombre_Lab;
 
         responsable1.strCod_lab = codLab;
-        tipoConsulta = "xLaboratorio";
+        //string tipoConsulta = "xLaboratorio";
 
         //List<LAB_RESPONSABLE> responsable = responsable1.detalleResponsableLaboratorio(tipoConsulta);
 
@@ -720,7 +703,22 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     protected void btnAsignarResponsable_Click(object sender, EventArgs e)
     {
-        tipoConsulta = "xLabExclusivo";
+        string codLab = lblCodLab.Text;
+
+        var listSede = sede.LoadUB_SEDES("xIdLaboratorio", codLab, "", "", "");
+
+        if (listSede.Count > 0) txtSedeNuevo.Text = listSede[0].strnombre_sede;
+
+        var listFacultad = facultad.LoadUB_FACULTADES("xIdLaboratorio", codLab, "", "", "");
+
+        if (listFacultad.Count > 0) txtFacNuevo.Text = listFacultad[0].strnombre_fac;
+
+        var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
+
+        if (listLaboratorio.Count > 0) txtLabNuevo.Text = listLaboratorio[0].strNombre_lab;
+
+
+        string tipoConsulta = "xLabExclusivo";
         filtro = lblCodLab.Text;
 
         laboratorio2.strCod_lab = lblCodLab.Text;
@@ -749,14 +747,14 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         ddlRespAdminActualizar.Items.Add(new ListItem("-- Seleccione una opcion--", ""));
 
         consultarPorLabotatorista();
-        tipoConsulta = "xDocente";
+        string tipoConsulta = "xDocente";
         consultarPorTipoPersonal();
     }
 
     private void consultarPorLabotatorista()
     {
         SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetPERSONAL", conexion);
-        comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
+        //comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
         comandoConsulta.Parameters.AddWithValue("@FILTRO1", laboratorio2.strCod_Fac);
         comandoConsulta.Parameters.AddWithValue("@FILTRO2", laboratorio2.strCod_Sede);
         comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
@@ -785,7 +783,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     private void consultarPorTipoPersonal()
     {
         SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetPERSONAL", conexion);
-        comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
+        //comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
         comandoConsulta.Parameters.AddWithValue("@FILTRO1", laboratorio2.strCod_Fac);
         comandoConsulta.Parameters.AddWithValue("@FILTRO2", laboratorio2.strCod_Sede);
         comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
@@ -840,7 +838,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     protected void btnActulizarResponsable_Click(object sender, EventArgs e)
     {
-        tipoConsulta = "xLabExclusivo";
+        //tipoConsulta = "xLabExclusivo";
         filtro = lblCodLab.Text;
         laboratorio2.strCod_lab = filtro;
         //laboratorio2.detalleLaboratorio();
@@ -853,7 +851,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         cargarResponsablesAgregar();
 
         responsable1.strCod_lab = filtro;
-        tipoConsulta = "xLaboratorio";
+        //tipoConsulta = "xLaboratorio";
 
         //List<LAB_RESPONSABLE> responsable = responsable1.detalleResponsableLaboratorio(tipoConsulta);
 
@@ -886,7 +884,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         if (lblCedulaRespAdmin.Text != ddlRespAdminActualizar.SelectedValue && lblCedulaRespAcad.Text != ddlRespAcadActualizar.SelectedValue)
         {
             object[] codResp = { lblIdRespAdmin.Text, lblIdRespAcad.Text };
-            tipoConsulta = "xFKLaboratorio";
+            //tipoConsulta = "xFKLaboratorio";
             responsable1.dtFecha_log = fecha;
             responsable1.strUser_log = Session["Cedula"].ToString();
 
@@ -898,11 +896,11 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             }
 
             responsable1.strCod_lab = lblCodLab.Text;
-            actualizarLaboratorista(tipoConsulta, tipoResp);
+            //actualizarLaboratorista(tipoConsulta, tipoResp);
         }
         else if (lblCedulaRespAdmin.Text == ddlRespAdminActualizar.SelectedValue && lblCedulaRespAcad.Text != ddlRespAcadActualizar.SelectedValue)
         {
-            tipoConsulta = "xTipoResponsable";
+            //tipoConsulta = "xTipoResponsable";
             tipoResp = "Academico";
 
             responsable1.strTipo_respo = "Responsable Academico";
@@ -912,11 +910,11 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             responsable1.UpdateLAB_RESPONSABLE(responsable1);
 
             responsable1.strCod_lab = lblCodLab.Text;
-            actualizarLaboratorista(tipoConsulta, tipoResp);
+            //actualizarLaboratorista(tipoConsulta, tipoResp);
         }
         else if (lblCedulaRespAdmin.Text != ddlRespAdminActualizar.SelectedValue && lblCedulaRespAcad.Text == ddlRespAcadActualizar.SelectedValue)
         {
-            tipoConsulta = "xTipoResponsable";
+            //tipoConsulta = "xTipoResponsable";
             tipoResp = "Administrativo";
 
             responsable1.strTipo_respo = "Responsable Administrativo";
@@ -927,7 +925,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
             responsable1.strCod_res = ddlRespAdminActualizar.SelectedValue;
             responsable1.strCod_lab = lblCodLab.Text;
-            actualizarLaboratorista(tipoConsulta, tipoResp);
+            //actualizarLaboratorista(tipoConsulta, tipoResp);
         }
     }
 
