@@ -406,6 +406,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
             // Carga los detalles del laboratorio según el ID seleccionado 
             string fecha = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+    
             string responsable = Context.User.Identity.Name;
             software1.DelLAB_SOFTWARE("xCodSof", codSftware, fecha, responsable, "");
 
@@ -454,7 +455,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     protected void btnActualizar_Click(object sender, EventArgs e)
     {
         string rutaCarpeta = crearDirectorio();
-        decimal precioUnitario = txtCosto.Text != "" ? decimal.Parse(txtCosto.Text) : 0;
+        decimal precioUnitario = txtCostoAct.Text != "" ? decimal.Parse(txtCostoAct.Text) : 0;
 
         software1.strCod_sof = lblIdSoftAct.Text;
         software1.strNombre_sof = txtNombreAct.Text;

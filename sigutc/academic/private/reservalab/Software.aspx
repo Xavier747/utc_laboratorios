@@ -132,7 +132,7 @@
                         <div class="col-md-6">
                             <asp:Label ID="lblCantidad" runat="server" Text="Cantidad" CssClass="control-label required"></asp:Label>
                             <asp:TextBox ID="txtCantidad" runat="server" CssClass="form-control custom-input" placeholder="0" TextMode="Number"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="rvf_txtCantidad" runat="server" ControlToValidate="txtCantidad" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
+                            <asp:RequiredFieldValidator ID="rvf_txtCantidad" runat="server" ControlToValidate="txtCantidad" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
                             <asp:RangeValidator ID="rv_Cantidad" runat="server" ControlToValidate="txtCantidad" MinimumValue="1" MaximumValue="50" Type="Integer" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="El número debe estar entre 1 y 50"></asp:RangeValidator>
                         </div>
                     </div>
@@ -187,7 +187,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default border-radius" data-dismiss="modal" onclick="cerrar()">Cerrar</button>
-                    <asp:Button ID="btnGuardar" runat="server" Text="Enviar" ValidationGroup="formNuevoSoft" CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
+                    <asp:Button ID="btnGuardar" runat="server" Text="Enviar" ValidationGroup="formNuevoSoft" CssClass="btn btn-primary" OnClientClick="return validarArchivo();" OnClick="btnGuardar_Click" />
                 </div>
             </div>
         </div>
@@ -274,9 +274,11 @@
 
                     <div class="row">
                         <div class="col-md-6">
+
                             <asp:Label ID="lblCostoAct" runat="server" Text="Costo" CssClass="control-label"></asp:Label>
-                            <asp:TextBox ID="txtCostoAct" runat="server" CssClass="form-control custom-input" placeholder="0.0" TextMode="Number" />
-                            <asp:RangeValidator ID="rv_txtCostoAct" runat="server" ControlToValidate="txtCostoAct" MinimumValue="0" MaximumValue="999999" Type="Double" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="El número debe ser mayor a 0"></asp:RangeValidator>
+                            <asp:TextBox ID="txtCostoAct" runat="server" CssClass="form-control custom-input" placeholder="0.0"></asp:TextBox>
+                            <asp:RangeValidator ID="RangeValidator2" runat="server" ControlToValidate="txtCostoAct" MinimumValue="0" MaximumValue="999999" Type="Double" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="El número debe ser mayor a 0" ></asp:RangeValidator>
+
                         </div>
 
                         <div class="col-md-6">
@@ -302,99 +304,11 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default border-radius" data-dismiss="modal">Cerrar</button>
-                    <asp:Button ID="btnActualizar" runat="server" Text="Actualizar" ValidationGroup="formulario_Act" CssClass="btn btn-primary" OnClick="btnActualizar_Click" />
+                    <asp:Button ID="btnActualizar" runat="server" Text="Actualizar" ValidationGroup="formulario_Act" CssClass="btn btn-primary" OnClientClick="return validarImagen();" OnClick="btnActualizar_Click" />
                 </div>
             </div>
         </div>
     </div>
-
-
-  <%--  <div class="modal fade" id="form_actualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog  modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="modalActSoftware">Actualizar Software</h4>
-                    <asp:Label ID="lblIdSoftAct" runat="server" Text="" Visible="false"></asp:Label>
-                </div>
-                <div class="modal-body">
-                    <div class="row" id="Div1" runat="server">
-                        <asp:UpdatePanel ID="UpdatePanel4" runat="server">
-                            <ContentTemplate>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblSedeAct" runat="server" Text="Sedes" CssClass="control-label required"></asp:Label>
-                                    <asp:DropDownList ID="ddlSedeAct" runat="server" CssClass="form-control custom-input" AutoPostBack="True" OnSelectedIndexChanged="ddlSedeAct_SelectedIndexChanged"></asp:DropDownList>
-                                    <asp:RequiredFieldValidator ID="rfv_ddlSedeAct" runat="server" ControlToValidate="ddlSedeAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
-                                </div>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblFacultadAct" runat="server" Text="Facultades" CssClass="control-label required"></asp:Label>
-                                    <asp:DropDownList ID="ddlFacultadAct" runat="server" CssClass="form-control custom-input"></asp:DropDownList>
-                                    <asp:RequiredFieldValidator ID="rfv_ddlFacultadAct" runat="server" ControlToValidate="ddlFacultadAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" InitialValue="" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>
-                                </div>
-                            </ContentTemplate>
-                            <Triggers>
-                                <asp:AsyncPostBackTrigger ControlID="ddlSede" EventName="SelectedIndexChanged" />
-                            </Triggers>
-                        </asp:UpdatePanel>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <asp:Label ID="lblNombreAct" runat="server" Text="Nombre" CssClass="control-label required"></asp:Label>
-                            <asp:TextBox ID="txtNombreAct" runat="server" CssClass="form-control custom-input" placeholder="Nombre"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="rfv_txtNombreAct" runat="server" ControlToValidate="txtNombreAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
-                        </div>
-                        <div class="col-md-6">
-                            <asp:Label ID="lblCantidadAct" runat="server" Text="Cantidad" CssClass="control-label required"></asp:Label>
-                            <asp:TextBox ID="txtCantidadAct" runat="server" CssClass="form-control custom-input" placeholder="0" TextMode="Number"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="rfv_txtCantidadAct" runat="server" ControlToValidate="txtCantidadAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
-                            <asp:RangeValidator ID="rv_txtCantidadAct" runat="server" ControlToValidate="txtCantidadAct" MinimumValue="1" MaximumValue="50" Type="Integer" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="El número debe estar entre 1 y 50"></asp:RangeValidator>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <asp:UpdatePanel ID="UpdatePanel2" runat="server">
-                            <ContentTemplate>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblTipoAct" runat="server" Text="Tipo de licencia" CssClass="control-label required"></asp:Label>
-                                    <asp:DropDownList ID="ddlTipoAct" runat="server" CssClass="form-control custom-input" AutoPostBack="true" OnSelectedIndexChanged="ddlTipoAct_SelectedIndexChanged"></asp:DropDownList>
-                                    <asp:RequiredFieldValidator ID="rfv_ddlTipoAct" runat="server" ControlToValidate="ddlTipoAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Seleccione una opción"></asp:RequiredFieldValidator>  
-                                </div>
-                                <div class="col-md-6">
-                                    <div id="content_NombreLicenciaAct" runat="server" visible="false">
-                                        <asp:Label ID="lblNombreLicenciaAct" runat="server" Text="Nombre de la licencia" CssClass="control-label required"></asp:Label>
-                                        <asp:TextBox ID="txtNombreLicenciaAct" runat="server" CssClass="form-control custom-input text-multiple" TextMode="MultiLine" Rows="2"></asp:TextBox>
-                                        <asp:RequiredFieldValidator ID="rfv_txtNombreLicenciaAct" runat="server" ControlToValidate="txtNombreLicenciaAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
-                                    </div>                      
-                                </div>
-                            </ContentTemplate>
-                        </asp:UpdatePanel>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <asp:Label ID="lblCostoAct" runat="server" Text="Costo" CssClass="control-label"></asp:Label>
-                            <asp:TextBox ID="txtCostoAct" runat="server" CssClass="form-control custom-input" placeholder="0.0"></asp:TextBox>
-                            <asp:RangeValidator ID="RangeValidator2" runat="server" ControlToValidate="txtCostoAct" MinimumValue="0" MaximumValue="999999" Type="Double" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="El número debe ser mayor a 0" ></asp:RangeValidator>
-
-                            <asp:Label ID="lblDescripcionAct" runat="server" Text="Descripcion" CssClass="control-label required"></asp:Label>
-                            <asp:TextBox ID="txtDescripcionAct" runat="server" CssClass="form-control custom-input text-multiple" placeholder="Descripcion" TextMode="MultiLine" Rows="6"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="rfv_txtDescripcionAct" runat="server" ControlToValidate="txtDescripcionAct" CssClass="alert alert-danger form-control" ValidationGroup="formulario_Act" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
-
-                            <asp:Label ID="lblLinkAct" runat="server" Text="Link de descarga" CssClass="control-label"></asp:Label>
-                            <asp:TextBox ID="txtLinkAct" runat="server" CssClass="form-control custom-input" placeholder="www.google.com" TextMode="Url"></asp:TextBox>
-                        </div>                                
-                        <div class="col-md-6">
-                            <asp:Label ID="lblImg1Act" runat="server" Text="Fotografía 1" CssClass="control-label"></asp:Label>
-                            <asp:FileUpload ID="fulImg1Act" runat="server" CausesValidation="true" CssClass="file" accept="image/*" data-show-upload="false"/>
-                            <asp:Label ID="lblImg1NameAct" runat="server" Text="" Visible="false"></asp:Label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default border-radius" data-dismiss="modal">Cerrar</button>
-                    <asp:Button ID="btnActualizar" runat="server" Text="Actualizar" ValidationGroup="formulario_Act" CssClass="btn btn-success" OnClick="btnActualizar_Click" />
-                </div>
-            </div>
-        </div>
-    </div>--%>
 
     <!-- Ventana Modal Imagen-->
     <div class="modal fade" id="view-image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -415,6 +329,58 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
 
     <script>
+        function validarArchivo() {
+            var input1 = document.getElementById('<%= fulImg1.ClientID %>');
+
+         
+            var maxMB = 4; // Límite permitido (ajustable)
+            if (input1.files.length > 0 ) {
+                var file1 = input1.files[0];
+                var sizeMB1 = file1.size / (1024 * 1024);               
+               if (sizeMB1 > maxMB) {
+                    showAlertImageBig("La imagen 1 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
+                    return false; // evita que se envíe el formulario
+                }
+            }
+            return true; // permite enviar si pasa la validación
+        }
+        
+        function validarImagen() {
+            var input1 = document.getElementById('<%= fulImg1Act.ClientID %>');
+
+         
+            var maxMB = 4; // Límite permitido (ajustable)
+            if (input1.files.length > 0 ) {
+                var file1 = input1.files[0];
+                var sizeMB1 = file1.size / (1024 * 1024);               
+               if (sizeMB1 > maxMB) {
+                    showAlertImageBig("La imagen 1 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
+                    return false; // evita que se envíe el formulario
+                }
+            }
+            return true; // permite enviar si pasa la validación
+        }
+
+
+        //Notificacion imagen muy grande
+        function showAlertImageBig(title, icon) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            });
+
+            Toast.fire({
+                icon: icon,
+                title: title
+            });
+        }
 
         function showAlertAndReload(title, icon) {
             const Toast = Swal.mixin({
