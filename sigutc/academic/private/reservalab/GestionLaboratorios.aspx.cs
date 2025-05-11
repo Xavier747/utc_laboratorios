@@ -620,15 +620,15 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
         foreach (string codSoftware in softwaresEliminados)
         {
-            softLab.dtFecha_log = DateTime.Now;
-            softLab.strUser_log = Context.User.Identity.Name;
+            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
+            string strUser_log = Context.User.Identity.Name;
             string strCod_lab = lblCodeLabAct.Text;
             string strCod_sof = codSoftware;
             string idSoftLab = consultarSoftwareLaboratorio(strCod_lab, strCod_sof);
             if (idSoftLab != "")
             {
                 softLab.strCod_labSoft = idSoftLab;
-                softLab.DelLAB_LABSOFTWARE(tipoConsulta, strCod_lab, strCod_sof, "", "");
+                softLab.DelLAB_LABSOFTWARE(tipoConsulta, strCod_lab, strCod_sof, dtFecha_log, strUser_log);
             }
         }
 
