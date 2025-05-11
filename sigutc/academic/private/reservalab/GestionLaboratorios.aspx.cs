@@ -72,9 +72,11 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         if (e.CommandName == "Eliminar")
         {
             string codLab = e.CommandArgument.ToString();
+            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
+            string strUser_log = Context.User.Identity.Name;
 
             //Carga los detalles del laboratorio según el ID seleccionado
-            laboratorio2.DelLAB_LABORATORIOS("xPkLab", codLab, "", "", "");
+            laboratorio2.DelLAB_LABORATORIOS("xPkLab", codLab, dtFecha_log, strUser_log, "");
 
             string title = laboratorio2.resultado ? laboratorio2.msg : laboratorio2.msg;
             string icon = laboratorio2.resultado ? "success" : "error";
