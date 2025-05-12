@@ -810,7 +810,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             responsable1.decObs2_respo = -1;
             responsable1.dtObs1_respo = DateTime.Parse("1900-01-01");
             responsable1.dtObs2_respo = DateTime.Parse("1900-01-01");
-            responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
 
             responsable1.AddLAB_RESPONSABLE(responsable1);
         }
@@ -866,109 +866,133 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     protected void btnActualizar_Click(object sender, EventArgs e)
     {
-        string tipoResp = "";
-        DateTime fecha = DateTime.Now;
+        string tipoResp = ""; 
 
         if (lblCedulaRespAdmin.Text != ddlRespAdminActualizar.SelectedValue && lblCedulaRespAcad.Text != ddlRespAcadActualizar.SelectedValue)
         {
             object[] codResp = { lblIdRespAdmin.Text, lblIdRespAcad.Text };
-            //tipoConsulta = "xFKLaboratorio";
-            responsable1.dtFecha_log = fecha;
-            responsable1.strUser_log = Context.User.Identity.Name;
+            string tipoConsulta = "xFKLaboratorio";
+            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
+            string strUser_log = Context.User.Identity.Name;
 
             for (int i = 0; i < 2; i++)
             {
-                responsable1.strCod_respo = codResp[i].ToString();
-                responsable1.strTipo_respo = "";
-                responsable1.UpdateLAB_RESPONSABLE(responsable1);
+                string strCod_respo = codResp[i].ToString();
+                responsable1.DeleteLAB_RESPONSABLE(tipoConsulta, dtFecha_log, strUser_log, strCod_respo, "");
             }
 
             responsable1.strCod_lab = lblCodLab.Text;
-            //actualizarLaboratorista(tipoConsulta, tipoResp);
+            actualizarLaboratorista(tipoConsulta, tipoResp);
         }
         else if (lblCedulaRespAdmin.Text == ddlRespAdminActualizar.SelectedValue && lblCedulaRespAcad.Text != ddlRespAcadActualizar.SelectedValue)
         {
-            //tipoConsulta = "xTipoResponsable";
+            string tipoConsulta = "xTipoResponsable";
             tipoResp = "Academico";
 
-            responsable1.strTipo_respo = "Responsable Academico";
-            responsable1.dtFecha_log = DateTime.Now;
-            responsable1.strUser_log = Context.User.Identity.Name;
-            responsable1.strCod_respo = lblIdRespAcad.Text;
-            responsable1.UpdateLAB_RESPONSABLE(responsable1);
+            string strTipo_respo = "Responsable Academico";
+            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
+            string strUser_log = Context.User.Identity.Name;
+            string strCod_respo = lblIdRespAcad.Text;
+            responsable1.DeleteLAB_RESPONSABLE(tipoConsulta, dtFecha_log, strUser_log, strCod_respo, strTipo_respo);
 
             responsable1.strCod_lab = lblCodLab.Text;
-            //actualizarLaboratorista(tipoConsulta, tipoResp);
+            actualizarLaboratorista(tipoConsulta, tipoResp);
         }
         else if (lblCedulaRespAdmin.Text != ddlRespAdminActualizar.SelectedValue && lblCedulaRespAcad.Text == ddlRespAcadActualizar.SelectedValue)
         {
-            //tipoConsulta = "xTipoResponsable";
+            string tipoConsulta = "xTipoResponsable";
             tipoResp = "Administrativo";
 
-            responsable1.strTipo_respo = "Responsable Administrativo";
-            responsable1.dtFecha_log = DateTime.Now;
-            responsable1.strUser_log = Context.User.Identity.Name;
-            responsable1.strCod_respo = lblIdRespAdmin.Text;
-            responsable1.UpdateLAB_RESPONSABLE(responsable1);
-
-            responsable1.strCod_res = ddlRespAdminActualizar.SelectedValue;
+            string strTipo_respo = "Responsable Administrativo";
+            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
+            string strUser_log = Context.User.Identity.Name;
+            string strCod_respo = lblIdRespAcad.Text;
+            responsable1.DeleteLAB_RESPONSABLE(tipoConsulta, dtFecha_log, strUser_log, strCod_respo, strTipo_respo);
+            
             responsable1.strCod_lab = lblCodLab.Text;
-            //actualizarLaboratorista(tipoConsulta, tipoResp);
+            actualizarLaboratorista(tipoConsulta, tipoResp);
         }
     }
 
     public void actualizarLaboratorista(string comodin, string tipoResp)
     {
-        int count = 0;
-        bool guardado = true;
-
         if (comodin == "xFKLaboratorio")
         {
             object[] tipoResponsable = { "Responsable Administrativo", "Responsable Academico" };
 
             for (int i = 0; i < 2; i++)
             {
+
+                responsable1.strCod_res = i % 2 == 0 ? ddlRespAdminActualizar.SelectedValue : ddlRespAcadActualizar.SelectedValue;
                 responsable1.strTipo_respo = tipoResponsable[i].ToString();
                 responsable1.dtFechaInicio_respo = DateTime.Now;
+                responsable1.bitEstado_respo = true;
                 responsable1.dtFecha_log = DateTime.Now;
-                responsable1.strCod_res = i % 2 == 0 ? ddlRespAdminActualizar.SelectedValue : ddlRespAcadActualizar.SelectedValue;
-                responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"); ;
+                responsable1.strUser_log = Context.User.Identity.Name;
+                responsable1.strObs1_respo = string.Empty;
+                responsable1.strObs2_respo = string.Empty;
+                responsable1.bitObs1_respo = false;
+                responsable1.bitObs2_respo = false;
+                responsable1.decObs1_respo = -1;
+                responsable1.decObs2_respo = -1;
+                responsable1.dtObs1_respo = DateTime.Parse("1900-01-01");
+                responsable1.dtObs2_respo = DateTime.Parse("1900-01-01");
+                responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff"); ;
 
                 responsable1.AddLAB_RESPONSABLE(responsable1);
-
-                if (guardado == true) ++count;
             }
 
-            title = count == 2 ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-            icon = count == 2 ? "success" : "error";
+            title = responsable1.resultado ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
+            icon = responsable1.resultado ? "success" : "error";
 
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
         else if (comodin == "xTipoResponsable" && tipoResp == "Academico")
         {
-            responsable1.dtFechaInicio_respo = DateTime.Now;
-            responsable1.dtFecha_log = DateTime.Now;
             responsable1.strCod_res = ddlRespAcadActualizar.SelectedValue;
-            responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"); ;
+            responsable1.dtFechaInicio_respo = DateTime.Now;
+            responsable1.bitEstado_respo = true;
+            responsable1.dtFecha_log = DateTime.Now;
+            responsable1.strUser_log = Context.User.Identity.Name;
+            responsable1.strObs1_respo = string.Empty;
+            responsable1.strObs2_respo = string.Empty;
+            responsable1.bitObs1_respo = false;
+            responsable1.bitObs2_respo = false;
+            responsable1.decObs1_respo = -1;
+            responsable1.decObs2_respo = -1;
+            responsable1.dtObs1_respo = DateTime.Parse("1900-01-01");
+            responsable1.dtObs2_respo = DateTime.Parse("1900-01-01");
+            responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff"); ;
 
             responsable1.AddLAB_RESPONSABLE(responsable1);
 
-            title = guardado == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-            icon = guardado == true ? "success" : "error";
+            title = responsable1.resultado ? responsable1.msg : responsable1.msg;
+            icon = responsable1.resultado ? "success" : "error";
 
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
         else if (comodin == "xTipoResponsable" && tipoResp == "Administrativo")
         {
+            responsable1.strCod_res = ddlRespAdminActualizar.SelectedValue;
             responsable1.dtFechaInicio_respo = DateTime.Now;
+            responsable1.bitEstado_respo = true;
             responsable1.dtFecha_log = DateTime.Now;
-            responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"); ;
+            responsable1.strUser_log = Context.User.Identity.Name;
+            responsable1.strObs1_respo = string.Empty;
+            responsable1.strObs2_respo = string.Empty;
+            responsable1.bitObs1_respo = false;
+            responsable1.bitObs2_respo = false;
+            responsable1.decObs1_respo = -1;
+            responsable1.decObs2_respo = -1;
+            responsable1.dtObs1_respo = DateTime.Parse("1900-01-01");
+            responsable1.dtObs2_respo = DateTime.Parse("1900-01-01");
+            responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff"); ;
             responsable1.AddLAB_RESPONSABLE(responsable1);
 
-            title = guardado == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-            icon = guardado == true ? "success" : "error";
+            title = responsable1.resultado ? responsable1.msg : responsable1.msg;
+            icon = responsable1.resultado ? "success" : "error";
 
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
