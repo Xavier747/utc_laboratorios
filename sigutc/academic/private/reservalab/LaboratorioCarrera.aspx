@@ -6,7 +6,7 @@
     Laboratorio exclusivo
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
-    <h4 id="nombreLboratorio" runat="server" class="text-center"></h4>
+    <h5 id="nombreLboratorio" runat="server" class="text-center"></h5>
     <hr />
     <div class="container">
         <label><b>SELECCIONE UNA CARRERA</b></label>

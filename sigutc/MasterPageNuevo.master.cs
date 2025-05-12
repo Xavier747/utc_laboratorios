@@ -1688,7 +1688,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
 
     private bool IsDocente(string comodin, string usr1)
     {
-        bool validacion = true;
+        bool validacion = false;
         //llamado al sp
         SqlCommand comandoConsulta = new SqlCommand("loginPlataforma", this.conexion);
         //Envio de parametros
@@ -1727,7 +1727,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
 
     private bool IsLaboratorista(string comodin, string usr1)
     {
-        bool validacion = true;
+        bool validacion = false;
         //llamado al sp
         SqlCommand comandoConsulta = new SqlCommand("loginPlataforma", this.conexion);
         //Envio de parametros
