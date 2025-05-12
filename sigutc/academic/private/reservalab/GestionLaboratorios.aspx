@@ -354,7 +354,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                     <asp:Button ID="btnAsignarResponsable" runat="server" Text="Nuevo" CssClass="btn btn-primary" CommandArgument='<%# Eval("strCod_lab") %>'  OnClick="btnAsignarResponsable_Click"/>
-                    <asp:Button ID="btnActulizarResponsable" runat="server" Text="Actualizar" CssClass="btn btn-warning" CommandArgument='<%# Eval("strCod_lab") %>' OnClick="btnActulizarResponsable_Click"/>
+                    <asp:Button ID="btnActulizarResponsable" runat="server" Text="Editar" CssClass="btn btn-warning" CommandArgument='<%# Eval("strCod_lab") %>' OnClick="btnActulizarResponsable_Click"/>
                 </div>
             </div>
         </div>
