@@ -186,78 +186,29 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         return count;
     }
 
+    public string  consultarExclusivo(string codCar)
+    {
+        var labExclusivo = labExc1.LoadLAB_EXCLUSIVO("xCodCar", codCar, "", "", "");
+        return labExclusivo[0].strCod_labEx;
+    }
 
-
-    //protected void btnGuardar_Click(object sender, EventArgs e)
-    //{
-    //    string tipoConsulta = "xCarreraLabExc";
-
-    //    labExc1.strCod_Car = ddlCarreras.SelectedValue;
-    //    int validar = labExc1.validarCarreraUnico(tipoConsulta);
-
-    //    if (validar == 0)
-    //    {
-    //        Random rand = new Random();
-    //        int num = rand.Next(0, 1000);
-
-    //        laboratorio2.strCod_Lab = Session["laboratorioId"].ToString();
-    //        laboratorio2.listarLaboratorioPorId();
-
-    //        labExc1.dtFechaRegistro_labEx = DateTime.Now;
-    //        labExc1.dtFecha_log = DateTime.Now;
-    //        labExc1.strUser_log = Session["Cedula"].ToString();
-    //        labExc1.strCod_lab = laboratorio2.strCod_Lab;
-    //        labExc1.strCod_Car = ddlCarreras.SelectedValue;
-    //        labExc1.strCod_Fac = laboratorio2.strCod_Fac;
-    //        labExc1.strCod_Sede = laboratorio2.strCod_Sede;
-    //        labExc1.strCod_labEx = laboratorio2.strCod_Sede + '_' + laboratorio2.strCod_Fac + '_' + ddlCarreras.SelectedValue + '_' + num;
-
-    //        bool registro = labExc1.registrarLaboratorioExclusivo();
-
-    //        title = registro == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-    //        icon = registro == true ? "success" : "error";
-    //    }
-    //    else
-    //    {
-    //        title = "La carrera ya se encuentra relaciodado en este laboratorio.";
-    //        icon = "error";
-    //    }
-
-    //    string script = $"showAlertAndReload('{title}', '{icon}');";
-    //    ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
-    //}
 
     protected void gvCarreras_RowCommand(object sender, GridViewCommandEventArgs e)
-{
-    if (e.CommandName == "Eliminar")
     {
-        string codLabEx = e.CommandArgument.ToString();
-
-        // Establece los filtros necesarios para eliminar
-        string tipoConsulta = "xCodLabExclusivo"; // Dependerá del comodín esperado en tu DLL
-        string filtro1 = codLabEx;
-
-        labExc1.dtFecha_log = DateTime.Now;
-        labExc1.strUser_log = Context.User.Identity.Name;
-
-            int eliminado = labExc1.DelLAB_EXCLUSIVO(tipoConsulta, filtro1, "", "", "");
-
-        string title, icon;
-
-        if (eliminado > 0)
+        if (e.CommandName == "Eliminar")
         {
-            title = "Registro eliminado correctamente.";
-            icon = "success";
-            cargarCarrerasExclusivas(); // Recarga el GridView
-        }
-        else
-        {
-            title = "No se pudo eliminar el registro.";
-            icon = "error";
-        }
+            string codCar = e.CommandArgument.ToString();
+            string codLabExc = consultarExclusivo(codCar);
 
-        string script = $"showAlertAndReload('{title}', '{icon}');";
-        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+            string strCod_labEx = codLabExc;
+            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            string strUser_log = Context.User.Identity.Name;
+
+            labExc1.DelLAB_EXCLUSIVO("xLabExclusivo", strCod_labEx, dtFecha_log, strUser_log,"" );
+            string title = labExc1.resultado ? labExc1.msg : labExc1.msg;
+            string icon = labExc1.resultado ? "success" : "error";
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "alert", $"showAlertAndReload('{title}','{icon}');", true);
+        }
     }
-}
 }
