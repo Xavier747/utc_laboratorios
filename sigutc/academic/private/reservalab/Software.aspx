@@ -121,7 +121,7 @@
                             </asp:UpdatePanel>
                         </div>
                     </div>
-
+                    
                     <div class="row">
                         <div class="col-md-6">
                             <asp:Label ID="lblNombre" runat="server" Text="Nombre" CssClass="control-label required"></asp:Label>

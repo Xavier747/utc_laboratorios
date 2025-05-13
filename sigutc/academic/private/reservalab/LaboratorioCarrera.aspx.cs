@@ -10,16 +10,18 @@ using System.Data.SqlClient;
 using ClassLibraryLaboratorios;
 using System.Web.Configuration;
 
+using System.Web.UI.WebControls;
+using ClassLibraryLaboratorios;
+using ClassLibraryTesis;
+
 public partial class academic_private_reservalab_LaboratorioCarrera : System.Web.UI.Page
 {
-    private string title;
-    private string icon;
-
-    //Definicion de las variable de coneccion con la base de datos
-    SqlConnection conexion = new SqlConnection(WebConfigurationManager.AppSettings["conexionBddProductos"]);
+  
 
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_EXCLUSIVO labExc1= new LAB_EXCLUSIVO();
+    UB_CARRERAS car = new UB_CARRERAS();
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -33,73 +35,82 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         }
     }
 
+   
+
     public void cargarLaboratorio()
     {
-        string strCod_lab = Session["laboratorioId"].ToString();
-        var lab = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCod_lab, "", "", "");
-        lblFacultadId.Text = laboratorio2.strCod_Fac;
-        lblSedeId.Text = laboratorio2.strCod_Sede;
+        string strCod_lab = Session["laboratorioId"]?.ToString();
 
-        nombreLboratorio.InnerText = lab[0].strNombre_lab.ToUpper();
+        if (string.IsNullOrEmpty(strCod_lab))
+        {
+            lblMsg.Text = "No se encontró el ID del laboratorio en la sesión.";
+            return;
+        }
+
+        var labList = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCod_lab, "", "", "");
+
+        if (labList != null && labList.Count > 0)
+        {
+            var lab = labList[0];
+
+            lblFacultadId.Text = lab.strCod_Fac;
+            lblSedeId.Text = lab.strCod_Sede;
+            nombreLboratorio.InnerText = lab.strNombre_lab?.ToUpper();
+
+            lblMsg.Text = laboratorio2.msg;
+        }
+        else
+        {
+            lblMsg.Text = "No se encontró información del laboratorio.";
+        }
     }
 
     public void cargarCarreras()
     {
         string tipoConsulta = "xCodLaboratorio";
         string codLab = Session["laboratorioId"].ToString();
+        string facultadId = lblFacultadId.Text;
+        string sedeId = lblSedeId.Text;
 
-        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetUB_CARRERAS", conexion);
-        comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
-        //comandoConsulta.Parameters.AddWithValue("@FILTRO1", lblFacultadId.Text);
-        //comandoConsulta.Parameters.AddWithValue("@FILTRO2", lblSedeId.Text);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
-        comandoConsulta.CommandType = CommandType.StoredProcedure;
-        try
+        // Llamada a tu clase de acceso a datos, como haces con sede.LoadUB_SEDES
+        var listCarreras = car.LoadUB_CARRERAS(tipoConsulta, facultadId, sedeId, codLab, "");
+
+        if (listCarreras.Count != 0)
         {
-            this.conexion.Open();
-            SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
-            DataTable dt = new DataTable();
-            adaptadorAlbum.Fill(dt);
+            ddlCarreras.Items.Clear();
+            ddlCarreras.Items.Add(new ListItem("-- Seleccione una opción --", ""));
 
-            //    ddlCarreras.Items.Clear();
+            foreach (var item in listCarreras)
+            {
+                ddlCarreras.Items.Add(new ListItem(item.strnombre_car, item.strcod_car));
+            }
 
-            //    ddlCarreras.Items.Add(new ListItem("-- Seleccione una opcion --", ""));
-
-            //    foreach (DataRow row in dt.Rows)
-            //    {
-            //        ddlCarreras.Items.Add(new ListItem(row["strNombre_Car"].ToString(), row["strCod_Car"].ToString()));
-            //    }
+            lblMsg.Text = car.msg;
         }
-        catch (Exception ex)
+        else
         {
-            Response.Write("TIENES UN ERROR: " + ex.Message);
+            lblMsg.Text = car.msg;
         }
-        conexion.Close();
     }
-
-    public void cargarCarrerasExclusivas()
+    private void cargarCarrerasExclusivas()
     {
-        string tipoConsulta = "xLabExclusivo";
-        string filtro = Session["laboratorioId"].ToString();
+        var labId = Session["laboratorioId"]?.ToString();
+        if (string.IsNullOrEmpty(labId)) return;
 
-        //DataTable labExc = labExc1.obtenerLaboratorios(tipoConsulta, filtro);
+        string tipoConsulta = "xCarreraLab";
+        var listCarreras = car.LoadUB_CARRERAS(tipoConsulta, labId, "", "", "");
 
-        try
+        if (tipoConsulta.Any())
         {
-            //if (labExc != null && labExc.Rows.Count > 0) // Verificar si tiene datos
-            //{
-            //    gvCarreras.DataSource = labExc;
-            //    gvCarreras.DataBind();
-            //    gvCarreras.AllowPaging = false;
-            //}
-
-            //lblMsgLstRegistros.Visible = labExc != null && labExc.Rows.Count > 0 ? false : true;
+            gvCarreras.DataSource = listCarreras;
+            gvCarreras.DataBind();
+            lblMsgLstRegistros.Visible = false;
         }
-        catch (Exception ex)
+        else
         {
-            // Muestra un error si ocurre
-            Console.WriteLine("ERROR: " + ex.Message);
+            gvCarreras.DataSource = null;
+            gvCarreras.DataBind();
+            lblMsgLstRegistros.Visible = true;
         }
     }
 
@@ -107,55 +118,146 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
     {
         string tipoConsulta = "xCarreraLabExc";
 
-        //labExc1.strCod_Car = ddlCarreras.SelectedValue;
-        ////int validar = labExc1.validarCarreraUnico(tipoConsulta);
-
-        //if (validar == 0)
-        //{
-        //    Random rand = new Random();
-        //    int num = rand.Next(0, 1000);
-
-        //    laboratorio2.strCod_Lab = Session["laboratorioId"].ToString();
-        //    laboratorio2.listarLaboratorioPorId();
-
-        //    labExc1.dtFechaRegistro_labEx = DateTime.Now;
-        //    labExc1.dtFecha_log = DateTime.Now;
-        //    labExc1.strUser_log = Session["Cedula"].ToString();
-        //    labExc1.strCod_lab = laboratorio2.strCod_Lab;
-        //    //labExc1.strCod_Car = ddlCarreras.SelectedValue;
-        //    //labExc1.strCod_Fac = laboratorio2.strCod_Fac;
-        //    //labExc1.strCod_Sede = laboratorio2.strCod_Sede;
-        //    //labExc1.strCod_labEx = laboratorio2.strCod_Sede + '_' + laboratorio2.strCod_Fac + '_' + ddlCarreras.SelectedValue + '_' + num;
-
-        //    bool registro = labExc1.registrarLaboratorioExclusivo();
-
-        //    title = registro == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-        //    icon = registro == true ? "success" : "error";
-        //}
-        //else
-        //{
-        //    title = "La carrera ya se encuentra relaciodado en este laboratorio.";
-        //    icon = "error";
-        //}
-
-        //string script = $"showAlertAndReload('{title}', '{icon}');";
-        //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
-    }
-
-    protected void gvCarreras_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-        if (e.CommandName == "Eliminar")
+        if (string.IsNullOrEmpty(ddlCarreras.SelectedValue))
         {
-            labExc1.strCod_labEx = e.CommandArgument.ToString();
+            string alerta = $"showAlertAndReload('Debe seleccionar una carrera.', 'warning');";
+            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", alerta, true);
+            return;
+        }
+
+        string strCod_Car = ddlCarreras.SelectedValue;
+
+        int validar = validarCarreraUnico(strCod_Car);
+
+        if (validar == 0)
+        {
+            Random rand = new Random();
+            int num = rand.Next(0, 1000);
+
+            string strCod_lab = Session["laboratorioId"].ToString();
+            var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCod_lab, "", "", "");
+            
+            // Llenar datos
+            labExc1.strCod_lab = listLaboratorio[0].strCod_lab;
+            labExc1.strCod_Fac = listLaboratorio[0].strCod_Fac;
+            labExc1.strCod_Sede = listLaboratorio[0].strCod_Sede;
+            labExc1.strCod_Car = ddlCarreras.SelectedValue;
+            labExc1.strCod_labEx = $"{listLaboratorio[0].strCod_Sede}_{listLaboratorio[0].strCod_Fac}_{ddlCarreras.SelectedValue}_{num}";
+
+            labExc1.dtFechaRegistro_labEx = DateTime.Now;
             labExc1.dtFecha_log = DateTime.Now;
-            labExc1.strUser_log = Session["Cedula"].ToString();
-            //bool eliminar = labExc1.eliminarCarrera();
+            labExc1.strUser_log = Context.User.Identity.Name;
+            labExc1.bitEstado_labEx = true;
 
-            //title = eliminar == true ? "Registro eliminado correctamente." : "Registro no eliminado.";
-            //icon = eliminar == true ? "success" : "error";
+            // Valores opcionales (pueden ajustarse si es necesario)
+            labExc1.strObs1_labEx = "";
+            labExc1.strObs2_labEx = "";
+            labExc1.bitObs1_labEx = false;
+            labExc1.bitObs2_labEx = false;
+            labExc1.decObs1_labEx = -1;
+            labExc1.decObs2_labEx = -1;
+            labExc1.dtObs1_labEx = DateTime.Now;
+            labExc1.dtObs2_labEx = DateTime.Now;
 
-            //string script = $"showAlertAndReload('{title}', '{icon}');";
-            //ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+            labExc1.AddLAB_EXCLUSIVO(labExc1);
+
+            string title = labExc1.resultado ? labExc1.msg : labExc1.msg;
+            string icon = labExc1.resultado ? "success" : "error";
+
+            if (labExc1.resultado)
+            {
+                cargarCarrerasExclusivas(); // Recarga el GridView
+            }
+
+            string script = $"showAlertAndReload('{title}', '{icon}');";
+            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        }
+        else
+        {
+            string script = $"showAlertAndReload('La carrera ya se encuentra relacionada con este laboratorio.', 'error');";
+            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
     }
+    public int validarCarreraUnico(string strCod_Car)
+    {
+        string tipoConsulta = "xCarreraExclusivo";
+        var listCarreras = car.LoadUB_CARRERAS(tipoConsulta, strCod_Car, "", "", "");
+        int count = listCarreras.Count;
+        return count;
+    }
+
+
+
+    //protected void btnGuardar_Click(object sender, EventArgs e)
+    //{
+    //    string tipoConsulta = "xCarreraLabExc";
+
+    //    labExc1.strCod_Car = ddlCarreras.SelectedValue;
+    //    int validar = labExc1.validarCarreraUnico(tipoConsulta);
+
+    //    if (validar == 0)
+    //    {
+    //        Random rand = new Random();
+    //        int num = rand.Next(0, 1000);
+
+    //        laboratorio2.strCod_Lab = Session["laboratorioId"].ToString();
+    //        laboratorio2.listarLaboratorioPorId();
+
+    //        labExc1.dtFechaRegistro_labEx = DateTime.Now;
+    //        labExc1.dtFecha_log = DateTime.Now;
+    //        labExc1.strUser_log = Session["Cedula"].ToString();
+    //        labExc1.strCod_lab = laboratorio2.strCod_Lab;
+    //        labExc1.strCod_Car = ddlCarreras.SelectedValue;
+    //        labExc1.strCod_Fac = laboratorio2.strCod_Fac;
+    //        labExc1.strCod_Sede = laboratorio2.strCod_Sede;
+    //        labExc1.strCod_labEx = laboratorio2.strCod_Sede + '_' + laboratorio2.strCod_Fac + '_' + ddlCarreras.SelectedValue + '_' + num;
+
+    //        bool registro = labExc1.registrarLaboratorioExclusivo();
+
+    //        title = registro == true ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
+    //        icon = registro == true ? "success" : "error";
+    //    }
+    //    else
+    //    {
+    //        title = "La carrera ya se encuentra relaciodado en este laboratorio.";
+    //        icon = "error";
+    //    }
+
+    //    string script = $"showAlertAndReload('{title}', '{icon}');";
+    //    ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+    //}
+
+    protected void gvCarreras_RowCommand(object sender, GridViewCommandEventArgs e)
+{
+    if (e.CommandName == "Eliminar")
+    {
+        string codLabEx = e.CommandArgument.ToString();
+
+        // Establece los filtros necesarios para eliminar
+        string tipoConsulta = "xCodLabExclusivo"; // Dependerá del comodín esperado en tu DLL
+        string filtro1 = codLabEx;
+
+        labExc1.dtFecha_log = DateTime.Now;
+        labExc1.strUser_log = Context.User.Identity.Name;
+
+            int eliminado = labExc1.DelLAB_EXCLUSIVO(tipoConsulta, filtro1, "", "", "");
+
+        string title, icon;
+
+        if (eliminado > 0)
+        {
+            title = "Registro eliminado correctamente.";
+            icon = "success";
+            cargarCarrerasExclusivas(); // Recarga el GridView
+        }
+        else
+        {
+            title = "No se pudo eliminar el registro.";
+            icon = "error";
+        }
+
+        string script = $"showAlertAndReload('{title}', '{icon}');";
+        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+    }
+}
 }

@@ -25,6 +25,8 @@
         </button>
         <span class="mensaje">No existen registros</span>
     </div>
+    <asp:Label ID="lblMsg" runat="server" Text="Label"></asp:Label>
+    
     <asp:Label ID="lblFacultadId" runat="server" Text="" Visible="false"></asp:Label>
     <asp:Label ID="lblSedeId" runat="server" Text="" Visible="false"></asp:Label>
     <asp:GridView ID="gvCarreras" runat="server" AutoGenerateColumns="False" OnRowCommand="gvCarreras_RowCommand" CssClass="table table-cielo table-hover tbl-buscador dataTable no-footer">
@@ -33,7 +35,7 @@
             <asp:TemplateField ShowHeader="False" HeaderText="Accion" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center">
                 <ItemTemplate>
                     <!--Boton para eliminar el laboratorio-->
-                    <asp:ImageButton ID="imgbtnDelete" runat="server" CausesValidation="False" CommandName="Eliminar" CssClass="btn btn-danger" ImageUrl="~/images/static/delete.svg" CommandArgument ='<%# Eval("strCod_labEx") %>' OnClientClick="return confirm('¿Seguro que desea eliminar?');" data-toggle="tooltip" data-placement="bottom" title="Eliminar"/>&nbsp;&nbsp;
+                    <asp:ImageButton ID="imgbtnDelete" runat="server" CausesValidation="False" CommandName="Eliminar" CssClass="btn btn-danger" ImageUrl="~/images/static/delete.svg" CommandArgument ='<%# Eval("strCod_Car") %>' OnClientClick="return confirm('¿Seguro que desea eliminar?');" data-toggle="tooltip" data-placement="bottom" title="Eliminar"/>&nbsp;&nbsp;
                 </ItemTemplate>
             </asp:TemplateField>
         </Columns>
