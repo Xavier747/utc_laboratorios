@@ -30,9 +30,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     public static List<string> softwareSeleccionado;
     public static List<string> nuevosSoftwares;
     public static List<string> softwaresActuales;
-    private string filtro;
-    private string title;
-    private string icon;
 
     //Metodo principal de la pagina
     protected void Page_Load(object sender, EventArgs e)
@@ -820,8 +817,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             responsable1.AddLAB_RESPONSABLE(responsable1);
         }
 
-        title = responsable1.resultado ? responsable1.msg : responsable1.msg;
-        icon = responsable1.resultado ? "success" : "error";
+        string title = responsable1.resultado ? responsable1.msg : responsable1.msg;
+        string icon = responsable1.resultado ? "success" : "error";
 
         string script = $"showAlertAndReload('{title}', '{icon}');";
         ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
@@ -946,8 +943,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 responsable1.AddLAB_RESPONSABLE(responsable1);
             }
 
-            title = responsable1.resultado ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
-            icon = responsable1.resultado ? "success" : "error";
+            string title = responsable1.resultado ? "Los datos se han guardado correctamente." : "Los datos no se han guardado correctamente.";
+            string icon = responsable1.resultado ? "success" : "error";
 
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
@@ -971,8 +968,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff"); ;
             responsable1.AddLAB_RESPONSABLE(responsable1);
 
-            title = responsable1.resultado ? responsable1.msg : responsable1.msg;
-            icon = responsable1.resultado ? "success" : "error";
+            string title = responsable1.resultado ? responsable1.msg : responsable1.msg;
+            string icon = responsable1.resultado ? "success" : "error";
 
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
@@ -995,8 +992,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             responsable1.strCod_respo = responsable1.strCod_lab + '_' + responsable1.strCod_res + "_" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff"); ;
             responsable1.AddLAB_RESPONSABLE(responsable1);
 
-            title = responsable1.resultado ? responsable1.msg : responsable1.msg;
-            icon = responsable1.resultado ? "success" : "error";
+            string title = responsable1.resultado ? responsable1.msg : responsable1.msg;
+            string icon = responsable1.resultado ? "success" : "error";
 
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);

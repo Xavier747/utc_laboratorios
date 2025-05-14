@@ -1621,7 +1621,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         docente_labs.Id = "1";
         docente_labs.Nombre = "Laboratorios";
         docente_labs.Usuario = "laboratorio";
-        docente_labs.Url = "/sigutc/laboratorio/docente/laboratorios.aspx";
+        docente_labs.Url = "/academic/private/reservalab/Laboratorios.aspx";
         docente_labs.SubMenu_Master = null;
 
         listSubMenu.Add(docente_labs);
