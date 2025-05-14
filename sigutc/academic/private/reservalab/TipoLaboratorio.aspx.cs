@@ -100,7 +100,7 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
     protected void btn_Actualizar_Click(object sender, EventArgs e)
     {
         tipoLaboratorio1.strCod_tipoLab = lblCodeTipoLabAct.Text;
-        tipoLaboratorio1.strNombre_tipoLab = txtNombreAct.Text;
+        tipoLaboratorio1.strNombre_tipoLab = txtNombreAct.Text.ToUpper();
         tipoLaboratorio1.dtFecha_log = DateTime.Now;
         tipoLaboratorio1.strUser_log = Context.User.Identity.Name;
 

@@ -72,34 +72,34 @@ public partial class academic_private_reservalab_ReservaLaboratorio : System.Web
 
     public void llenarDocenteSolicitante()
     {
-        string tipoConsulta = "xCEDULA";
-        string cedulaAlum = Session["Cedula"].ToString();
+        //string tipoConsulta = "xCEDULA";
+        //string cedulaAlum = Session["Cedula"].ToString();
 
-        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetPERSONAL", conexion);
-        comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO1", cedulaAlum);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
-        comandoConsulta.CommandType = CommandType.StoredProcedure;
-        try
-        {
-            this.conexion.Open();
-            SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
-            DataTable dt = new DataTable();
-            adaptadorAlbum.Fill(dt);
+        //SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetPERSONAL", conexion);
+        //comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
+        //comandoConsulta.Parameters.AddWithValue("@FILTRO1", cedulaAlum);
+        //comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
+        //comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
+        //comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
+        //comandoConsulta.CommandType = CommandType.StoredProcedure;
+        //try
+        //{
+        //    this.conexion.Open();
+        //    SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
+        //    DataTable dt = new DataTable();
+        //    adaptadorAlbum.Fill(dt);
 
-            foreach (DataRow row in dt.Rows)
-            {
-                //txtEmail.Text = row["CORREO_ALU"].ToString();
-                //txtNombreSolicitante.Text = row["Responsable"].ToString();
-            }
-        }
-        catch (Exception ex)
-        {
-            Response.Write("TIENES UN ERROR: " + ex.Message);
-        }
-        conexion.Close();
+        //    foreach (DataRow row in dt.Rows)
+        //    {
+        //        //txtEmail.Text = row["CORREO_ALU"].ToString();
+        //        //txtNombreSolicitante.Text = row["Responsable"].ToString();
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    Response.Write("TIENES UN ERROR: " + ex.Message);
+        //}
+        //conexion.Close();
     }
 
     private void llenarTipoMotivo()
