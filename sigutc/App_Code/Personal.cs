@@ -75,29 +75,22 @@ public class Personal
         try
         {
             conexion.Open();
-            SqlDataAdapter adaptador = new SqlDataAdapter(comandoConsulta);
-            DataTable dt = new DataTable();
-            adaptador.Fill(dt);
+            SqlDataReader reader1 = comandoConsulta.ExecuteReader();
 
-            foreach (DataRow row in dt.Rows)
+            while (reader1.Read())
             {
-                Personal per = new Personal();
-
-                per.CEDULA_ALU = row["CEDULA_ALU"].ToString();
-                per.APELLIDO_ALU = row["APELLIDO_ALU"].ToString();
-                per.APELLIDOM_ALU = row["APELLIDOM_ALU"].ToString();
-                per.NOMBRE_ALU = row["NOMBRE_ALU"].ToString();
-
-                if (dt.Columns.Contains("IMAGEN_ALU"))
-                    per.IMAGEN_ALU = row["IMAGEN_ALU"]?.ToString();
-
-                if (dt.Columns.Contains("CORREO_ALU"))
-                    per.CORREO_ALU = row["CORREO_ALU"]?.ToString();
-
-                if (dt.Columns.Contains("strContraseña_Per"))
-                    per.strContraseña_Per = row["strContraseña_Per"]?.ToString();
-
-                listPersonal.Add(per);
+                listPersonal.Add(
+                    new Personal
+                    {
+                        CEDULA_ALU = reader1["CEDULA_ALU"].ToString(),
+                        APELLIDO_ALU = reader1["APELLIDO_ALU"].ToString(),
+                        APELLIDOM_ALU = reader1["APELLIDOM_ALU"].ToString(),
+                        NOMBRE_ALU = reader1["NOMBRE_ALU"].ToString(),
+                        IMAGEN_ALU = reader1["IMAGEN_ALU"].ToString(),
+                        CORREO_ALU = reader1["CORREO_ALU"].ToString(),
+                        strContraseña_Per = reader1["strContraseña_Per"].ToString()
+                    }
+                    );
             }
         }
         catch (Exception ex)

@@ -688,13 +688,13 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             string cedula = responsable[i].strCod_res;
             if (responsable[i].strTipo_respo == "Responsable Academico")
             {
-                var personal = personal1.LoadPersonal("xCEDULA", cedula, "", "", "");
-                txtRespAcad.Text = personal[0].NOMBRE_ALU;
+                var personal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
+                txtRespAcad.Text = personal[0].nombre_alu;
             } 
             else if (responsable[i].strTipo_respo == "Responsable Administrativo")
             {
-                var personal = personal1.LoadPersonal("xCEDULA", cedula, "", "", "");
-                txtRespAdmin.Text = personal[0].NOMBRE_ALU;
+                var personal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
+                txtRespAdmin.Text = personal[0].nombre_alu;
             }
         }
 
@@ -738,7 +738,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string codSede = laboratorio[0].strCod_Sede;
         string codFacultad = laboratorio[0].strCod_Fac;
 
-        var laboratorista = personal1.LoadPersonal(tipoConsulta, codFacultad, codSede, "", "");
+        var laboratorista = personal1.Load_PERSONAL(tipoConsulta, codFacultad, codSede, "", "");
 
         if(laboratorista.Count > 0)
         {
@@ -748,7 +748,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             ddlRespAdminNuevo.DataBind();
         }
 
-        var docente = personal1.LoadPersonal("xDocente", codFacultad, codSede, "", "");
+        var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
 
         if (docente.Count > 0)
         {
@@ -770,7 +770,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string codSede = laboratorio[0].strCod_Sede;
         string codFacultad = laboratorio[0].strCod_Fac;
 
-        var laboratorista = personal1.LoadPersonal(tipoConsulta, codFacultad, codSede, "", "");
+        var laboratorista = personal1.Load_PERSONAL(tipoConsulta, codFacultad, codSede, "", "");
 
         if (laboratorista.Count > 0)
         {
@@ -780,7 +780,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             ddlRespAdminActualizar.DataBind();
         }
 
-        var docente = personal1.LoadPersonal("xDocente", codFacultad, codSede, "", "");
+        var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
 
         if (docente.Count > 0)
         {
@@ -998,55 +998,5 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
-    }
-}
-
-class Personal
-{
-    public string CEDULA_ALU { get; set; }
-    public string NOMBRE_ALU { get; set; }
-    public string CORREO_ALU { get; set; }
-    public string IMAGEN_ALU { get; set; }
-
-    public Personal(){}
-
-    public List<Personal> LoadPersonal(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
-    {
-        var listPersonal = new List<Personal>();
-
-        SqlConnection conexion = new SqlConnection(WebConfigurationManager.AppSettings["conexionBddProductos"]);
-        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetPERSONAL", conexion);
-        comandoConsulta.Parameters.AddWithValue("@Comodin", comodin);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO1", filtro1);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO2", filtro2);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO3", filtro3);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO4", filtro4);
-        comandoConsulta.CommandType = CommandType.StoredProcedure;
-        try
-        {
-            conexion.Open();
-            SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
-            DataTable dt = new DataTable();
-            adaptadorAlbum.Fill(dt);
-
-            foreach (DataRow row in dt.Rows)
-            {
-                listPersonal.Add(
-                    new Personal
-                    {
-                        CEDULA_ALU = row["CEDULA_ALU"].ToString(),
-                        NOMBRE_ALU = row["APELLIDO_ALU"].ToString() + " " + row["APELLIDOM_ALU"].ToString() + " " + row["NOMBRE_ALU"].ToString(),
-                        IMAGEN_ALU = row["IMAGEN_ALU"].ToString(),
-                        CORREO_ALU = row["CORREO_ALU"].ToString()
-                    }
-                );
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.Write("TIENES UN ERROR: " + ex.Message);
-        }
-        conexion.Close();
-        return listPersonal;
     }
 }
