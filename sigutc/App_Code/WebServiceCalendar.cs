@@ -56,6 +56,14 @@ public class WebServiceCalendar : System.Web.Services.WebService
     public string ObtenerHorario(string asignaturaId, string dia)
     {
         List<SIG_HORAS> listHoras = horas1.Load_SG_HORAS("xCodMat", asignaturaId, dia, "", "");
+
+        var resultado = listHoras.Select(horas => new
+        {
+
+        }
+
+            )
+
         return "";
     }
 

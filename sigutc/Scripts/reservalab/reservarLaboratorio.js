@@ -37,8 +37,7 @@
 
             var selectMateria = $("#selectAsignatura").val();
             consultarHorario(selectMateria, dia, function(data){
-                //cargarMaterias(data);
-                console.log(data);
+
             });
 
         },
