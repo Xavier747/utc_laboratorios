@@ -166,7 +166,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
         if (e.CommandName == "Reservar")
         {
             Session["laboratorioId"] = e.CommandArgument.ToString();
-            Response.Redirect("ReservaLaboratorio.aspx");
+            Response.Redirect("~/academic/public/ReservaLaboratorio.aspx");
         }
         else if (e.CommandName == "Informacion")
         {
