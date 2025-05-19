@@ -56,7 +56,7 @@
                             <ItemTemplate>
                                 <div style="display:flex;">
                                     <!--Boton que refleja formulario para actualizar el laboratorio-->
-                                    <asp:Button ID="btnSelect" runat="server" Text="Editar"   CommandName="Select" CssClass="btn btn-warning"  CommandArgument ='<%# Eval("strCod_sof") %>'  />
+                                    <asp:Button ID="btnSelect" runat="server" Text="Editar"   CommandName="Select" CssClass="btn btn-warning"  CommandArgument ='<%# Eval("strCod_sof") %>'  /> &nbsp; &nbsp;
                                 
                                     <!--Boton para eliminar el laboratorio-->
                                     <asp:Button ID="btnDelete" runat="server" Text="Eliminar"  CommandName="Eliminar" CssClass="btn btn-danger"  CommandArgument ='<%# Eval("strCod_sof") %>' OnClientClick="return confirm('¿Seguro que desea eliminar?');" />
@@ -169,7 +169,7 @@
                         </div>                                
                         <div class="col-md-6">
                             <asp:Label ID="lblImg1" runat="server" Text="Fotografía 1" CssClass="control-label required"></asp:Label>
-                            <asp:FileUpload ID="fulImg1" runat="server" CausesValidation="true" CssClass="file" accept="image/*" data-show-upload="false"/>
+                            <asp:FileUpload ID="fulImg1" runat="server" CausesValidation="true" CssClass="form-control" accept="image/*" data-show-upload="false"/>
                             <asp:RequiredFieldValidator ID="rfv_img1" runat="server" ControlToValidate="fulImg1" CssClass="alert alert-danger form-control" ValidationGroup="formNuevoSoft" ErrorMessage="Campo requerido"></asp:RequiredFieldValidator>
                         </div>
                     </div>
@@ -283,7 +283,7 @@
 
                         <div class="col-md-6">
                              <asp:Label ID="lblImg1Act" runat="server" Text="Fotografía 1" CssClass="control-label"></asp:Label>
-                            <asp:FileUpload ID="fulImg1Act" runat="server" CausesValidation="true" CssClass="file" accept="image/*" data-show-upload="false"/>
+                            <asp:FileUpload ID="fulImg1Act" runat="server" CausesValidation="true" CssClass="form-control" accept="image/*" data-show-upload="false"/>
                             <asp:Label ID="lblImg1NameAct" runat="server" Text="" Visible="false"></asp:Label>                            
                         </div>
                     </div>
