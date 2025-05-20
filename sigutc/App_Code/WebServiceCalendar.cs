@@ -21,6 +21,8 @@ public class WebServiceCalendar : System.Web.Services.WebService
     Personal personal1 = new Personal();
     MATERIAS materia1 = new MATERIAS();
     SIG_HORAS horas1 = new SIG_HORAS();
+    CURSO cuso1 = new CURSO();
+    UB_CARRERAS carrera1 = new UB_CARRERAS();
     
 
     public WebServiceCalendar()
@@ -66,5 +68,35 @@ public class WebServiceCalendar : System.Web.Services.WebService
 
         return JsonConvert.SerializeObject(resultado);
     }
+
+    [WebMethod]
+    public string ObtenerCiclo(string asignaturaId)
+    {
+        List<CURSO> listCurso = cuso1.Load_CURSO("xAsignatura", asignaturaId, "", "", "");
+
+        var resultado = listCurso.Select(ciclo => new
+        {
+            strcod_curso = ciclo.strcod_curso,
+            strcod_per = ciclo.strcod_per,
+            strnombre_curso = ciclo.strnombre_curso,
+            strparalelo_curso = ciclo.strparalelo_curso
+        });
+
+        return JsonConvert.SerializeObject(resultado);
+    }
+
+    [WebMethod]
+    public string ObtenerCarrera(string asignaturaId)
+    {
+        List<UB_CARRERAS> listCarrera = carrera1.LoadUB_CARRERAS("xAsignatura", asignaturaId, "", "", "");
+
+        var resultado = listCarrera.Select(carrera => new
+        {
+            strnombre_car = carrera.strnombre_car
+        });
+
+        return JsonConvert.SerializeObject(resultado);
+    }
+
 
 }

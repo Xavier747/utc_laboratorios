@@ -46,7 +46,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 consultarCiclo(selectMateria, function(data){
                     const txtCiclo = $("#txtCiclo");
-                    cargarHora(data, txtCiclo);
+                    const txtParalelo = $("#txtParalelo");
+                    cargarCiclo(data, txtCiclo, txtParalelo);
+                });
+
+                consultarCarrera(selectMateria, function(data){
+                    const txtCarrera = $("#txtCarrera");
+                    cargarCarrera(data, txtCarrera);
                 });
             });
 
@@ -87,7 +93,23 @@ document.addEventListener('DOMContentLoaded', function () {
 $(document).ready(function () {
     $("#selectAsignatura").on('change', function () {
         var asignaturaId = this.value; // Capturar el valor seleccionado
-        consultarHorario(asignaturaId, dia);
+        consultarHorario(asignaturaId, dia, function(data){
+            const dropdown = $("#selectHoraInicio");
+            cargarHora(data, dropdown);
+
+            selectMateria = $('#selectAsignatura').val();
+
+            consultarCiclo(selectMateria, function(data){
+                const txtCiclo = $("#txtCiclo");
+                const txtParalelo = $("#txtParalelo");
+                cargarCiclo(data, txtCiclo, txtParalelo);
+            });
+
+            consultarCarrera(selectMateria, function(data){
+                const txtCarrera = $("#txtCarrera");
+                cargarCarrera(data, txtCarrera);
+            });
+        });
     });
 
     $('#selectHoraInicio').on('change', function () {
@@ -107,7 +129,7 @@ $(document).ready(function () {
     });
 });
 
-function consultarAsignatura(dia, callback){
+function consultarAsignatura(asignaturaId, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
@@ -135,6 +157,48 @@ function consultarHorario(asignaturaId, dia, callback){
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerHorario",
         // Enviar la fecha como parámetro
         data: JSON.stringify({ asignaturaId: asignaturaId, dia: dia }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            var data = JSON.parse(response.d);
+            callback(data);
+        },
+        error: function (xhr, status, error) {
+            console.log("Status: " + xhr.status);
+            console.log("Response: " + xhr.responseText);
+            callback([]);
+        }
+    });
+}
+
+function consultarCiclo(asignaturaId, callback){
+    $.ajax({
+        type: "POST",
+        // Página y método del backend que procesará la solicitud
+        url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerCiclo",
+        // Enviar la fecha como parámetro
+        data: JSON.stringify({ asignaturaId: asignaturaId }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            var data = JSON.parse(response.d);
+            callback(data);
+        },
+        error: function (xhr, status, error) {
+            console.log("Status: " + xhr.status);
+            console.log("Response: " + xhr.responseText);
+            callback([]);
+        }
+    });
+}
+
+function consultarCarrera(asignaturaId, callback){
+    $.ajax({
+        type: "POST",
+        // Página y método del backend que procesará la solicitud
+        url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerCarrera",
+        // Enviar la fecha como parámetro
+        data: JSON.stringify({ asignaturaId: asignaturaId }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -198,6 +262,22 @@ function cargarHoraFin(op, data, dropdown){
             }
         }
     }
+}
+
+function cargarCiclo(data, input1, input2){
+    input1.empty();
+    input2.empty();
+
+    // Crear opción por cada elemento de la lista
+    input1.val(data[0].strnombre_curso);
+    input2.val(data[0].strparalelo_curso);
+}
+
+function cargarCarrera(data, input1){
+    input1.empty();
+
+    // Crear opción por cada elemento de la lista
+    input1.val(data[0].strnombre_car);
 }
 
 function convertirHora(fechaCompleta){

@@ -41,7 +41,7 @@ public class CURSO
     {
         List<CURSO> listCursos = new List<CURSO>();
         SqlConnection conexion = new SqlConnection(WebConfigurationManager.AppSettings["conexionBddProductos"]);
-        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetCURSO", conexion);
+        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetAC_CURSOS", conexion);
         comandoConsulta.CommandType = CommandType.StoredProcedure;
 
         comandoConsulta.Parameters.AddWithValue("@Comodin", comodin);
