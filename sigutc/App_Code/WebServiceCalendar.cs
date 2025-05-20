@@ -61,7 +61,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
         {
             strCod_horas = horas.strCod_horas,
             strHoraInicio = horas.dtInicio_horas,
-            strHoraFin = horas.dtInicio_horas,
+            strHoraFin = horas.dtFin_horas,
         });
 
         return JsonConvert.SerializeObject(resultado);

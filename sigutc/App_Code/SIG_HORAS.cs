@@ -52,7 +52,7 @@ public class SIG_HORAS
 
     public List<SIG_HORAS> Load_SG_HORAS(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        var listPersonal = new List<SIG_HORAS>();
+        var listHoras = new List<SIG_HORAS>();
 
         SqlConnection conexion = new SqlConnection(WebConfigurationManager.AppSettings["conexionBddProductos"]);
         SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetSIG_HORAS", conexion);
@@ -69,7 +69,7 @@ public class SIG_HORAS
 
             while (reader.Read())
             {
-                listPersonal.Add(new SIG_HORAS
+                listHoras.Add(new SIG_HORAS
                 {
                     STRCOD_HORAS = reader["strCod_horas"].ToString(),
                     DTINICIO_HORAS = Convert.ToDateTime(reader["dtInicio_horas"]),
@@ -84,7 +84,7 @@ public class SIG_HORAS
             Console.Write("TIENES UN ERROR: " + ex.Message);
         }
         conexion.Close();
-        return listPersonal;
+        return listHoras;
     }
 }
 

@@ -1,4 +1,7 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+﻿var dia = "";
+var horaFin = "";
+
+document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar');
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -27,20 +30,24 @@
         },
         dateClick: function (info) {
             var fecha = info.dateStr;
+            var selectMateria = '';
             $('#txtFecha').val(fecha);
 
-            let dia = obtenerDiaSemana(fecha);
+            dia = obtenerDiaSemana(fecha);
 
             consultarAsignatura(dia, function(data){
                 cargarMaterias(data);
-            });
+                selectMateria = $('#selectAsignatura option').first().val();
 
-            var selectMateria = $("#selectAsignatura").val();
+                consultarHorario(selectMateria, dia, function(data){
+                    const dropdown = $("#selectHoraInicio");
+                    cargarHora(data, dropdown);
+                });
 
-            consultarHorario(selectMateria, dia, function(data){
-                
-                const dropdown = $("#selectHoraInicio");
-                cargarHora(data, dropdown);
+                consultarCiclo(selectMateria, function(data){
+                    const txtCiclo = $("#txtCiclo");
+                    cargarHora(data, txtCiclo);
+                });
             });
 
         },
@@ -64,6 +71,7 @@
                 icon = 'warning';
 
                 mostrarMensage(mensaje, icon);
+                calendar.unselect();
             }
             else {
                 $('#form_registrar').modal('show');
@@ -80,6 +88,22 @@ $(document).ready(function () {
     $("#selectAsignatura").on('change', function () {
         var asignaturaId = this.value; // Capturar el valor seleccionado
         consultarHorario(asignaturaId, dia);
+    });
+
+    $('#selectHoraInicio').on('change', function () {
+        const horaInicio = $(this).val();
+        const op = 2;
+
+        selectMateria = $('#selectAsignatura option').first().val();
+
+        consultarHorario(selectMateria, dia, function(data){
+            console.log(data);
+            const dropdown = $("#selectHoraFin");
+
+            cargarHoraFin(op, data, dropdown)
+
+        });
+
     });
 });
 
@@ -134,7 +158,46 @@ function cargarHora(data, dropdown){
         opcion.value = item.strCod_horas;          // valor que se enviará
         opcion.textContent = convertirHora(item.strHoraInicio); // lo que se muestra al usuario
         dropdown.append(opcion);
+        horaFin = item.strCod_horas;
     });
+
+    var selectHoraInicio = dropdown.first().val();
+    var selectHoraFin = $('#selectHoraFin')
+    const op = 1;
+    cargarHoraFin(op, data, selectHoraFin)
+}
+
+function cargarHoraFin(op, data, dropdown){
+    dropdown.empty();
+
+    if(op === 1){
+        // Crear opción por cada elemento de la lista
+        data.forEach(item => {
+            const opcion = document.createElement("option");
+            opcion.value = item.strCod_horas;          // valor que se enviará
+            opcion.textContent = convertirHora(item.strHoraFin); // lo que se muestra al usuario
+            dropdown.append(opcion);
+        });
+    }
+    else if(op === 2){
+        const hora = $("#selectHoraInicio").val();
+
+        var horaInicio = parseInt(hora.replace('H', ''), 10);
+        var horaF = parseInt(horaFin.replace('H', ''), 10);
+
+        for (let i = horaInicio; i <= horaF; i++) {
+            if (i < 10) {
+                const valor = `H${i.toString().padStart(2, '0')}`;
+                const option = `<option value="${valor}">0${i}:59</option>`;
+                dropdown.append(option);
+            }
+            else {
+                const valor = `H${i.toString().padStart(2, '0')}`;
+                const option = `<option value="${valor}">${i}:59</option>`;
+                dropdown.append(option);
+            }
+        }
+    }
 }
 
 function convertirHora(fechaCompleta){
@@ -144,7 +207,8 @@ function convertirHora(fechaCompleta){
     const minutos = fecha.getMinutes().toString().padStart(2, '0');
     const segundos = fecha.getSeconds().toString().padStart(2, '0');
 
-    const horaFinal = `${horas}:${minutos}:${segundos}`;
+    const horaFinal = `${horas}:${minutos}`;
+    return horaFinal;
 }
 
 function obtenerDiaSemana(fechaStr) {
