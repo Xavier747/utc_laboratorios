@@ -59,10 +59,12 @@ public class WebServiceCalendar : System.Web.Services.WebService
 
         var resultado = listHoras.Select(horas => new
         {
-            
+            strCod_horas = horas.strCod_horas,
+            strHoraInicio = horas.dtInicio_horas,
+            strHoraFin = horas.dtInicio_horas,
         });
 
-        return "";
+        return JsonConvert.SerializeObject(resultado);
     }
 
 }

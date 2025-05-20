@@ -36,8 +36,11 @@
             });
 
             var selectMateria = $("#selectAsignatura").val();
-            consultarHorario(selectMateria, dia, function(data){
 
+            consultarHorario(selectMateria, dia, function(data){
+                
+                const dropdown = $("#selectHoraInicio");
+                cargarHora(data, dropdown);
             });
 
         },
@@ -78,8 +81,6 @@ $(document).ready(function () {
         var asignaturaId = this.value; // Capturar el valor seleccionado
         consultarHorario(asignaturaId, dia);
     });
-
-
 });
 
 function consultarAsignatura(dia, callback){
@@ -124,6 +125,27 @@ function consultarHorario(asignaturaId, dia, callback){
     });
 }
 
+function cargarHora(data, dropdown){
+    dropdown.empty();
+
+    // Crear opción por cada elemento de la lista
+    data.forEach(item => {
+        const opcion = document.createElement("option");
+        opcion.value = item.strCod_horas;          // valor que se enviará
+        opcion.textContent = convertirHora(item.strHoraInicio); // lo que se muestra al usuario
+        dropdown.append(opcion);
+    });
+}
+
+function convertirHora(fechaCompleta){
+    const fecha = new Date(fechaCompleta);
+
+    const horas = fecha.getHours().toString().padStart(2, '0');
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const segundos = fecha.getSeconds().toString().padStart(2, '0');
+
+    const horaFinal = `${horas}:${minutos}:${segundos}`;
+}
 
 function obtenerDiaSemana(fechaStr) {
     // Dividir la fecha

@@ -22,6 +22,7 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_RESPONSABLE responsable1 = new LAB_RESPONSABLE();
     Personal personal1 = new Personal();
+    LAB_MOTIVO_RESERVAS motivoResv1 = new LAB_MOTIVO_RESERVAS();
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -93,6 +94,7 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
             //selectTipoMotivoAct.Items.Add(new ListItem(tipoMotivo[i].ToString(), tipoMotivo[i].ToString()));
         }
     }
+
 
     [WebMethod]
     public static List<Asignatura> obtenerAsignaturas(int dia)
