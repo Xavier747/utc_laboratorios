@@ -59,10 +59,8 @@ public class WebServiceCalendar : System.Web.Services.WebService
 
         var resultado = listHoras.Select(horas => new
         {
-
-        }
-
-            )
+            
+        });
 
         return "";
     }

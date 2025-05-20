@@ -51,12 +51,6 @@ public class Personal
         set { CORREO_ALU = value; }
     }
 
-    public string strcontraseña_per
-    {
-        get { return strContraseña_Per; }
-        set { strContraseña_Per = value; }
-    }
-
     public Personal() { }
 
     public List<Personal> Load_PERSONAL(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
@@ -82,13 +76,12 @@ public class Personal
                 listPersonal.Add(
                     new Personal
                     {
-                        CEDULA_ALU = reader1["CEDULA_ALU"].ToString(),
-                        APELLIDO_ALU = reader1["APELLIDO_ALU"].ToString(),
-                        APELLIDOM_ALU = reader1["APELLIDOM_ALU"].ToString(),
-                        NOMBRE_ALU = reader1["NOMBRE_ALU"].ToString(),
-                        IMAGEN_ALU = reader1["IMAGEN_ALU"].ToString(),
-                        CORREO_ALU = reader1["CORREO_ALU"].ToString(),
-                        strContraseña_Per = reader1["strContraseña_Per"].ToString()
+                        cedula_alu = reader1["CEDULA_ALU"].ToString(),
+                        apellido_alu = reader1["APELLIDO_ALU"].ToString(),
+                        apellidom_alu = reader1["APELLIDOM_ALU"].ToString(),
+                        nombre_alu = reader1["NOMBRE_ALU"].ToString(),
+                        imagen_alu = reader1["IMAGEN_ALU"].ToString(),
+                        correo_alu = reader1["CORREO_ALU"].ToString()
                     }
                     );
             }

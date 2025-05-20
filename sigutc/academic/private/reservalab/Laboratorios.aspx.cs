@@ -21,7 +21,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     UB_FACULTADES facultad1 = new UB_FACULTADES();
     LAB_RESPONSABLE responsable1 = new LAB_RESPONSABLE();
-    Personal personal1 = new Personal();
+    Personal personal1 = new Personal(); 
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -70,7 +70,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
             string codFac = lblCodFacultad.Text;
             var listLaboratorios = laboratorio2.LoadLAB_LABORATORIOS("xFacultad", codFac, "", "", "");
             var listResponsable = responsable1.LoadLAB_RESPONSABLE("ALL", "", "", "", "");
-            var listPersonal = personal1.LoadPersonal("ALL", "", "", "", "");
+            var listPersonal = personal1.Load_PERSONAL("ALL", "", "", "", "");
 
             var data = listLaboratorios.Select(lab => new
             {
@@ -78,20 +78,20 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                 lab.strNombre_lab,
                 lab.strFotografia1_lab,
                 ResponsableAcademico = (from resp in listResponsable
-                                        join pers in listPersonal on resp.strCod_res equals pers.CEDULA_ALU
+                                        join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
                                         where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Academico"
                                         select new
                                         {
-                                            nombre = pers.NOMBRE_ALU,
-                                            FotoAcademico = pers.IMAGEN_ALU
+                                            nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                            FotoAcademico = pers.imagen_alu
                                         }).FirstOrDefault(),
                 ResponsableAdministrativo = (from resp in listResponsable
-                                             join pers in listPersonal on resp.strCod_res equals pers.CEDULA_ALU
+                                             join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
                                              where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Administrativo"
                                              select new
                                              {
-                                                 nombre = pers.NOMBRE_ALU,
-                                                 FotoAdministrativo = pers.IMAGEN_ALU
+                                                 nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                                 FotoAdministrativo = pers.imagen_alu
                                              }).FirstOrDefault()
             });
 
@@ -121,7 +121,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
             {
                 var listLaboratorios = laboratorio2.LoadLAB_LABORATORIOS("xFiltro", strCodFac, filtro, "", "");
                 var listResponsable = responsable1.LoadLAB_RESPONSABLE("ALL", "", "", "", "");
-                var listPersonal = personal1.LoadPersonal("ALL", "", "", "", "");
+                var listPersonal = personal1.Load_PERSONAL("ALL", "", "", "", "");
 
                 var data = listLaboratorios.Select(lab => new
                 {
@@ -129,20 +129,20 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                     lab.strNombre_lab,
                     lab.strFotografia1_lab,
                     ResponsableAcademico = (from resp in listResponsable
-                                            join pers in listPersonal on resp.strCod_res equals pers.CEDULA_ALU
+                                            join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
                                             where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Academico"
                                             select new
                                             {
-                                                nombre = pers.NOMBRE_ALU,
-                                                FotoAcademico = pers.IMAGEN_ALU
+                                                nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                                FotoAcademico = pers.imagen_alu
                                             }).FirstOrDefault(),
                     ResponsableAdministrativo = (from resp in listResponsable
-                                                 join pers in listPersonal on resp.strCod_res equals pers.CEDULA_ALU
+                                                 join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
                                                  where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Administrativo"
                                                  select new
                                                  {
-                                                     nombre = pers.NOMBRE_ALU,
-                                                     FotoAdministrativo = pers.IMAGEN_ALU
+                                                     nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                                     FotoAdministrativo = pers.imagen_alu
                                                  }).FirstOrDefault()
                 });
 

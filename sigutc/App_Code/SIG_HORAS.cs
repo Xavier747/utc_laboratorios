@@ -65,22 +65,18 @@ public class SIG_HORAS
         try
         {
             conexion.Open();
-            SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
-            DataTable dt = new DataTable();
-            adaptadorAlbum.Fill(dt);
+            SqlDataReader reader = comandoConsulta.ExecuteReader();
 
-            foreach (DataRow row in dt.Rows)
+            while (reader.Read())
             {
-                listPersonal.Add(
-                    new SIG_HORAS
-                    {
-                        strCod_horas = row["strCod_horas"].ToString(),
-                        dtInicio_horas = DateTime.Parse(row["dtInicio_horas"].ToString()),
-                        dtFin_horas = DateTime.Parse(row["dtFin_horas"].ToString()),
-                        strGrupo_horas = row["strGrupo_horas"].ToString(),
-                        strObs1_horas = row["strObs1_horas"].ToString()
-                    }
-                );
+                listPersonal.Add(new SIG_HORAS
+                {
+                    STRCOD_HORAS = reader["strCod_horas"].ToString(),
+                    DTINICIO_HORAS = Convert.ToDateTime(reader["dtInicio_horas"]),
+                    DTFIN_HORAS = Convert.ToDateTime(reader["dtFin_horas"]),
+                    STRGRUPO_HORAS = reader["strGrupo_horas"].ToString(),
+                    STROBS1_HORAS = reader["strObs1_horas"].ToString()
+                });
             }
         }
         catch (Exception ex)
