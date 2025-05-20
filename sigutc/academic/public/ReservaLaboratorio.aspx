@@ -28,8 +28,9 @@
     Reservar Laboratorio
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
-    <h2 runat="server" id="titulo" class="nombre_Lab"></h2>
     <div class="container-fluid">
+        <h3 runat="server" id="titulo" class="text-center"></h3>
+        <br />
         <div id="calendar"></div>
     </div>
 

@@ -21,6 +21,7 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
 
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_RESPONSABLE responsable1 = new LAB_RESPONSABLE();
+    Personal personal1 = new Personal();
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -34,72 +35,49 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
     }
     private void llenarFormulario()
     {
-        //string comodin = "xPK";
-        //string filtro = "";
+        string codLab = Session["laboratorioId"].ToString();
+        var listLab = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
-        //laboratorio2.strCod_Fac = Session["laboratorioId"].ToString();
-        //DataTable tablaDatos = laboratorio2.obtenerLaboratorios(comodin, filtro);
+        titulo.InnerText = listLab[0].strNombre_lab;
+        txtNombreLaboratorio.Text = listLab[0].strNombre_lab;
 
-        //titulo.InnerText = tablaDatos.Rows[0]["strNombre_lab"].ToString();
-
-        //txtNombreLaboratorio.Text = tablaDatos.Rows[0]["strNombre_lab"].ToString();
         //txtNombreLaboratorioDet.Text = tablaDatos.Rows[0]["strNombre_lab"].ToString();
         //txtNombreLabAct.Text = tablaDatos.Rows[0]["strNombre_lab"].ToString();
 
         //responsable1.strCod_lab = laboratorio2.strCod_Fac;
         //string tipoConsulta = "xLaboratorio";
 
-        //List<LAB_RESPONSABLE> responsable = responsable1.detalleResponsableLaboratorio(tipoConsulta);
+        var listResponsable = responsable1.LoadLAB_RESPONSABLE("xLaboratorio", codLab, "", "", "");
 
-        //foreach (LAB_RESPONSABLE resp in responsable)
-        //{
-        //    if (resp.strTipo_respo == "Responsable Academico")
-        //    {
-        //        txtResponsableAcademico.Text = resp.strObs1_respo;
-        //        txtRespAcadDet.Text = resp.strObs1_respo;
-        //        txtNombreRespAcdAct.Text = resp.strObs1_respo;
-        //    }
-        //    if (resp.strTipo_respo == "Responsable Administrativo")
-        //    {
-        //        txtResponsableAdministrativo.Text = resp.strObs1_respo;
-        //        txtRespAdminDet.Text = resp.strObs1_respo;
-        //        txtNombreRespAddAct.Text = resp.strObs1_respo;
-        //    }
-        //}
-
-        //llenarDocenteSolicitante();
+        for (int i = 0; i < listResponsable.Count; i++)
+        {
+            var tipoResp = listResponsable[i];
+            string cedula = tipoResp.strCod_res;
+            var listPersonal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
+            if (tipoResp.strTipo_respo == "Responsable Academico")
+            {
+                txtResponsableAcademico.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
+                //txtRespAcadDet.Text = resp.strObs1_respo;
+                //txtNombreRespAcdAct.Text = resp.strObs1_respo;
+            }
+            if (tipoResp.strTipo_respo == "Responsable Administrativo")
+            {
+                txtResponsableAdministrativo.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
+                //txtRespAdminDet.Text = resp.strObs1_respo;
+                //txtNombreRespAddAct.Text = resp.strObs1_respo;
+            }
+        }
+        llenarDocenteSolicitante();
     }
 
     public void llenarDocenteSolicitante()
     {
-        //string tipoConsulta = "xCEDULA";
-        //string cedulaAlum = Session["Cedula"].ToString();
+        string cedula = Context.User.Identity.Name;
+        var listPersonal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
 
-        //SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetPERSONAL", conexion);
-        //comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
-        //comandoConsulta.Parameters.AddWithValue("@FILTRO1", cedulaAlum);
-        //comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
-        //comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
-        //comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
-        //comandoConsulta.CommandType = CommandType.StoredProcedure;
-        //try
-        //{
-        //    this.conexion.Open();
-        //    SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
-        //    DataTable dt = new DataTable();
-        //    adaptadorAlbum.Fill(dt);
+        txtEmail.Text = listPersonal[0].correo_alu;
+        txtNombreSolicitante.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
 
-        //    foreach (DataRow row in dt.Rows)
-        //    {
-        //        //txtEmail.Text = row["CORREO_ALU"].ToString();
-        //        //txtNombreSolicitante.Text = row["Responsable"].ToString();
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    Response.Write("TIENES UN ERROR: " + ex.Message);
-        //}
-        //conexion.Close();
     }
 
     private void llenarTipoMotivo()
@@ -114,12 +92,6 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
             //selectTipoMotivo.Items.Add(new ListItem(tipoMotivo[i].ToString(), tipoMotivo[i].ToString()));
             //selectTipoMotivoAct.Items.Add(new ListItem(tipoMotivo[i].ToString(), tipoMotivo[i].ToString()));
         }
-    }
-
-    [System.Web.Services.WebMethod]
-    public static string ObtenerDatos()
-    {
-        return "Hola desde C#";
     }
 
     [WebMethod]
