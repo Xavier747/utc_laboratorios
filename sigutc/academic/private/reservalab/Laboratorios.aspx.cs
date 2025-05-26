@@ -28,7 +28,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
         this.cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
         this.conexion = new SqlConnection(this.cadenaConexion);
 
-        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/private/Login.aspx");
+        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/public/Login.aspx");
 
         if (!IsPostBack)
         {

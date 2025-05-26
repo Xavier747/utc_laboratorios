@@ -36,7 +36,7 @@ public partial class academic_private_reservalab_ListadoLaboratorio : System.Web
     //Metodo principal de la pagina
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/private/Login.aspx");
+        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/public/Login.aspx");
 
         if (!IsPostBack)
         {
