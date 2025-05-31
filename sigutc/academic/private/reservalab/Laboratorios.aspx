@@ -150,5 +150,8 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
+    <script>
+
+    </script>
 </asp:Content>
 

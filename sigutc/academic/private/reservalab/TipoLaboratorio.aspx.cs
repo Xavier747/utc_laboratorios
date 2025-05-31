@@ -71,46 +71,6 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
         ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
     }
 
-    protected void gvTipoLaboratorio_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-        string codigo = e.CommandArgument.ToString();
-     
-        if (e.CommandName == "Select")
-        {            
-            var tipo = tipoLaboratorio1.LoadLAB_TIPO("xPK", codigo, "", "", "");
-
-            lblCodeTipoLabAct.Text = tipo[0].strCod_tipoLab;
-            txtNombreAct.Text = tipo[0].strNombre_tipoLab;
-
-            ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar').modal('show');", true);
-        }
-        else if (e.CommandName == "Eliminar")
-        {
-            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
-            string strUser_log = Context.User.Identity.Name;
-            tipoLaboratorio1.DelLAB_TIPO("xCodTipoLab", codigo, dtFecha_log, strUser_log,"");
-
-            string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
-            string icon = tipoLaboratorio1.resultado ? "success" : "error";
-
-            ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
-        }
-    }
-    
-    protected void btn_Actualizar_Click(object sender, EventArgs e)
-    {
-        tipoLaboratorio1.strCod_tipoLab = lblCodeTipoLabAct.Text;
-        tipoLaboratorio1.strNombre_tipoLab = txtNombreAct.Text.ToUpper();
-        tipoLaboratorio1.dtFecha_log = DateTime.Now;
-        tipoLaboratorio1.strUser_log = Context.User.Identity.Name;
-
-        tipoLaboratorio1.UpdateLAB_TIPO(tipoLaboratorio1);
-
-        string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
-        string icon = tipoLaboratorio1.resultado ? "success" : "error";
-        ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
-    }
-
     private string generarIdSoft(string nombre)
     {
         string[] palabras = nombre.Split(' ');
@@ -126,28 +86,54 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
         }
 
         string resultado = string.Join("", partes);
-        return comprobarRegistro(resultado);
+        return resultado;
     }
 
-    public string comprobarRegistro(string resultado)
+    protected void gvTipoLaboratorio_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        string tipoConsulta = "xEstado";
-        int acum = 0;
+        string codigo = e.CommandArgument.ToString();
+     
+        if (e.CommandName == "Select")
+        {            
+            var tipo = tipoLaboratorio1.LoadLAB_TIPO("xPK", codigo, "", "", "");
 
-        while (true)
-        {
-            tipoLaboratorio1.strCod_tipoLab = resultado;
-            var lista = tipoLaboratorio1.LoadLAB_TIPO(tipoConsulta, resultado, "", "", "");
-            if (lista != null && lista.Count > 0)
-            {
-                ++acum;
-                resultado = resultado + "_" + acum;
-            }
-            else
-            {
-                break;
-            }
+            lblCodeTipoLabAct.Text = tipo[0].strCod_tipoLab;
+            txtNombreAct.Text = tipo[0].strNombre_tipoLab;
+            ddlEstadoAct.SelectedValue = tipo[0].bitEstado_tipoLab.ToString();
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar').modal('show');", true);
         }
-        return resultado;
+        else if (e.CommandName == "Eliminar")
+        {
+            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
+            string strUser_log = Context.User.Identity.Name;
+            tipoLaboratorio1.DelLAB_TIPO("xCodTipoLab", codigo, dtFecha_log, strUser_log,"");
+
+            string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
+            string icon = tipoLaboratorio1.resultado ? "success" : "error";
+
+            title = tipoLaboratorio1.msg
+                .Replace("\r\n", " ")
+                .Replace("\n", " ")
+                .Replace("\r", " ")
+                .Replace("'", "");
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
+        }
+    }
+    
+    protected void btn_Actualizar_Click(object sender, EventArgs e)
+    {
+        tipoLaboratorio1.strCod_tipoLab = lblCodeTipoLabAct.Text;
+        tipoLaboratorio1.strNombre_tipoLab = txtNombreAct.Text.ToUpper();
+        tipoLaboratorio1.bitEstado_tipoLab = ddlEstadoAct.SelectedValue == "1";
+        tipoLaboratorio1.dtFecha_log = DateTime.Now;
+        tipoLaboratorio1.strUser_log = Context.User.Identity.Name;
+
+        tipoLaboratorio1.UpdateLAB_TIPO(tipoLaboratorio1);
+
+        string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
+        string icon = tipoLaboratorio1.resultado ? "success" : "error";
+        ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
     }
 }

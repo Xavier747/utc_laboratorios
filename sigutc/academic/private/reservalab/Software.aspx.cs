@@ -84,22 +84,6 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         if (listSede.Count != 0)
         {
             //ddlSede de listar Software
-            ddlSedeAct.DataSource = listSede;
-            ddlSedeAct.DataTextField = "strNombre_Sede";
-            ddlSedeAct.DataValueField = "strCod_Sede";
-            ddlSedeAct.DataBind();
-
-            lblMsg.Text = sede.msg;
-        }
-        else
-        {
-            lblMsg.Text = sede.msg;
-        }
-
-        //Comprueba si devolvieron registros
-        if (listSede.Count != 0)
-        {
-            //ddlSede de listar Software
             ddlSedeSoft.DataSource = listSede;
             ddlSedeSoft.DataTextField = "strNombre_Sede";
             ddlSedeSoft.DataValueField = "strCod_Sede";
@@ -110,31 +94,6 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         else
         {
             lblMsg.Text = sede.msg;
-        }
-    }
-
-
-    public void cargarFacultadAct()
-    {
-        //almacenamos la clave primaria de Sede
-        string strCod_Sede = ddlSedeAct.SelectedValue;
-
-        //Realizamos una consulta a la base de datos por las facultaqdes
-        var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
-
-        if (listFacultad.Count != 0)
-        {
-            ddlFacultadAct.DataSource = listFacultad;
-            ddlFacultadAct.DataTextField = "strNombre_fac";
-            ddlFacultadAct.DataValueField = "strCod_fac";
-            ddlFacultadAct.DataBind();
-
-            //muestra mensajes devuelto en la consulta
-            lblMsg.Text = software1.msg;
-        }
-        else
-        {
-            lblMsg.Text = software1.msg;
         }
     }
 
@@ -210,11 +169,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     {
         var registroSoftware = software1.LoadLAB_SOFTWARE("xPK", codSoft, "", "", "");
 
-        ddlSedeAct.SelectedValue = registroSoftware[0].strCod_Sede;
-
-        cargarFacultadAct();
         lblIdSoftAct.Text = registroSoftware[0].strCod_sof;
-        ddlFacultadAct.SelectedValue = registroSoftware[0].strCod_Fac;
         txtNombreAct.Text = registroSoftware[0].strNombre_sof;
         txtCantidadAct.Text = registroSoftware[0].intCantidad_sof.ToString();
         ddlTipoAct.SelectedValue = registroSoftware[0].strTipoLicencia_sof;
@@ -223,8 +178,9 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
         txtNombreLicenciaAct.Text = registroSoftware[0].strNombreLicencia_sof;
         txtCostoAct.Text = registroSoftware[0].decCostoUnitario_sof.ToString();
-        txtDescripcionAct.Text = registroSoftware[0].strDescripcion_sof;
+        ddlEstadoAct.SelectedValue = registroSoftware[0].bitEstado_sof.ToString();
         txtLinkAct.Text = registroSoftware[0].strUrl_sof;
+        txtDescripcionAct.Text = registroSoftware[0].strDescripcion_sof;
         lblImg1NameAct.Text = registroSoftware[0].strImagen_sof;
     }
 
@@ -240,7 +196,6 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     }
 
     //guardar nuevo software
-
     protected void btnGuardar_Click(object sender, EventArgs e)
     {
         decimal precioUnitario = txtCosto.Text != "" ? decimal.Parse(txtCosto.Text) : 0;
@@ -258,8 +213,6 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         software1.dtFecha_log = DateTime.Now;
         software1.strUser_log = Context.User.Identity.Name;
         software1.bitEstado_sof = true;
-
-
         software1.strObs1_sof = string.Empty;
         software1.strObs2_sof = string.Empty;
         software1.bitObs1_sof = false;
@@ -268,12 +221,9 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         software1.decObs2_sof = -1;
         software1.dtObs1_sof = DateTime.Parse("1900-01-01");
         software1.dtObs2_sof = DateTime.Parse("1900-01-01");
-
         software1.strCod_Fac = ddlFacultad.SelectedValue;
         software1.strCod_Sede = ddlSede.SelectedValue;
-        software1.strCod_sof = generarIdSoft();
-
-        
+        software1.strCod_sof = generarIdSoft();        
 
         if (fulImg1.HasFile)
         {
@@ -355,37 +305,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         string resultado = string.Join("", partes);
         resultado = sedeId + "_" + facultadId + "_" + resultado;
 
-        string codSoft = comprobarRegistro(resultado);
-
-        return codSoft;
-    }
-
-    public string comprobarRegistro(string resultado)
-    {
-        int acum = 0;
-
-        while (true)
-        {
-            var tablaDatos = software1.LoadLAB_SOFTWARE("xEstado", resultado, "", "", "");
-
-            if (tablaDatos.Count > 0)
-            {
-                ++acum;
-                resultado = resultado + "_" + acum;
-            }
-            else
-            {
-                break;
-            }
-        }
-
         return resultado;
-    }
-
-    protected void btnNuevo_Click(object sender, EventArgs e)
-    {
-        //Redirecciona a otro formulario
-        Response.Redirect("~/academic/private/reservalab/NuevoSoftware.aspx");
     }
 
     protected void gvSoftware_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -404,15 +324,18 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         {
             string codSftware = e.CommandArgument.ToString();
 
-            // Carga los detalles del laboratorio según el ID seleccionado 
-            string fecha = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-    
-            string responsable = Context.User.Identity.Name;
-            software1.DelLAB_SOFTWARE("xCodSof", codSftware, fecha, responsable, "");
+            software1.DelLAB_SOFTWARE("xCodSof", codSftware, "", "", "");
 
             //Muestra mensajes de acuerdo a la respuesta del servidor
             string title = software1.resultado ? software1.msg : software1.msg;
             string icon = software1.resultado ? "success" : "error";
+
+            title = software1.msg
+                .Replace("\r\n", " ")
+                .Replace("\n", " ")
+                .Replace("\r", " ")
+                .Replace("'", "");
+
 
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
@@ -443,13 +366,6 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     protected void ddlTipo_SelectedIndexChanged(object sender, EventArgs e)
     {
         content_NombreLicencia.Visible = ddlTipo.SelectedValue == "Propietario" ? true : false;
-    }
-
-    protected void ddlSedeAct_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        ddlFacultadAct.Items.Clear();
-
-        cargarFacultadAct();
     }
 
     protected void btnActualizar_Click(object sender, EventArgs e)
@@ -495,10 +411,6 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
             }
         }
         software1.strImagen_sof = lblImg1NameAct.Text;
-
-        software1.strCod_Fac = ddlFacultadAct.SelectedValue;
-        software1.strCod_Sede = ddlSedeAct.SelectedValue;
-
         software1.UpdateLAB_SOFTWARE(software1);
 
         string title = software1.resultado ? software1.msg : software1.msg;
@@ -506,8 +418,6 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
         string script = $"showAlertAndReload('{title}', '{icon}');";
         ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
-
-
     }
 
     protected void ddlTipoAct_SelectedIndexChanged(object sender, EventArgs e)

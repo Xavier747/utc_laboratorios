@@ -44,10 +44,7 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
         titulo.InnerText = listLab[0].strNombre_lab;
         txtNombreLaboratorio.Text = listLab[0].strNombre_lab;
         txtNombreLaboratorioDet.Text = listLab[0].strNombre_lab;
-        //txtNombreLabAct.Text = tablaDatos.Rows[0]["strNombre_lab"].ToString();
-
-        //responsable1.strCod_lab = laboratorio2.strCod_Fac;
-        //string tipoConsulta = "xLaboratorio";
+        txtNombreLabAct.Text = listLab[0].strNombre_lab;
 
         var listResponsable = responsable1.LoadLAB_RESPONSABLE("xLaboratorio", codLab, "", "", "");
 
@@ -60,13 +57,13 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
             {
                 txtResponsableAcademico.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
                 txtRespAcadDet.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
-                //txtNombreRespAcdAct.Text = resp.strObs1_respo;
+                txtNombreRespAcdAct.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
             }
             if (tipoResp.strTipo_respo == "Responsable Administrativo")
             {
                 txtResponsableAdministrativo.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
                 txtRespAdminDet.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
-                //txtNombreRespAddAct.Text = resp.strObs1_respo;
+                txtNombreRespAddAct.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
             }
         }
         llenarDocenteSolicitante();
@@ -79,9 +76,5 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
 
         txtEmail.Text = listPersonal[0].correo_alu;
         txtNombreSolicitante.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
-
-        txtCorreoDet.Text = listPersonal[0].correo_alu;
-        txtNombresDet.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
-
     }
 }

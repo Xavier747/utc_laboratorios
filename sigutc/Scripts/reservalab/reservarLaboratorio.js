@@ -1,6 +1,7 @@
 ﻿var dia = "";
 var horaFin = "";
 var selectMateria = '';
+var eventId = '';
 
 document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar');
@@ -36,34 +37,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
             dia = obtenerDiaSemana(fecha);
 
-            consultarAsignatura(dia, function(data){
+            consultarAsignatura('xDia', dia, cedula, '', '', function(data){
                 cargarMaterias(data);
                 selectMateria = $('#selectAsignatura option').first().val();
 
-                consultarHorario(selectMateria, dia, function(data){
+                consultarHorario('xCodMat', selectMateria, dia, '', '', function(data){
                     const dropdown = $("#selectHoraInicio");
                     cargarHora(data, dropdown);
                 });
 
-                consultarCiclo(selectMateria, function(data){
+                consultarCiclo('xAsignatura', selectMateria, '', '', '', function(data){
                     const txtCiclo = $("#txtCiclo");
                     const txtParalelo = $("#txtParalelo");
                     cargarCiclo(data, txtCiclo, txtParalelo);
                 });
 
-                consultarCarrera(selectMateria, function(data){
+                consultarCarrera('xAsignatura', selectMateria, '', '', '', function(data){
                     const txtCarrera = $("#txtCarrera");
                     cargarCarrera(data, txtCarrera);
                 });
 
-                consultarAlumno(selectMateria, function(data){
+                consultarAlumno('xAsignatura', selectMateria, '', '', '', function(data){
                     const txtNumeroAsistentes = $("#txtNumeroAsistentes");
                     cargarNumeroEstudiante(data, txtNumeroAsistentes);
                 });
             });
         },
         events: function (fetchInfo, successCallback, failureCallback) {
-            consultarEventos(function(data) {
+
+            consultarEventos('xCodLab', codLab, '', '', '',function(data) {
                 const eventos = [];
 
                 // Iterar sobre los datos recibidos
@@ -93,6 +95,52 @@ document.addEventListener('DOMContentLoaded', function () {
             hour12: true
         },
         eventClick: function(info){
+            eventId = info.event.id;
+
+            consultarEventos('xPK', eventId, '', '', '', function(data) {
+                var reserva = data[0];
+                var codAsignatura = data[0].strCod_Mate;
+                var cedula = data[0].cedula_alu;
+                var codUnidad = data[0].strCod_unidTem;
+
+                $('#txtFechaDet').val(data[0].dtFechainicio_reser.split('T')[0]);
+                $('#txtHoraInicioDet').val(data[0].dtFechainicio_reser.split('T')[1]);
+                $('#txtHoraFinDet').val(data[0].dtFechaFin_reser.split('T')[1]);
+                $('#txtAsistentes').val(data[0].intTotalAsistente_reser);
+                $('#txtTemaDet').val(data[0].strTema_reser);
+                $('#txtDescDet').val(data[0].strDescripcion_reser);
+                $('#txtMaterialDet').val(data[0].strMateriales_reser);
+
+                consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
+                    var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
+
+                    $('#txtCorreoDet').val(data[0].correo_alu);
+                    $('#txtNombresDet').val(nombre);
+                });
+
+                consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
+                    $('#txtAsigDet').val(data[0].strNombre_mate);
+                });                
+
+                consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
+                    $('#txtCicloDet').val(data[0].strnombre_curso);
+                    $('#txtParaleloDet').val(data[0].strparalelo_curso);
+                });
+
+                consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
+                    $('#txtCarreraDet').val(data[0].strnombre_car);
+                });
+
+                //$('#txtTipoMotivoDet').val(data[0].);
+                consultarUnidad('xPK', codUnidad, '', '', '', function(data){
+                    $('#txtUnidadDet').val(data[0].strdesc_unidtem);
+                });
+            }, function(error) {
+                // En caso de error
+                console.error("Error consultando eventos", error);
+                failureCallback(error);
+            });
+
             $('#form_Detalle').modal('show');
         },
         
@@ -121,7 +169,6 @@ document.addEventListener('DOMContentLoaded', function () {
             else {
                 $('#form_registrar').modal('show');
             }
-
         },
     });
 
@@ -132,24 +179,24 @@ document.addEventListener('DOMContentLoaded', function () {
 $(document).ready(function () {
     $("#selectAsignatura").on('change', function () {
         var asignaturaId = this.value; // Capturar el valor seleccionado
-        consultarHorario(asignaturaId, dia, function(data){
+        consultarHorario('xCodMat', asignaturaId, dia, '', '', function(data){
             const dropdown = $("#selectHoraInicio");
             cargarHora(data, dropdown);
 
             selectMateria = $('#selectAsignatura').val();
 
-            consultarCiclo(selectMateria, function(data){
+            consultarCiclo('xAsignatura', selectMateria, '', '', '', function(data){
                 const txtCiclo = $("#txtCiclo");
                 const txtParalelo = $("#txtParalelo");
                 cargarCiclo(data, txtCiclo, txtParalelo);
             });
 
-            consultarCarrera(selectMateria, function(data){
+            consultarCarrera('xAsignatura', selectMateria, '', '', '', function(data){
                 const txtCarrera = $("#txtCarrera");
                 cargarCarrera(data, txtCarrera);
             });
 
-            consultarAlumno(selectMateria, function(data){
+            consultarAlumno('xAsignatura', selectMateria, '', '', '', function(data){
                 const txtNumeroAsistentes = $("#txtNumeroAsistentes");
                 cargarNumeroEstudiante(data, txtNumeroAsistentes);
             });
@@ -158,7 +205,7 @@ $(document).ready(function () {
 
     $("#selectUnidad").on('change', function () {
         var unidadId = this.value; // Capturar el valor seleccionado
-        consultarTema(unidadId, function(data){
+        consultarTema('xUnidad', unidadId, '', '', '', function(data){
 
             if(data.length > 0){
                 $("#content_ddlTema").css("display", 'block');
@@ -288,17 +335,132 @@ $(document).ready(function () {
             }
         });
     });
+
+    $("#btnEditar").click(function() {
+        $('#form_Detalle').modal('hide');
+
+        // Espera a que termine de ocultarse el primero antes de abrir el segundo
+        $('#form_Detalle').on('hidden.bs.modal', function () {
+            consultarEventos('xPK', eventId, '', '', '', function(data) {
+                var reserva = data[0];
+                var codAsignatura = data[0].strCod_Mate;
+                var cedula = data[0].cedula_alu;
+                var codUnidad = data[0].strCod_unidTem;
+
+                $('#txtFechaAct').val(data[0].dtFechainicio_reser.split('T')[0]);
+                $('#txtHoraInicioAct').val(data[0].dtFechainicio_reser.split('T')[1]);
+                $('#txtHoraFinAct').val(data[0].dtFechaFin_reser.split('T')[1]);
+                $('#txtNumeroAsistentesAct').val(data[0].intTotalAsistente_reser);
+                $('#txtDescripcionAct').val(data[0].strDescripcion_reser);
+                $('#txtMaterialesAct').val(data[0].strMateriales_reser);
+
+                consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
+                    var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
+
+                    $('#txtEmailAct').val(data[0].correo_alu);
+                    $('#txtNombreAct').val(nombre);
+                });
+
+                consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
+                    $('#txtAsignaturaAct').val(data[0].strNombre_mate);
+                });                
+
+                consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
+                    $('#txtCicloAct').val(data[0].strnombre_curso);
+                    $('#txtParaleloAct').val(data[0].strparalelo_curso);
+                });
+
+                consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
+                    $('#txtCarreraAct').val(data[0].strnombre_car);
+                });
+
+                //$('#txtTipoMotivoDet').val(data[0].);
+
+                consultarUnidad('xAsignatura', codAsignatura, '', '', '', function(dataUni){
+                    const dropdown = $("#selectUnidadAct");
+                    cargarUnidad(dataUni, dropdown);
+
+                    $('#selectUnidadAct').val(data[0].strCod_unidTem);
+                }); 
+
+
+                consultarTema('xUnidad', codUnidad, '', '', '', function(data){
+
+                    if(data.length > 0){
+                        $("#content_ddlTema").css("display", 'block');
+                        const dropdown = $("#selectTemaAct");
+                        cargarTema(data, dropdown);
+
+                        $('#selectTemaAct').val(data[0].strCod_tema);
+                    }
+                    else{
+                        $("#content_ddlTema").css("display", 'none');
+                    }
+                });
+
+            }, function(error) {
+                // En caso de error
+                console.error("Error consultando eventos", error);
+                failureCallback(error);
+            });
+
+
+
+
+
+
+            $('#form_actualizar').modal('show');
+        });
+    });
+
+    $("#btnActualizar").click(function() {
+        /*let reservacion = [];
+
+        reservacion[0] = $('#selectAsignatura').val();
+        reservacion[1] = $('#selectUnidad').val();
+        reservacion[2] = $('#selectTema').val();
+        reservacion[3] = $('#txtDescripcion').val();
+        reservacion[4] = $('#txtMaterial').val();
+        reservacion[5] = $('#txtFecha').val() + ' ' + $('#selectHoraInicio').val();
+        reservacion[6] = $('#txtFecha').val() + ' ' + $('#selectHoraFin').val();
+        reservacion[7] = $('#txtNumeroAsistentes').val();
+        reservacion[8] = '';
+        reservacion[9] = '#a4e4af';
+
+        $.ajax({
+            type: "POST",
+            // Página y método del backend que procesará la solicitud
+            url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarReserva",
+            // Enviar la fecha como parámetro
+            data: JSON.stringify({ reservacion: reservacion }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                var data = JSON.parse(response.d);
+                var mensaje = data.msg;
+                var icon = data.resultado == true ? 'success' : 'error';
+
+                $('#form_registrar').modal('hide');
+
+                mostrarMensageCRUD(mensaje, icon);
+            },
+            error: function (xhr, status, error) {
+                console.log("Status: " + xhr.status);
+                console.log("Response: " + xhr.responseText);                
+            }
+        });*/
+    });
 });
 
 //Funciones de Consulta
 //Consulta las asignauras del docente
-function consultarAsignatura(asignaturaId, callback){
+function consultarAsignatura(comodin, filtro1, filtro2, filtro3, filtro4, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerAsignaturas",
         // Enviar la fecha como parámetro
-        data: JSON.stringify({ dia: dia }),
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4}),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -315,13 +477,13 @@ function consultarAsignatura(asignaturaId, callback){
 }
 
 //Consulta el horario de los docentes por cada dia
-function consultarHorario(asignaturaId, dia, callback){
+function consultarHorario(comodin, filtro1, filtro2, filtro3, filtro4, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerHorario",
         // Enviar la fecha como parámetro
-        data: JSON.stringify({ asignaturaId: asignaturaId, dia: dia }),
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4 }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -337,13 +499,13 @@ function consultarHorario(asignaturaId, dia, callback){
 }
 
 //Consultar el ciclo al que esta asignado esa asignatura
-function consultarCiclo(asignaturaId, callback){
+function consultarCiclo(comodin, filtro1, filtro2, filtro3, filtro4, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerCiclo",
         // Enviar la fecha como parámetro
-        data: JSON.stringify({ asignaturaId: asignaturaId }),
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4 }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -359,13 +521,13 @@ function consultarCiclo(asignaturaId, callback){
 }
 
 //Consultar la carrera a la que pertenece la asignatura
-function consultarCarrera(asignaturaId, callback){
+function consultarCarrera(comodin, filtro1, filtro2, filtro3, filtro4, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerCarrera",
         // Enviar la fecha como parámetro
-        data: JSON.stringify({ asignaturaId: asignaturaId }),
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4 }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -381,13 +543,13 @@ function consultarCarrera(asignaturaId, callback){
 }
 
 //Consultar las alumnos matriculados en esa materia
-function consultarAlumno(asignaturaId, callback){
+function consultarAlumno(comodin, filtro1, filtro2, filtro3, filtro4, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerEstudiantes",
         // Enviar la fecha como parámetro
-        data: JSON.stringify({ asignaturaId: asignaturaId }),
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4 }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -402,13 +564,13 @@ function consultarAlumno(asignaturaId, callback){
     });
 }
 
-function consultarUnidad(selectMateria, callback){
+function consultarUnidad(comodin, filtro1, filtro2, filtro3, filtro4, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerUnidad",
         // Enviar la fecha como parámetro
-        data: JSON.stringify({ asignaturaId: selectMateria }),
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4 }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -423,13 +585,13 @@ function consultarUnidad(selectMateria, callback){
     });
 }
 
-function consultarTema(selectUnidad, callback){
+function consultarTema(comodin, filtro1, filtro2, filtro3, filtro4, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerTema",
         // Enviar la fecha como parámetro
-        data: JSON.stringify({ codUnidad: selectUnidad }),
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4}),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -467,13 +629,13 @@ function consultarSoftware(codLab, callback){
 }
 
 //Consultar eventos
-function consultarEventos(callback){
+function consultarEventos(comodin, filtro1, filtro2, filtro3, filtro4, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerReservacion",
         // Enviar la fecha como parámetro
-        data: JSON.stringify({ codLab: codLab }),
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4 }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -610,9 +772,7 @@ function validarReservacion(){
     const fechaInicio = $('#txtFecha').val() + ' ' + $('#selectHoraInicio').val();
     const fechaFin = $('#txtFecha').val() + ' ' + $('#selectHoraFin').val();
 
-    console.log(fechaInicio);
-
-    consultarUnidad(selectMateria, function(data){
+    consultarUnidad('xAsignatura', selectMateria, '', '', '', function(data){
         const dropdown = $("#selectUnidad");
         cargarUnidad(data, dropdown);
 

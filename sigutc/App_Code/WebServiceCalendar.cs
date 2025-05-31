@@ -44,10 +44,10 @@ public class WebServiceCalendar : System.Web.Services.WebService
 
     [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-    public string ObtenerAsignaturas(string dia)
+    public string ObtenerAsignaturas(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
         string cedula = Context.User.Identity.Name;
-        List<MATERIAS> listMaterias = materia1.Load_MATERIAS("xDia", dia, cedula, "", "");
+        List<MATERIAS> listMaterias = materia1.Load_MATERIAS(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listMaterias.Select(mat => new {
             strCod_mate = mat.strcod_mate,
@@ -59,9 +59,9 @@ public class WebServiceCalendar : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string ObtenerHorario(string asignaturaId, string dia)
+    public string ObtenerHorario(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        List<SIG_HORAS> listHoras = horas1.Load_SG_HORAS("xCodMat", asignaturaId, dia, "", "");
+        List<SIG_HORAS> listHoras = horas1.Load_SG_HORAS(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listHoras.Select(horas => new
         {
@@ -74,9 +74,9 @@ public class WebServiceCalendar : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string ObtenerCiclo(string asignaturaId)
+    public string ObtenerCiclo(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        List<CURSO> listCurso = cuso1.Load_CURSO("xAsignatura", asignaturaId, "", "", "");
+        List<CURSO> listCurso = cuso1.Load_CURSO(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listCurso.Select(ciclo => new
         {
@@ -90,9 +90,9 @@ public class WebServiceCalendar : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string ObtenerCarrera(string asignaturaId)
+    public string ObtenerCarrera(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        List<UB_CARRERAS> listCarrera = carrera1.LoadUB_CARRERAS("xAsignatura", asignaturaId, "", "", "");
+        List<UB_CARRERAS> listCarrera = carrera1.LoadUB_CARRERAS(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listCarrera.Select(carrera => new
         {
@@ -103,22 +103,26 @@ public class WebServiceCalendar : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string ObtenerEstudiantes(string asignaturaId)
+    public string ObtenerEstudiantes(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        List<Personal> listPersonal = personal1.Load_PERSONAL("xAsignatura", asignaturaId, "", "", "");
+        List<Personal> listPersonal = personal1.Load_PERSONAL(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listPersonal.Select(personal => new
         {
-            cedula_alu = personal1.cedula_alu
+            cedula_alu = personal.cedula_alu,
+            apellido_alu = personal.apellido_alu,
+            apellidom_alu = personal.apellidom_alu,
+            nombre_alu = personal.nombre_alu,
+            correo_alu = personal.correo_alu
         });
 
         return JsonConvert.SerializeObject(resultado);
     }
 
     [WebMethod]
-    public string ObtenerUnidad(string asignaturaId)
+    public string ObtenerUnidad(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        List<UNIDAD_TEMA> listUnidad = unidad1.Load_UNIDAD_TEMA("xAsignatura", asignaturaId, "", "", "");
+        List<UNIDAD_TEMA> listUnidad = unidad1.Load_UNIDAD_TEMA(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listUnidad.Select(unidad => new
         {
@@ -132,9 +136,9 @@ public class WebServiceCalendar : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string ObtenerTema(string codUnidad)
+    public string ObtenerTema(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        List<TEMA> listTema = tema1.Load_TEMA("xUnidad", codUnidad, "", "", "");
+        List<TEMA> listTema = tema1.Load_TEMA(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listTema.Select(tema => new
         {
@@ -148,9 +152,9 @@ public class WebServiceCalendar : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string ObtenerSoftware(string codLab)
+    public string ObtenerSoftware(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        List<LAB_SOFTWARE> listSoftware = software1.LoadLAB_SOFTWARE("xLaboratorio", codLab, "", "", "");
+        List<LAB_SOFTWARE> listSoftware = software1.LoadLAB_SOFTWARE(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listSoftware.Select(software => new
         {
@@ -195,9 +199,9 @@ public class WebServiceCalendar : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string ObtenerReservacion(string codLab)
+    public string ObtenerReservacion(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        List<LAB_RESERVA> listReservacion = reserva1.LoadLAB_RESERVA("xCodLab", codLab, "", "", "");
+        List<LAB_RESERVA> listReservacion = reserva1.LoadLAB_RESERVA(comodin, filtro1, filtro2, filtro3, filtro4);
 
         //string codTema = listReservacion
 
