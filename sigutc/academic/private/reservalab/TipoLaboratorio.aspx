@@ -84,7 +84,7 @@
     </div>
     
     <!-- Ventana Modal -->
-    <div class="modal fade" id="form_actualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="form_actualizar_Tipo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
             <div class="modal-content">
                 <div class="modal-header">

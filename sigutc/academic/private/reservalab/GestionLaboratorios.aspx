@@ -86,11 +86,11 @@
                                 Text="Editar" />&nbsp;&nbsp;
                             <!--Boton para eliminar el laboratorio-->
                             <asp:Button ID="btnDelete" runat="server" 
-                                CommandName="Eliminar" 
+                                Text="Eliminar" 
                                 CssClass="btn btn-danger" 
-                                CommandArgument ='<%# Eval("strCod_lab") %>' 
-                                OnClientClick="return confirm('¿Seguro que desea eliminar?');" 
-                                Text="Eliminar" />&nbsp;&nbsp;
+                                OnClientClick="return showAlertDelete(this);"      
+                                CommandName="Eliminar" 
+                                CommandArgument ='<%# Eval("strCod_lab") %>' />&nbsp;&nbsp;
                             <!--Boton que refleja formulario para asignar responsable el laboratorio-->
                             <asp:Button ID="btnLaboratoristas" runat="server" 
                                 CommandName="Laboratoristas" 
@@ -306,12 +306,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default border-radius" data-dismiss="modal" onclick="cerrar()">Cerrar</button>
+                    <button type="button" class="btn btn-default border-radius" data-dismiss="modal">Cerrar</button>
                     <asp:Button ID="btnSubmit" runat="server" 
-                        Text="Enviar" 
-                        ValidationGroup="formulario" 
+                        Text="Guardar" 
+                        CausesValidation="true" 
                         CssClass="btn btn-primary" 
                         OnClientClick="return validarArchivo();" 
+                        ValidationGroup="formulario" 
                         OnClick="btnSubmit_Click" />
                 </div>
             </div>
@@ -319,7 +320,7 @@
     </div>
     
     <!-- Ventana Modal -->
-    <div class="modal fade" id="form_actualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="form_actualizar1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -443,35 +444,38 @@
                     <br />
                     <div class="row">
                         <div class="col-md-6">
-                            <asp:UpdatePanel ID="upRepeaterSoftwareAct" runat="server" UpdateMode="Conditional">
-                                <ContentTemplate>
-                                    <div id="listSoftwareAct" runat="server">
-                                        <asp:Label ID="lblSoftwareAct" runat="server" Text="Software" CssClass="control-label"></asp:Label>
-                                        <div class="softwareContainer">
-                                            <asp:Repeater ID="rptSoftwareAct" runat="server" >
-                                                <ItemTemplate>
-                                                    <div class="form-control item">
-                                                        <div class="row" style="max-width: 100%;" >
-                                                            <div class="col-md-1">
-                                                                <asp:CheckBox ID="chkSoftwareAct" runat="server" ToolTip='<%# Eval("strCod_sof") %>' />
-                                                            </div>
-                                                            <div class="col-md-10">
-                                                                <label for="chkSoftwareAct"><%# Eval("strNombre_sof") %></label>
-                                                            </div>
-                                                        </div> 
+                            <div id="listSoftwareAct" runat="server">
+                                <asp:Label ID="lblSoftwareAct" runat="server" Text="Software" CssClass="control-label"></asp:Label>
+                                <div class="softwareContainer">
+                                    <asp:Repeater ID="rptSoftwareAct" runat="server" >
+                                        <ItemTemplate>
+                                            <div class="form-control item">
+                                                <div class="row" style="max-width: 100%;" >
+                                                    <div class="col-md-1">
+                                                        <asp:CheckBox ID="chkSoftwareAct" runat="server" ToolTip='<%# Eval("strCod_sof") %>' />
                                                     </div>
-                                                </ItemTemplate>
-                                            </asp:Repeater>
-                                        </div>
-                                    </div>
-                                </ContentTemplate>
-                                <Triggers>
-                                    <asp:AsyncPostBackTrigger ControlID="ddlSedeAct" EventName="SelectedIndexChanged" />
-                                    <asp:AsyncPostBackTrigger ControlID="ddlFacultadAct" EventName="SelectedIndexChanged" />
-                                </Triggers>
-                            </asp:UpdatePanel>
+                                                    <div class="col-md-10">
+                                                        <label for="chkSoftwareAct"><%# Eval("strNombre_sof") %></label>
+                                                    </div>
+                                                </div> 
+                                            </div>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-6">
+                            <asp:Label ID="lblEstadoAct" runat="server" 
+                                Text="Estado" />
+                            <asp:DropDownList ID="ddlEstadoAct" runat="server" CssClass="form-control">
+                                <asp:ListItem Value="1" Text="Activo" />
+                                <asp:ListItem Value="0" Text="Inactivo" />
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
                             <asp:Label ID="lblUbicacionAct" runat="server" Text="Ubicación" CssClass="control-label required"></asp:Label>
                             <asp:TextBox ID="txtUbicacionAct" runat="server" 
                                 CssClass="form-control custom-input text-multiple" 
@@ -490,9 +494,10 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerrar()">Cerrar</button>
                     <asp:Button ID="btn_Actualizar" runat="server" 
                         Text="Actualizar" 
+                        CausesValidation="true" 
                         ValidationGroup="formularioActualizar" 
                         CssClass="btn btn-success" 
-                        OnClientClick="return validarArchivoAct();" 
+                        OnClientClick="return validarArchivo();" 
                         OnClick="btn_Actualizar_Click" />
                 </div>
             </div>
@@ -749,16 +754,22 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
     <script>
         function validarArchivo() {
-            var input1 = document.getElementById('<%= fulImg1.ClientID %>');
-            var input2 = document.getElementById('<%= fulImg2.ClientID %>');
+            var input1 = $('#<%= fulImg1.ClientID %>')[0].files.length > 0
+                ? $('#<%= fulImg1.ClientID %>')[0]
+                : $('#<%= fulImg1Act.ClientID %>')[0]
+
+            var input2 = $('#<%= fulImg2.ClientID %>')[0].files.length > 0
+                ? $('#<%= fulImg2.ClientID %>')[0]
+                : $('#<%= fulImg2Act.ClientID %>')[0]
+
             var maxMB = 4; // Límite permitido (ajustable)
 
-            if (input1.files.length > 0 || input2.files.length) {
-                var file1 = input1.files[0];
-                var file2 = input2.files[0];
+            if (input1.files.length > 0 || input2.files.length > 0) {
+                var file1 = input1.files.length > 0 ? input1.files[0] : null;
+                var file2 = input2.files.length > 0 ? input2.files[0] : null;
 
-                var sizeMB1 = file1.size / (1024 * 1024);
-                var sizeMB2 = file2.size / (1024 * 1024);
+                var sizeMB1 = file1 ? file1.size / (1024 * 1024) : 0;
+                var sizeMB2 = file2 ? file2.size / (1024 * 1024) : 0;
 
                 if (sizeMB1 > maxMB && sizeMB2 > maxMB) {
                     showAlertImageBig("Las imagenes han excedido el tamaño máximo permitido de " + maxMB + " MB.", "error");
@@ -775,34 +786,20 @@
 
             }
 
-            return true; // permite enviar si pasa la validación
-        }
+            // Detectar qué formulario está visible o activo
+            var formularioNuevoVisible = $('#form_registrar').is(':visible');
+            var formularioActVisible = $('#form_actualizar1').is(':visible');
 
-        function validarArchivoAct() {
-            var input1 = document.getElementById('<%= fulImg1Act.ClientID %>');
-            var input2 = document.getElementById('<%= fulImg2Act.ClientID %>');
-            var maxMB = 4; // Límite permitido (ajustable)
-
-            if (input1.files.length > 0 || input2.files.length) {
-                var file1 = input1.files[0];
-                var file2 = input2.files[0];
-
-                var sizeMB1 = file1.size / (1024 * 1024);
-                var sizeMB2 = file2.size / (1024 * 1024);
-
-                if (sizeMB1 > maxMB && sizeMB2 > maxMB) {
-                    showAlertImageBig("Las imagenes han excedido el tamaño máximo permitido de " + maxMB + " MB.", "error");
-                    return false; // evita que se envíe el formulario
+            if (typeof (Page_ClientValidate) === 'function') {
+                if (formularioNuevoVisible) {
+                    if (!Page_ClientValidate('formulario')) {;
+                        return false;
+                    }
+                } else if (formActualizarVisible) {
+                    if (!Page_ClientValidate('formularioActualizar')) {
+                        return false;
+                    }
                 }
-                else if (sizeMB1 > maxMB) {
-                    showAlertImageBig("La imagen 1 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
-                    return false; // evita que se envíe el formulario
-                }
-                else if (sizeMB2 > maxMB) {
-                    showAlertImageBig("La imagen 2 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
-                    return false; // evita que se envíe el formulario
-                }
-
             }
 
             return true; // permite enviar si pasa la validación
@@ -849,6 +846,27 @@
             }).then(() => {
                 window.location.href = window.location.href;
             });
+        }
+
+        function showAlertDelete(btn) {
+            event.preventDefault(); // Detiene el postback
+
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "¡No podrás revertir esta acción!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    __doPostBack(btn.name, '');
+                }
+            });
+
+            return false; // Siempre evitar el postback automático
         }
     </script>
 </asp:Content>

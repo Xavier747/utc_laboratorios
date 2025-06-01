@@ -314,7 +314,7 @@
 
     <!--Formulario para actualizar software-->
     <!-- Ventana Modal -->
-    <div class="modal fade" id="form_actualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="form_actualizar_software" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -474,9 +474,10 @@
                     <button type="button" class="btn btn-default border-radius" data-dismiss="modal">Cerrar</button>
                     <asp:Button ID="btnActualizar" runat="server" 
                         Text="Actualizar" 
-                        ValidationGroup="formulario_Act" 
+                        CausesValidation="true" 
                         CssClass="btn btn-primary" 
                         OnClientClick="return validarArchivo();" 
+                        ValidationGroup="formulario_Act" 
                         OnClick="btnActualizar_Click" />
                 </div>
             </div>
@@ -518,18 +519,17 @@
 
             // Detectar qué formulario está visible o activo
             var formularioNuevoVisible = $('#form_registrar').is(':visible');
-            var formularioActVisible = $('#form_actualizar').is(':visible');
+            var formularioActVisible = $('#form_actualizar_software').is(':visible');
 
             if (typeof (Page_ClientValidate) === 'function') {
                 if (formularioNuevoVisible) {
                     if (!Page_ClientValidate('formNuevoSoft')) {
-                        console.log('Hola1');
                         return false;
                     }
-                } else if (formActualizarVisible) {
+                } else if (formularioActVisible) {
                     if (!Page_ClientValidate('formulario_Act')) {
+                        console.log("hola mundo");
                         return false;
-                        console.log('Hola2');
                     }
                 }
             }

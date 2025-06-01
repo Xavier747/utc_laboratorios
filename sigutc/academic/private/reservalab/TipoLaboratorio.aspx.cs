@@ -101,7 +101,7 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
             txtNombreAct.Text = tipo[0].strNombre_tipoLab;
             ddlEstadoAct.SelectedValue = tipo[0].bitEstado_tipoLab.ToString();
 
-            ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar').modal('show');", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar_Tipo').modal('show');", true);
         }
         else if (e.CommandName == "Eliminar")
         {

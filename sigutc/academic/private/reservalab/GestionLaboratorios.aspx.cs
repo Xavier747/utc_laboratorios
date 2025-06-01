@@ -34,7 +34,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     //Metodo principal de la pagina
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/private/Login.aspx");
+        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/public/Login.aspx");
 
         if (!IsPostBack)
         {
@@ -64,16 +64,14 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             llenarFormActualizar(codLab);
 
             // Muestra el modal para actualizar los datos
-            ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar').modal('show');", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar1').modal('show');", true);
         }
         if (e.CommandName == "Eliminar")
         {
             string codLab = e.CommandArgument.ToString();
-            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
-            string strUser_log = Context.User.Identity.Name;
 
             //Carga los detalles del laboratorio según el ID seleccionado
-            laboratorio2.DelLAB_LABORATORIOS("xPkLab", codLab, dtFecha_log, strUser_log, "");
+            laboratorio2.DelLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
             string title = laboratorio2.resultado ? laboratorio2.msg : laboratorio2.msg;
             string icon = laboratorio2.resultado ? "success" : "error";
@@ -288,7 +286,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string codLab = generarIdLab();
         string rutaCarpeta = crearDirectorio();
 
-        laboratorio2.strCod_lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab + "_" + DateTime.Now;
+        laboratorio2.strCod_lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab;
         laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
         laboratorio2.strCod_Sede = ddlSede.SelectedValue;
         laboratorio2.strNombre_lab = txtNombre.Text.ToUpper();
@@ -502,6 +500,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         ddlCampoAmplioAct.SelectedValue = listLaboratoiros[0].strCod_areac;
         lblImg1InfAct.Text = listLaboratoiros[0].strFotografia1_lab;
         lblImg2InfAct.Text = listLaboratoiros[0].strFotografia2_lab;
+        ddlEstadoAct.SelectedValue = listLaboratoiros[0].bitEstado_lab == true ? "1" : "0";
         ddlSedeAct.SelectedValue = listLaboratoiros[0].strCod_Sede;
 
         cargarFacultadAct();
@@ -533,16 +532,15 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     protected void btn_Actualizar_Click(object sender, EventArgs e)
     {
+        laboratorio2.strCod_lab = lblCodeLabAct.Text;
+        laboratorio2.strCod_tipoLab = ddlTipoAct.SelectedValue;
+        laboratorio2.strCod_areac = ddlCampoAmplioAct.SelectedValue;
         laboratorio2.strNombre_lab = txtNombreAct.Text;
         laboratorio2.intNumeroEquipos_lab = Convert.ToInt32(txtNumeroEquiposAct.Text);
         laboratorio2.strUbicacion_lab = txtUbicacionAct.Text;
-        laboratorio2.strCod_tipoLab = ddlTipoAct.SelectedValue;
-        laboratorio2.strCod_areac = ddlCampoAmplioAct.SelectedValue;
+        laboratorio2.bitEstado_lab = ddlEstadoAct.SelectedValue == "1";
         laboratorio2.dtFecha_log = DateTime.Now;
         laboratorio2.strUser_log = Context.User.Identity.Name;
-        laboratorio2.strCod_Sede = ddlSedeAct.SelectedValue;
-        laboratorio2.strCod_Fac = ddlFacultadAct.SelectedValue;
-        laboratorio2.strCod_lab = lblCodeLabAct.Text;
 
         if (fulImg1Act.HasFile)
         {
@@ -564,7 +562,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 }
 
                 fulImg1Act.SaveAs(path);
-                laboratorio2.strFotografia1_lab = newFilename;
+                lblImg1InfAct.Text = newFilename;
             }
             catch (Exception ex)
             {
@@ -592,7 +590,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 }
 
                 fulImg2Act.SaveAs(path);
-                laboratorio2.strFotografia2_lab = fulImg2Act.FileName;
+                lblImg2InfAct.Text = fulImg2Act.FileName;
             }
             catch (Exception ex)
             {

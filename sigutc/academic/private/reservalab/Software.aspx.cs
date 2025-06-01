@@ -317,7 +317,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
             //capturamos el id para transportar a otro formulario
             string codSoft = e.CommandArgument.ToString();
             consultarRegistro(codSoft);
-            ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar').modal('show');", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar_software').modal('show');", true);
 
         }
         if (e.CommandName == "Eliminar")
@@ -382,6 +382,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         software1.decCostoTotal_sof = decimal.Parse(txtCantidadAct.Text) * precioUnitario;
         software1.strDescripcion_sof = txtDescripcionAct.Text;
         software1.strUrl_sof = txtLinkAct.Text;
+        software1.bitEstado_sof = ddlEstadoAct.SelectedValue == "1";
         software1.dtFecha_log = DateTime.Now;
         software1.strUser_log = Context.User.Identity.Name;
 
