@@ -23,7 +23,7 @@
             AllowPaging="True"
             PageSize="10" 
             OnPageIndexChanging="gvLaboratorios_PageIndexChanging" 
-            CssClass="table table-striped table-bordered" 
+            CssClass="table table-bordered" 
             OnRowCommand="gvLaboratorios_RowCommand">
             <Columns>
                 <asp:BoundField DataField="strNombre_lab" HeaderText="Nombre" />
@@ -125,7 +125,7 @@
                                 CssClass="control-label required"></asp:Label>
                             <asp:TextBox ID="txtNombre" runat="server" 
                                 CssClass="form-control custom-input" 
-                                placeholder="Nombre" ToolTip="hola"/>
+                                placeholder="Nombre" />
                             <asp:RequiredFieldValidator ID="rfv_tbxNombre" runat="server" 
                                 ControlToValidate="txtNombre" 
                                 CssClass="alert alert-danger form-control" 

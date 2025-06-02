@@ -16,12 +16,9 @@ using ClassLibraryTesis;
 
 public partial class academic_private_reservalab_LaboratorioCarrera : System.Web.UI.Page
 {
-  
-
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_EXCLUSIVO labExc1= new LAB_EXCLUSIVO();
     UB_CARRERAS car = new UB_CARRERAS();
-
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -33,9 +30,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             cargarCarreras();
             cargarCarrerasExclusivas();
         }
-    }
-
-   
+    }  
 
     public void cargarLaboratorio()
     {
@@ -75,10 +70,11 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         // Llamada a tu clase de acceso a datos, como haces con sede.LoadUB_SEDES
         var listCarreras = car.LoadUB_CARRERAS(tipoConsulta, facultadId, sedeId, codLab, "");
 
+
+
         if (listCarreras.Count != 0)
         {
             ddlCarreras.Items.Clear();
-            ddlCarreras.Items.Add(new ListItem("-- Seleccione una opción --", ""));
 
             foreach (var item in listCarreras)
             {
