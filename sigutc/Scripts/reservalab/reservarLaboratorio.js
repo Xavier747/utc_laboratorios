@@ -1,7 +1,7 @@
 ﻿var dia = "";
 var horaFin = "";
 var selectMateria = '';
-var eventId = '';
+var listSoftware = [];
 
 document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar');
@@ -31,9 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         },
         dateClick: function (info) {
-            const fechaCompleta = info.dateStr;
-            const fecha = fechaCompleta.substring(0, 10);
+            var fechaCompleta = info.dateStr;
+            var fecha = fechaCompleta.substring(0, 10);
             $('#txtFecha').val(fecha);
+            $('#fecha').text(fecha);
 
             dia = obtenerDiaSemana(fecha);
 
@@ -64,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         },
         events: function (fetchInfo, successCallback, failureCallback) {
-
             consultarEventos('xCodLab', codLab, '', '', '',function(data) {
                 const eventos = [];
 
@@ -96,52 +96,10 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         eventClick: function(info){
             eventId = info.event.id;
+            let fecha = info.event.start.toISOString().split('T')[0];
 
-            consultarEventos('xPK', eventId, '', '', '', function(data) {
-                var reserva = data[0];
-                var codAsignatura = data[0].strCod_Mate;
-                var cedula = data[0].cedula_alu;
-                var codUnidad = data[0].strCod_unidTem;
-
-                $('#txtFechaDet').val(data[0].dtFechainicio_reser.split('T')[0]);
-                $('#txtHoraInicioDet').val(data[0].dtFechainicio_reser.split('T')[1]);
-                $('#txtHoraFinDet').val(data[0].dtFechaFin_reser.split('T')[1]);
-                $('#txtAsistentes').val(data[0].intTotalAsistente_reser);
-                $('#txtTemaDet').val(data[0].strTema_reser);
-                $('#txtDescDet').val(data[0].strDescripcion_reser);
-                $('#txtMaterialDet').val(data[0].strMateriales_reser);
-
-                consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
-                    var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
-
-                    $('#txtCorreoDet').val(data[0].correo_alu);
-                    $('#txtNombresDet').val(nombre);
-                });
-
-                consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
-                    $('#txtAsigDet').val(data[0].strNombre_mate);
-                });                
-
-                consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
-                    $('#txtCicloDet').val(data[0].strnombre_curso);
-                    $('#txtParaleloDet').val(data[0].strparalelo_curso);
-                });
-
-                consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
-                    $('#txtCarreraDet').val(data[0].strnombre_car);
-                });
-
-                //$('#txtTipoMotivoDet').val(data[0].);
-                consultarUnidad('xPK', codUnidad, '', '', '', function(data){
-                    $('#txtUnidadDet').val(data[0].strdesc_unidtem);
-                });
-            }, function(error) {
-                // En caso de error
-                console.error("Error consultando eventos", error);
-                failureCallback(error);
-            });
-
-            $('#form_Detalle').modal('show');
+            mostrarListado(fecha);
+            $('#form_listReserva').modal('show');
         },
         
         selectable: true,
@@ -167,7 +125,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 calendar.unselect();
             }
             else {
-                $('#form_registrar').modal('show');
+                var fecha = info.start.toISOString().split('T')[0];
+
+                mostrarListado(fecha);
+                $('#form_listReserva').modal('show');
             }
         },
     });
@@ -201,6 +162,8 @@ $(document).ready(function () {
                 cargarNumeroEstudiante(data, txtNumeroAsistentes);
             });
         });
+
+        $('#det_reservacion').css('display', 'none');
     });
 
     $("#selectUnidad").on('change', function () {
@@ -223,13 +186,7 @@ $(document).ready(function () {
         const op = 2;
 
         selectMateria = $('#selectAsignatura option').first().val();
-
-        consultarHorario(selectMateria, dia, function(data){
-            console.log(data);
-            const dropdown = $("#selectHoraFin");
-
-            cargarHoraFin(op, data, dropdown)
-        });
+        cargarHoraFin(op, data, dropdown)
     });
 
     $("#switchSoftware").on("change", function () {
@@ -240,7 +197,7 @@ $(document).ready(function () {
             $('.mult-select-tag').remove();
 
             // Llamada al backend
-            consultarSoftware(codLab, function(data) {
+            consultarSoftware('xLaboratorio', codLab, '', '', '', function(data) {
                 // Llenar el select con datos
                 cargarSoftware(data, selectSoftware);
 
@@ -250,7 +207,7 @@ $(document).ready(function () {
                     shadow: true,      // default false
                     placeholder: 'Search',  // default Search...
                     onChange: function(values) {
-                        console.log(values)
+                        listSoftware = values
                     }
                 });
             });
@@ -298,6 +255,10 @@ $(document).ready(function () {
         }
     });
 
+    $("#btnNuevaReserv").click(function() {
+        $('#form_registrar').modal('show');
+    });
+
     $("#btnEnviar").click(function() {
         let reservacion = [];
 
@@ -311,6 +272,7 @@ $(document).ready(function () {
         reservacion[7] = $('#txtNumeroAsistentes').val();
         reservacion[8] = '';
         reservacion[9] = '#a4e4af';
+        reservacion[10] = $('#selectTipoMotivo').val();
 
         $.ajax({
             type: "POST",
@@ -324,6 +286,11 @@ $(document).ready(function () {
                 var data = JSON.parse(response.d);
                 var mensaje = data.msg;
                 var icon = data.resultado == true ? 'success' : 'error';
+                var codReser = data.strCod_reser;
+
+                guardarSoftware(codReser, function(data){
+                    console.log(data[0].msg)
+                });
 
                 $('#form_registrar').modal('hide');
 
@@ -336,6 +303,22 @@ $(document).ready(function () {
         });
     });
 
+    // Detalle
+    $('#tbl_det_reservacion').on('click', '.btn-info', function(event) {
+        event.preventDefault();
+
+        $('#form_listReserva').modal('hide');
+        const idReserva = $(this).data('id');
+        
+        // Espera a que termine de ocultarse el primero antes de abrir el segundo
+        $('#form_listReserva').on('hidden.bs.modal', function () {
+            mostrarDetalle(idReserva);
+
+            $('#form_Detalle').modal('show');
+        });
+    });
+
+    // Editar
     $("#btnEditar").click(function() {
         $('#form_Detalle').modal('hide');
 
@@ -383,7 +366,6 @@ $(document).ready(function () {
                     $('#selectUnidadAct').val(data[0].strCod_unidTem);
                 }); 
 
-
                 consultarTema('xUnidad', codUnidad, '', '', '', function(data){
 
                     if(data.length > 0){
@@ -403,12 +385,6 @@ $(document).ready(function () {
                 console.error("Error consultando eventos", error);
                 failureCallback(error);
             });
-
-
-
-
-
-
             $('#form_actualizar').modal('show');
         });
     });
@@ -478,6 +454,8 @@ function consultarAsignatura(comodin, filtro1, filtro2, filtro3, filtro4, callba
 
 //Consulta el horario de los docentes por cada dia
 function consultarHorario(comodin, filtro1, filtro2, filtro3, filtro4, callback){
+    console.log('dia: ', filtro2);
+
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
@@ -607,13 +585,13 @@ function consultarTema(comodin, filtro1, filtro2, filtro3, filtro4, callback){
 }
 
 //Consultar software
-function consultarSoftware(codLab, callback){
+function consultarSoftware(comodin, filtro1, filtro2, filtro3, filtro4, callback){
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
         url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ObtenerSoftware",
         // Enviar la fecha como parámetro
-        data: JSON.stringify({ codLab: codLab }),
+        data: JSON.stringify({ comodin:comodin, filtro1:filtro1, filtro2:filtro2, filtro3:filtro3, filtro4:filtro4 }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -648,6 +626,55 @@ function consultarEventos(comodin, filtro1, filtro2, filtro3, filtro4, callback)
             callback([]);
         }
     });
+}
+
+function guardarSoftware(codReser, callback){
+    if(listSoftware.length > 0){
+        listSoftware.forEach(item => {
+            let codSoft = item.value;
+
+            $.ajax({
+                type: "POST",
+                // Página y método del backend que procesará la solicitud
+                url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarSofReserva",
+                // Enviar la fecha como parámetro
+                data: JSON.stringify({ codSoft: codSoft, codReser: codReser }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var data = JSON.parse(response.d);
+                    callback(data);
+                },
+                error: function (xhr, status, error) {
+                    console.log("Status: " + xhr.status);
+                    console.log("Response: " + xhr.responseText);
+                    callback([]);
+                }
+            });
+        });
+    }
+    else{
+        let codSoft = $('#txtSoftware').val();
+
+        $.ajax({
+            type: "POST",
+            // Página y método del backend que procesará la solicitud
+            url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarSofReserva",
+            // Enviar la fecha como parámetro
+            data: JSON.stringify({ codSoft: codSoft, codReser: codReser }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                var data = JSON.parse(response.d);
+                callback(data);
+            },
+            error: function (xhr, status, error) {
+                console.log("Status: " + xhr.status);
+                console.log("Response: " + xhr.responseText);
+                callback([]);
+            }
+        });
+    }
 }
 
 //Funcion para mostrar en el formulario
@@ -703,7 +730,6 @@ function cargarHoraFin(op, data, dropdown){
         }
     }
 }
-
 //Cargar ciclo, donde el primer agumento es la data debuelta en la consulta
 //el segundo y tercero son los componentes "input text"
 function cargarCiclo(data, input1, input2){
@@ -769,17 +795,27 @@ function cargarMaterias(data){
 }
 
 function validarReservacion(){
-    const fechaInicio = $('#txtFecha').val() + ' ' + $('#selectHoraInicio').val();
-    const fechaFin = $('#txtFecha').val() + ' ' + $('#selectHoraFin').val();
+    const nuevaInicio = $('#txtFecha').val() + 'T' + $('#selectHoraInicio').val() + ':00';
+    const nuevaFin = $('#txtFecha').val() + 'T' + $('#selectHoraFin').val() + ':00';
 
-    consultarUnidad('xAsignatura', selectMateria, '', '', '', function(data){
-        const dropdown = $("#selectUnidad");
-        cargarUnidad(data, dropdown);
+    consultarEventos('xCodLab', codLab, '', '', '', function(data){
+        data.forEach(reser => {
+            let resInicio = new Date(reser.dtFechainicio_reser);
+            let resFin = new Date(reser.dtFechaFin_reser);
 
-        var selectUnidad = $('#selectUnidad option').first().val();
-    }); 
+            if (nuevaInicio > resFin && nuevaFin < resInicio) {
+                consultarUnidad('xAsignatura', selectMateria, '', '', '', function(data){
+                    const dropdown = $("#selectUnidad");
+                    cargarUnidad(data, dropdown);
 
-    $('#det_reservacion').css('display', 'block');
+                    var selectUnidad = $('#selectUnidad option').first().val();
+                }); 
+
+                $('#det_reservacion').css('display', 'block');                
+            }
+        });
+    });
+
 }
 
 function cargarUnidad(data, dropdown){
@@ -807,7 +843,7 @@ function cargarTema(data, dropdown){
 
 function cargarSoftware(data, selectSoftware) {
     selectSoftware.empty(); // Limpia opciones anteriores
-    console.log(data);
+
     $.each(data, function (i, item) {
         var opcion = $('<option>', {
             value: item.strCod_sof,
@@ -819,6 +855,112 @@ function cargarSoftware(data, selectSoftware) {
 
 function convertirFechaForFullCalendar(fecha){
     return fecha.replace(' ', 'T');
+}
+
+function mostrarListado(fecha){
+    var now = new Date();
+    consultarEventos('xFecha', fecha, '', '', '',function(data) {
+        const tbody = $('#tbl_det_reservacion');
+        tbody.empty(); // Limpiar contenido anterior
+                    
+
+        if(data.length > 0){
+            // Iterar sobre los datos recibidos
+            $.each(data, function(i, item) {
+                const tr = $('<tr></tr>');
+
+                tr.append(`<td>${item.strTema_reser}</td>`);
+                tr.append(`<td>${convertirHora(item.dtFechainicio_reser)}</td>`);
+                tr.append(`<td>${convertirHora(item.dtFechaFin_reser)}</td>`);
+                tr.append(`<td><div style="width:20px; height:20px; background-color:${item.strColor_reser}; border-radius:3px;"></div></td>`);
+
+                // Botones de acción
+                const btnDetalle = `<button class="btn btn-info" data-id="${item.strCod_reser}">Detalle</button>`;
+                const btnActualizar = `<button class="btn btn-warning" data-id="${item.strCod_reser}">Actualizar</button>`;
+                const btnEliminar = `<button class="btn btn-danger" data-id="${item.strCod_reser}">Eliminar</button>`;
+
+                consultarAlumno('xCEDULA', item.cedula_alu, '', '', '', function(data){
+                    var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
+
+                    tr.append(`<td>${nombre}</td>`);
+
+                    let fechaOriginal = convertirFechaForFullCalendar(item.dtFechaRegistro_reser);
+                    let fechaRegistro = new Date(fechaOriginal);
+                    let fechaConTresHoras = new Date(fechaRegistro.getTime() + 2 * 60 * 60 * 1000);
+                    let fechaActual = new Date();
+
+                    console.log(fechaConTresHoras);
+                    console.log("Fecha actual     :", fechaActual.toString());
+                    console.log("Fecha + 3 horas  :", fechaConTresHoras.toString());
+
+
+                    if(cedula === item.cedula_alu && fechaConTresHoras > fechaActual){
+                        tr.append(`<td>${btnDetalle} ${btnActualizar} ${btnEliminar}</td>`);
+                    }else{
+                        tr.append(`<td>${btnDetalle}</td>`);
+                    }
+
+                });
+                tbody.append(tr);
+            });
+        }
+        else{
+            const tr = $('<tr></tr>');
+
+            tr.append(`<td colspan="6" class='text-center'>No sé a encontrado reservaciones para el día de hoy</td>`);
+            tbody.append(tr);
+        }
+    }, function(error) {
+        // En caso de error
+        console.error("Error consultando eventos", error);
+    });
+}
+
+function mostrarDetalle(idReserva){
+    consultarEventos('xPK', idReserva, '', '', '', function(data) {
+        var reserva = data[0];
+        var codAsignatura = data[0].strCod_Mate;
+        var cedula = data[0].cedula_alu;
+        var codUnidad = data[0].strCod_unidTem;
+
+        $('#txtFechaDet').val(data[0].dtFechainicio_reser.split('T')[0]);
+        $('#txtHoraInicioDet').val(data[0].dtFechainicio_reser.split('T')[1]);
+        $('#txtHoraFinDet').val(data[0].dtFechaFin_reser.split('T')[1]);
+        $('#txtAsistentes').val(data[0].intTotalAsistente_reser);
+        $('#txtTemaDet').val(data[0].strTema_reser);
+        $('#txtDescDet').val(data[0].strDescripcion_reser);
+        $('#txtMaterialDet').val(data[0].strMateriales_reser);
+        $('#txtTipoMotivoDet').val(data[0].strTipo_reser.toUpperCase());
+
+        consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
+            var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
+
+            $('#txtCorreoDet').val(data[0].correo_alu);
+            $('#txtNombresDet').val(nombre);
+        });
+
+        consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
+            $('#txtAsigDet').val(data[0].strNombre_mate);
+        });                
+
+        consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
+            $('#txtCicloDet').val(data[0].strnombre_curso);
+            $('#txtParaleloDet').val(data[0].strparalelo_curso);
+        });
+
+        consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
+            $('#txtCarreraDet').val(data[0].strnombre_car);
+        });
+
+        //$('#txtTipoMotivoDet').val(data[0].);
+        consultarUnidad('xPK', codUnidad, '', '', '', function(data){
+            $('#txtUnidadDet').val(data[0].strdesc_unidtem);
+        });
+    }, function(error) {
+        // En caso de error
+        console.error("Error consultando eventos", error);
+        failureCallback(error);
+    });
 }
 
 function mostrarMensage(mensaje, icon){
@@ -859,4 +1001,8 @@ function mostrarMensageCRUD(mensaje, icon){
     }).then(() => {
         window.location.href = window.location.href;
     });
+}
+
+function cerrar(){
+    window.location.href = window.location.href;
 }

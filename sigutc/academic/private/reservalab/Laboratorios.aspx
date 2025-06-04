@@ -44,6 +44,20 @@
             text-align:center;
         }
 
+        .lblNombre{
+            height: 50px;
+            margin-bottom: 20px;
+        }
+
+        h6{
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        .card-title{
+            height: 45px; 
+            margin-bottom: 15px;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
@@ -55,11 +69,17 @@
         <asp:UpdatePanel ID="updFacultades" runat="server">
             <ContentTemplate>
                 <ul class="nav nav-tabs" id="navFacultades">
-                    <asp:Label ID="lblCodFacultad" runat="server" Visible="false" Text=''></asp:Label>
-                    <asp:Repeater ID="rptFacultades" runat="server" OnItemCommand="rptFacultades_ItemCommand">
+                    <asp:Label ID="lblCodFacultad" runat="server" 
+                        Visible="false" 
+                        Text='' />
+                    <asp:Repeater ID="rptFacultades" runat="server" 
+                        OnItemCommand="rptFacultades_ItemCommand">
                         <ItemTemplate>
                             <li role="presentation" onclick="setActive(this);">
-                                <asp:LinkButton ID="btnFacultad" runat="server" CommandName="CargarLaboratorios" CommandArgument='<%# Eval("strCod_Fac") %>' Text='<%# Eval("strNombre_Fac") %>'></asp:LinkButton>
+                                <asp:LinkButton ID="btnFacultad" runat="server" 
+                                    CommandName="CargarLaboratorios" 
+                                    CommandArgument='<%# Eval("strCod_Fac") %>' 
+                                    Text='<%# Eval("strNombre_Fac") %>' />
                             </li>
                         </ItemTemplate>
                     </asp:Repeater>
@@ -78,62 +98,75 @@
             <ContentTemplate>
                 <div class="container">
                     <div class="row">
-
                         <div class="col-md-12">
-                            <asp:Label ID="lblBuscar" runat="server" Text="BUSCAR" CssClass="form-control-bold"></asp:Label>
-                            <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control txtSearch" placeholder="Ingrese el nombre del laboratorio" AutoPostBack="true" OnTextChanged="txtSearch_TextChanged"></asp:TextBox>
+                            <asp:Label ID="lblBuscar" runat="server" 
+                                Text="BUSCAR" 
+                                CssClass="form-control-bold" />
+                            <asp:TextBox ID="txtSearch" runat="server" 
+                                CssClass="form-control txtSearch" 
+                                placeholder="Ingrese el nombre del laboratorio" 
+                                AutoPostBack="true" 
+                                OnTextChanged="txtSearch_TextChanged" />
                         </div>
                     </div>
                 </div>
 
                 <div class="list_laboratorio">
                     <div class="row">
-                        <asp:Repeater ID="listarLaboratorios" runat="server" OnItemCommand="listarLaboratorios_ItemCommand">
+                        <asp:Repeater ID="listarLaboratorios" runat="server" 
+                            OnItemCommand="listarLaboratorios_ItemCommand">
                             <ItemTemplate>
                                 <div class="col-md-4 mb-4">
                                     <div class="card">
                                         <div class="conten-img">
-                                            <asp:Image ID="Image1" runat="server" ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' AlternateText="Imagen del laboratorio" CssClass="card-img-top lab-image"/>
+                                            <asp:Image ID="Image1" runat="server" 
+                                                ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' 
+                                                AlternateText="Imagen del laboratorio" CssClass="card-img-top lab-image"/>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <h6 class="card-title" style="height: 45px; margin-bottom: 15px;">
-                                                        <asp:Label ID="lblNombreLab" runat="server" Text='<%# Eval("strNombre_lab") %>'></asp:Label>
-                                                    </h6>
+                                                    <h6 class="card-title"><%# Eval("strNombre_lab") %></h6>
                                                 </div>
                                             </div>
                                             <div class="card-body__">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="resp-image">
-                                                            <asp:Image ID="imgRespAcad" runat="server" ImageUrl='<%# "~/images/Usuario/" + Eval("ResponsableAcademico.FotoAcademico") %>' AlternateText="Foto Responsable Académico" CssClass="img-thumbnail" />
+                                                            <asp:Image ID="imgRespAcad" runat="server" 
+                                                                ImageUrl='<%# "~/images/Usuario/" + Eval("ResponsableAcademico.FotoAcademico") %>' 
+                                                                AlternateText="Foto Responsable Académico" 
+                                                                CssClass="img-thumbnail" />
                                                         </div>
-                                                        <h6>
-                                                            <b>
-                                                                <asp:Label ID="lblRespAcad" runat="server" Text="RESPONSABLE ACADÉMICO" style ="font-size: 13px;"></asp:Label><br />
-                                                            </b>
-                                                        </h6>
-                                                        <asp:Label ID="lblRespAcadInf" runat="server" Text='<%# Eval("ResponsableAcademico.nombre") %>'></asp:Label><br /><br />
+                                                        <h6>RESPONSABLE ACADÉMICO</h6>
+                                                        <label class="lblNombre"><%# Eval("ResponsableAcademico.nombre") %></label>
                                                     </div>
                                                     <div class="col-md-6" style="border-left:2px solid #312783">
                                                         <div class="resp-image">
-                                                            <asp:Image ID="imgRespAdmin" runat="server" ImageUrl='<%# "~/images/Usuario/" + Eval("ResponsableAcademico.FotoAcademico") %>' AlternateText="Foto Responsable Administrativo" CssClass="img-thumbnail" />
+                                                            <asp:Image ID="imgRespAdmin" runat="server" 
+                                                                ImageUrl='<%# "~/images/Usuario/" + Eval("ResponsableAcademico.FotoAcademico") %>' 
+                                                                AlternateText="Foto Responsable Administrativo" 
+                                                                CssClass="img-thumbnail" />
                                                         </div>
-                                                        <h6>
-                                                            <b>
-                                                                <asp:Label ID="lblRespAdmin" runat="server" Text="RESPONSABLE ADMINISTRATIVO" style ="font-size: 13px;"></asp:Label><br />
-                                                            </b>
-                                                        </h6>
-                                                        <asp:Label ID="lblRespAdminInf" runat="server" Text='<%# Eval("ResponsableAdministrativo.nombre") %>'></asp:Label><br /><br />
+                                                        <h6>RESPONSABLE ADMINISTRATIVO</h6>
+                                                        <label class="lblNombre"><%# Eval("ResponsableAdministrativo.nombre") %></label>
+                                                        <br /><br />
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <asp:Button ID="btnReservar" runat="server" Text="Reservar" CssClass="btn btnReservar btn-block" CommandName="Reservar" CommandArgument='<%# Eval("strCod_lab") %>'/>
+                                                        <asp:Button ID="btnReservar" runat="server" 
+                                                            Text="Reservar" 
+                                                            CssClass="btn btnReservar btn-block" 
+                                                            CommandName="Reservar" 
+                                                            CommandArgument='<%# Eval("strCod_lab") %>'/>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <asp:Button ID="btnInformacion" runat="server" Text="Informacion" CssClass="btn btnReservar btn-block" CommandName="Informacion" CommandArgument='<%# Eval("strCod_lab") %>'/>
+                                                        <asp:Button ID="btnInformacion" runat="server" 
+                                                            Text="Informacion" 
+                                                            CssClass="btn btnReservar btn-block" 
+                                                            CommandName="Informacion" 
+                                                            CommandArgument='<%# Eval("strCod_lab") %>'/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -150,8 +183,5 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
-    <script>
-
-    </script>
 </asp:Content>
 

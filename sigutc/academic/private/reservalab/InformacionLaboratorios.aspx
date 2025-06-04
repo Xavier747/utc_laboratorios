@@ -3,34 +3,28 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
     <style>
         .target{
-            height: 350px !important;      /* o cualquier alto que desees */
+            height: 380px !important;
         }
 
-        .contenedor-imagen{
-            width: 100%;        /* o el ancho que necesites */
-            overflow: hidden;   /* corta la imagen que se sale */
-            position: relative;
-        }
-
-        .contenedor-imagen .img {
+        .img {
             height: 350px;
-            width: auto;
-            object-fit: cover;        /* hace que la imagen se escale y recorte sin deformarse */
-            object-position: center;  /* centra la imagen dentro del contenedor */
+            width: 100%;
+            object-fit: cover;
+            object-position: center;
             display: block;
         }
 
         .img-responsable {
-            object-fit: cover; /* Evita deformaciones */
+            object-fit: cover;
             height: 100%;
         }
 
         .resp-image {
             margin: auto;
-            border-radius: 50%; /* Hace la imagen redonda */
-            border: 3px solid #007BFF; /* Borde azul */
-            width: 100px; /* Ajusta el tamaño de la imagen */
-            height: 100px; /* Mantén el tamaño uniforme */
+            border-radius: 50%;
+            border: 3px solid #007BFF;
+            width: 100px;
+            height: 100px;
             overflow:hidden;
         }
     </style> 
@@ -41,17 +35,19 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="container-fluid">
         <div class="section-heading text-center">
-            <h3 class="morado titulo-claro text-uppercase" id="nombre" runat="server"></h3>            
+            <h4 class="morado titulo-claro text-uppercase" id="nombre" runat="server"></h4>            
         </div>
+        <br />
         <div class="row">
             <div class="col-md-6">
-                <div class="contenedor-imagen">
-                    <asp:DataList ID="DataList1" runat="server">
-                        <ItemTemplate>
-                            <asp:Image ID="imgLaboratorio1" runat="server" ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' AlternateText="Imagen del laboratorio" CssClass="img"/>
-                        </ItemTemplate>
-                    </asp:DataList>
-                </div>
+                <asp:DataList ID="DataList1" runat="server" style="width: 100%; height: 380px">
+                    <ItemTemplate>
+                        <asp:Image ID="imgLaboratorio1" runat="server" 
+                            ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' 
+                            AlternateText="Imagen del laboratorio" 
+                            CssClass="img" />
+                    </ItemTemplate>
+                </asp:DataList>
             </div>
             <div class="col-md-6 ">
                 <div class="card target">
@@ -65,7 +61,7 @@
                                 </div>
                                 <div class="col-md-5">
                                     <a href="javascript:history.back()" class="pull-right regresar">
-                                        <b><i class="fa fa-chevron-left"></i></b> REGRESAR
+                                        <b><i class="fa fa-chevron-left"></i></b> REGRESARS
                                     </a>
                                 </div>
                             </div>
@@ -92,8 +88,6 @@
                 </div>
             </div>
         </div>
-        <br />
-        <br />    
         <div class="row">
             <div class="col-md-6">
                 <div class="card target">
@@ -106,7 +100,9 @@
                                 <br />
                                 <div class="content">
                                     <div class="resp-image text-center">
-                                        <asp:Image ID="imgRespAcad" runat="server" AlternateText="Foto Responsable Académico" CssClass="img-responsable"/>
+                                        <asp:Image ID="imgRespAcad" runat="server" 
+                                            AlternateText="Foto Responsable Académico" 
+                                            CssClass="img-responsable"/>
                                     </div>
                                 </div>
                                 <br />
@@ -121,7 +117,9 @@
                                 <br />
                                 <div class="content">
                                     <div class="resp-image text-center">
-                                        <asp:Image ID="imgRespAdmin" runat="server" AlternateText="Foto Responsable Administrativo" CssClass="img-responsable"/>
+                                        <asp:Image ID="imgRespAdmin" runat="server" 
+                                            AlternateText="Foto Responsable Administrativo" 
+                                            CssClass="img-responsable"/>
                                     </div>
                                 </div>
                                 <br />
@@ -135,9 +133,12 @@
             </div>
             <div class="col-md-6">
                 <div class="contenedor-imagen">
-                    <asp:DataList ID="DataList2" runat="server">
+                    <asp:DataList ID="DataList2" runat="server" style="width: 100%; height: 380px">
                         <ItemTemplate>
-                            <asp:Image ID="imgLaboratorio2" runat="server" AlternateText="Imagen del laboratorio" ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia2_lab").ToString()) %>' CssClass="img"/>
+                            <asp:Image ID="imgLaboratorio2" runat="server" 
+                                AlternateText="Imagen del laboratorio" 
+                                ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia2_lab").ToString()) %>' 
+                                CssClass="img"/>
                         </ItemTemplate>
                     </asp:DataList>
                 </div>
@@ -146,6 +147,5 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
-    <script src="<%= ResolveUrl("~/Scripts/Custom/listarLaboratorios.js") %>" type="text/javascript"></script>
 </asp:Content>
 

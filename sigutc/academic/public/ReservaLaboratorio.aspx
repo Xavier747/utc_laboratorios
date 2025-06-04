@@ -118,6 +118,46 @@
     </div>
 
     <!--Formulario para una nueva reservacion-->
+    <div class="modal fade" id="form_listReserva" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Nueva reservacion</h4>
+                </div>
+                <div class="modal-body">
+                    <div >
+                    </div>
+                        <h4 id="fecha" class="text-center"></h4>
+                    <br />
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary" id="btnNuevaReserv">
+                            <span>Nueva reserva</span>
+                        </button>
+                    </div>
+                    <br />
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tema</th>
+                                <th>Horio</th>
+                                <th>Curso</th>
+                                <th>Estado</th>
+                                <th>Docente</th>
+                                <th>Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl_det_reservacion"></tbody>
+                    </table>    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CERRAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Formulario para una nueva reservacion-->
     <div class="modal fade" id="form_registrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -292,7 +332,7 @@
                     </div>                        
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">CANCELAR</button>
+                    <button type="button" class="btn btn-default" onclick="cerrar()">CANCELAR</button>
                     <button type="button" id="btnEnviar" class="btn btn-primary" >GUARDAR</button>
                 </div>
             </div>
@@ -400,11 +440,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <asp:Label ID="Label16" runat="server" Text="DESCRIPCION / COMENTARIO" class="form-label"></asp:Label>
+                                <asp:Label ID="lblDescripcioDet" runat="server" Text="DESCRIPCION / COMENTARIO" class="form-label"></asp:Label>
                                 <textarea class="form-control" id="txtDescDet" disabled></textarea>
                             </div>
                             <div class="col-md-6">
-                                <asp:Label ID="Label17" runat="server" Text="MATERIALES / EQUIPOS:" class="form-label"></asp:Label>
+                                <asp:Label ID="lblMaterialesDet" runat="server" Text="MATERIALES / EQUIPOS:" class="form-label"></asp:Label>
                                 <textarea class="form-control" id="txtMaterialDet" disabled></textarea>
                             </div>
                         </div>
@@ -412,7 +452,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnEditar" class="btn btn-default" data-dismiss="modal">EDITAR</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerrar()">CANCELAR</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">CANCELAR</button>
                 </div>
             </div>
         </div>
