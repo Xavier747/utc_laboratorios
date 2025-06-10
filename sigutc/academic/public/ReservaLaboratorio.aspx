@@ -126,9 +126,7 @@
                     <h4 class="modal-title" id="myModalLabel">Nueva reservacion</h4>
                 </div>
                 <div class="modal-body">
-                    <div >
-                    </div>
-                        <h4 id="fecha" class="text-center"></h4>
+                    <h4 id="fecha" class="text-center"></h4>
                     <br />
                     <div class="text-right">
                         <button type="button" class="btn btn-primary" id="btnNuevaReserv">
@@ -149,6 +147,8 @@
                         </thead>
                         <tbody id="tbl_det_reservacion"></tbody>
                     </table>    
+                    <br />
+                    <p id="txtMsgInfo" class="text-center alert alert-danger" style="display: none;"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">CERRAR</button>
@@ -239,7 +239,8 @@
                             <div class="col-md-2">
                                 <br />
                                 <input type="text" id="id_horario" hidden="hidden"/>
-                                <button type="button" class="btn btn-primary" onclick="validarReservacion()">Verificar</button>            
+                                <button type="button" class="btn btn-primary" onclick="validarReservacion()">Verificar</button>  
+                                <span id="tooltipError" class="alert alert-danger form-control" style="display:none;">Esta hora ya está ocupada</span>          
                             </div>
                         </div>
                     </fieldset>
@@ -403,11 +404,11 @@
                             </div>                            
                         </div>
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <asp:Label ID="Label" runat="server" Text="CICLO:"></asp:Label>
                                 <input type="text" class="form-control" id="txtCicloDet" disabled/>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <asp:Label ID="Label3" runat="server" Text="PARALELO:"></asp:Label>
                                 <input type="text" class="form-control" id="txtParaleloDet" disabled/>
                             </div>
@@ -415,10 +416,14 @@
                                 <asp:Label ID="Label4" runat="server" Text="CARRERA:"></asp:Label>
                                 <input type="text" class="form-control" id="txtCarreraDet" disabled/>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <asp:Label ID="Label5" runat="server" Text="TOTAL DE ASISTENTES:"></asp:Label>
                                 <input type="text" class="form-control" id="txtAsistentes" disabled/>
-                            </div>                            
+                            </div>
+                            <div class="col-md-3">
+                                <asp:Label ID="Label2" runat="server" Text="SOFTWARE:"></asp:Label>
+                                <input type="text" class="form-control" id="txtSoftwareDet" disabled/>
+                            </div>                         
                         </div>
                     </fieldset>
                     <br />
@@ -451,7 +456,6 @@
                     </fieldset> 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnEditar" class="btn btn-default" data-dismiss="modal">EDITAR</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">CANCELAR</button>
                 </div>
             </div>
@@ -558,7 +562,7 @@
                                     <div id="content-softwareAct" style="display:none; width: 100%;">
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <div id="list-software">
+                                                <div id="list-softwareAct">
                                                     <label>SOFTWARE:</label>
                                                     <select id="countries" multiple name="softwares[]"></select>
                                                 </div>

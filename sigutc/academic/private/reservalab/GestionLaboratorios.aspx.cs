@@ -73,14 +73,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             //Carga los detalles del laboratorio según el ID seleccionado
             laboratorio2.DelLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
-            string title = laboratorio2.resultado ? laboratorio2.msg : laboratorio2.msg;
+            string title = laboratorio2.resultado ? laboratorio2.msg : 
+                           laboratorio2.numerr == 2627 ? laboratorio2.msg :
+                           "Error: " + laboratorio2.numerr + "!";
             string icon = laboratorio2.resultado ? "success" : "error";
-
-            title = laboratorio2.msg
-                .Replace("\r\n", " ")
-                .Replace("\n", " ")
-                .Replace("\r", " ")
-                .Replace("'", "");
 
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
@@ -370,14 +366,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             guardarLaboratorioSoftware();
         }
 
-        string title = laboratorio2.resultado ? laboratorio2.msg : laboratorio2.msg;
+        string title = laboratorio2.resultado ? laboratorio2.msg :
+                       laboratorio2.numerr == 2627 ? laboratorio2.msg :
+                       "Error: " + laboratorio2.numerr + "!";
         string icon = laboratorio2.resultado ? "success" : "error";
-
-        title = laboratorio2.msg
-            .Replace("\r\n", " ")
-            .Replace("\n", " ")
-            .Replace("\r", " ")
-            .Replace("'", "");
 
         string script = $"showAlertAndReload('{title}', '{icon}');";
         ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
@@ -604,14 +596,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
         obtenerSoftware();
         actualizarSoftware();
-        string title = laboratorio2.resultado ? laboratorio2.msg : laboratorio2.msg;
+        string title = laboratorio2.resultado ? laboratorio2.msg :
+                       laboratorio2.numerr == 2627 ? laboratorio2.msg :
+                       "Error: " + laboratorio2.numerr + "!";
         string icon = laboratorio2.resultado ? "success" : "error";
-
-        title = laboratorio2.msg
-            .Replace("\r\n", " ")
-            .Replace("\n", " ")
-            .Replace("\r", " ")
-            .Replace("'", "");
 
         string script = $"showAlertAndReload('{title}', '{icon}');";
         ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
@@ -675,7 +663,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
         if (listSede.Count > 0) txtSedeNombre.Text = listSede[0].strnombre_sede;
 
-        if(listFacultad.Count > 0) txtFacultadNombre.Text = listFacultad[0].strnombre_fac;
+        if (listFacultad.Count > 0) txtFacultadNombre.Text = listFacultad[0].strnombre_fac;
 
         if (listLaboratorio.Count > 0) txtLaboratorioNombre.Text = listLaboratorio[0].strNombre_lab;
     }
@@ -713,20 +701,17 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     protected void btnAsignarResponsable_Click(object sender, EventArgs e)
     {
         string codLab = lblCodLab.Text;
-
         var listSede = sede.LoadUB_SEDES("xIdLaboratorio", codLab, "", "", "");
         var listFacultad = facultad.LoadUB_FACULTADES("xIdLaboratorio", codLab, "", "", "");
         var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
+        var labExclusivo = labExc.LoadLAB_EXCLUSIVO("xLabExclusivo", codLab, "", "", "");
+        string tipoConsulta = labExclusivo.Count > 0 ? "xResponsable" : "xLaboratorista";
 
         if (listSede.Count > 0) txtSedeNuevo.Text = listSede[0].strnombre_sede;
 
         if (listFacultad.Count > 0) txtFacNuevo.Text = listFacultad[0].strnombre_fac;
 
         if (listLaboratorio.Count > 0) txtLabNuevo.Text = listLaboratorio[0].strNombre_lab;
-
-        var labExclusivo = labExc.LoadLAB_EXCLUSIVO("xLabExclusivo", codLab, "", "", "");
-
-        string tipoConsulta = labExclusivo.Count > 0 ? "xResponsable" : "xLaboratorista";
 
         cargarResponsablesAgregar(tipoConsulta);
 
@@ -833,7 +818,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             guardarResponsable();
         }
 
-        string title = responsable1.resultado ? responsable1.msg : responsable1.msg;
+        string title = laboratorio2.resultado ? laboratorio2.msg :
+                       laboratorio2.numerr == 2627 ? laboratorio2.msg :
+                       "Error: " + laboratorio2.numerr + "!";
         string icon = responsable1.resultado ? "success" : "error";
 
         string script = $"showAlertAndReload('{title}', '{icon}');";
@@ -957,14 +944,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             guardarResponsable();
         }
 
-        string title = responsable1.resultado ? responsable1.msg : responsable1.msg;
+        string title = laboratorio2.resultado ? laboratorio2.msg :
+                       laboratorio2.numerr == 2627 ? laboratorio2.msg :
+                       "Error: " + laboratorio2.numerr + "!";
         string icon = responsable1.resultado ? "success" : "error";
-
-        title = responsable1.msg
-            .Replace("\r\n", " ")
-            .Replace("\n", " ")
-            .Replace("\r", " ")
-            .Replace("'", "");
 
         string script = $"showAlertAndReload('{title}', '{icon}');";
         ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);

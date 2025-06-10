@@ -32,8 +32,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
             cargarFacultadNuevo();
             cargarFacultadSoft();
             cargarSoftware();
-            cargarTipoLicencia();
-           
+            cargarTipoLicencia();           
         }
     }
 
@@ -198,17 +197,18 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     //guardar nuevo software
     protected void btnGuardar_Click(object sender, EventArgs e)
     {
-        decimal precioUnitario = txtCosto.Text != "" ? decimal.Parse(txtCosto.Text) : 0;
+        string costo = txtCosto.Text.Trim();
+        decimal precioUnitario = costo != "" ? decimal.Parse(costo) : 0;
         string rutaCarpeta = crearDirectorio();
 
-        software1.strNombre_sof = txtNombre.Text;
+        software1.strNombre_sof = txtNombre.Text.ToUpper().Trim();
         software1.strTipoLicencia_sof = ddlTipo.SelectedValue;
-        software1.strNombreLicencia_sof = txtNombreLicencia.Text;
+        software1.strNombreLicencia_sof = txtNombreLicencia.Text.ToUpper().Trim();
         software1.intCantidad_sof = int.Parse(txtCantidad.Text);
         software1.decCostoUnitario_sof = precioUnitario;
         software1.decCostoTotal_sof = decimal.Parse(txtCantidad.Text) * precioUnitario;
-        software1.strDescripcion_sof = txtDescripcion.Text;
-        software1.strUrl_sof = txtLink.Text;
+        software1.strDescripcion_sof = txtDescripcion.Text.Trim();
+        software1.strUrl_sof = txtLink.Text.Trim();
         software1.dtFechaRegistro_sof = DateTime.Now;
         software1.dtFecha_log = DateTime.Now;
         software1.strUser_log = Context.User.Identity.Name;
@@ -251,10 +251,13 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
             }
         }
 
-        int registro = software1.AddLAB_SOFTWARE(software1);
+        software1.AddLAB_SOFTWARE(software1);
 
-        string title = registro != -1 ? software1.msg : software1.msg;
-        string icon = registro != -1 ? "success" : "error";
+        string title = software1.resultado ? software1.msg :
+                       software1.numerr == 2627 ? software1.msg :
+                       "Error: " + software1.numerr;
+
+        string icon = software1.resultado ? "success" : "error";
         string ruta = "Software.aspx";
 
         string script = $"showAlertAndReload('{title}', '{icon}', '{ruta}');";
@@ -327,15 +330,10 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
             software1.DelLAB_SOFTWARE("xCodSof", codSftware, "", "", "");
 
             //Muestra mensajes de acuerdo a la respuesta del servidor
-            string title = software1.resultado ? software1.msg : software1.msg;
+            string title = software1.resultado ? software1.msg : 
+                           software1.numerr == 2627 ? software1.msg :
+                           "Error: " + software1.numerr;
             string icon = software1.resultado ? "success" : "error";
-
-            title = software1.msg
-                .Replace("\r\n", " ")
-                .Replace("\n", " ")
-                .Replace("\r", " ")
-                .Replace("'", "");
-
 
             string script = $"showAlertAndReload('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
@@ -371,17 +369,18 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     protected void btnActualizar_Click(object sender, EventArgs e)
     {
         string rutaCarpeta = crearDirectorio();
-        decimal precioUnitario = txtCostoAct.Text != "" ? decimal.Parse(txtCostoAct.Text) : 0;
+        string costoAct = txtCostoAct.Text.Trim();
+        decimal precioUnitario = costoAct != "" ? decimal.Parse(costoAct) : 0;
 
         software1.strCod_sof = lblIdSoftAct.Text;
-        software1.strNombre_sof = txtNombreAct.Text;
+        software1.strNombre_sof = txtNombreAct.Text.ToUpper().Trim();
         software1.strTipoLicencia_sof = ddlTipoAct.SelectedValue;
-        software1.strNombreLicencia_sof = txtNombreLicenciaAct.Text;
+        software1.strNombreLicencia_sof = txtNombreLicenciaAct.Text.ToUpper().Trim();
         software1.intCantidad_sof = Convert.ToInt32(txtCantidadAct.Text);
         software1.decCostoUnitario_sof = precioUnitario;
         software1.decCostoTotal_sof = decimal.Parse(txtCantidadAct.Text) * precioUnitario;
-        software1.strDescripcion_sof = txtDescripcionAct.Text;
-        software1.strUrl_sof = txtLinkAct.Text;
+        software1.strDescripcion_sof = txtDescripcionAct.Text.Trim();
+        software1.strUrl_sof = txtLinkAct.Text.Trim();
         software1.bitEstado_sof = ddlEstadoAct.SelectedValue == "1";
         software1.dtFecha_log = DateTime.Now;
         software1.strUser_log = Context.User.Identity.Name;
@@ -414,7 +413,9 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         software1.strImagen_sof = lblImg1NameAct.Text;
         software1.UpdateLAB_SOFTWARE(software1);
 
-        string title = software1.resultado ? software1.msg : software1.msg;
+        string title = software1.resultado ? software1.msg : 
+                       software1.numerr == 2627 ? software1.msg :
+                       "Error: " + software1.numerr;
         string icon = software1.resultado ? "success" : "error";
 
         string script = $"showAlertAndReload('{title}', '{icon}');";

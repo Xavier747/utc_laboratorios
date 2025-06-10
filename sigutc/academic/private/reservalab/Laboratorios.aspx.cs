@@ -128,6 +128,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                     lab.strCod_lab,
                     lab.strNombre_lab,
                     lab.strFotografia1_lab,
+
                     ResponsableAcademico = (from resp in listResponsable
                                             join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
                                             where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Academico"

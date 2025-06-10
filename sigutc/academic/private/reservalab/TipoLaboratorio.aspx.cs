@@ -49,9 +49,9 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
 
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        string codTipo = generarIdSoft(txtNombre.Text.ToUpper());
+        string codTipo = generarIdSoft(txtNombre.Text.ToUpper()).Trim();
         tipoLaboratorio1.strCod_tipoLab = codTipo;
-        tipoLaboratorio1.strNombre_tipoLab = txtNombre.Text.ToUpper();
+        tipoLaboratorio1.strNombre_tipoLab = txtNombre.Text.ToUpper().Trim();
         tipoLaboratorio1.dtFechaRegistro_tipoLab = DateTime.Now;
         tipoLaboratorio1.bitEstado_tipoLab = true;
         tipoLaboratorio1.dtFecha_log = DateTime.Now;
@@ -66,7 +66,10 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
         tipoLaboratorio1.dtObs2_tipoLab = DateTime.Parse("1900-01-01");
         tipoLaboratorio1.AddLAB_TIPO(tipoLaboratorio1);
 
-        string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
+        string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg :
+                       tipoLaboratorio1.numerr == 2627 ? tipoLaboratorio1.msg :
+                       "Error: " + tipoLaboratorio1.numerr + "!";
+
         string icon = tipoLaboratorio1.resultado ? "success" : "error";
         ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
     }
@@ -92,9 +95,9 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
     protected void gvTipoLaboratorio_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         string codigo = e.CommandArgument.ToString();
-     
+
         if (e.CommandName == "Select")
-        {            
+        {
             var tipo = tipoLaboratorio1.LoadLAB_TIPO("xPK", codigo, "", "", "");
 
             lblCodeTipoLabAct.Text = tipo[0].strCod_tipoLab;
@@ -107,16 +110,12 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
         {
             string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
             string strUser_log = Context.User.Identity.Name;
-            tipoLaboratorio1.DelLAB_TIPO("xCodTipoLab", codigo, dtFecha_log, strUser_log,"");
+            tipoLaboratorio1.DelLAB_TIPO("xCodTipoLab", codigo, dtFecha_log, strUser_log, "");
 
-            string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
+            string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg :
+                           tipoLaboratorio1.numerr == 2627 ? tipoLaboratorio1.msg :
+                           "Error: " + tipoLaboratorio1.numerr + "!";
             string icon = tipoLaboratorio1.resultado ? "success" : "error";
-
-            title = tipoLaboratorio1.msg
-                .Replace("\r\n", " ")
-                .Replace("\n", " ")
-                .Replace("\r", " ")
-                .Replace("'", "");
 
             ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
         }
@@ -125,14 +124,17 @@ public partial class academic_private_reservalab_TipoLaboratorio : System.Web.UI
     protected void btn_Actualizar_Click(object sender, EventArgs e)
     {
         tipoLaboratorio1.strCod_tipoLab = lblCodeTipoLabAct.Text;
-        tipoLaboratorio1.strNombre_tipoLab = txtNombreAct.Text.ToUpper();
+        tipoLaboratorio1.strNombre_tipoLab = txtNombreAct.Text.ToUpper().Trim();
         tipoLaboratorio1.bitEstado_tipoLab = ddlEstadoAct.SelectedValue == "1";
         tipoLaboratorio1.dtFecha_log = DateTime.Now;
         tipoLaboratorio1.strUser_log = Context.User.Identity.Name;
 
         tipoLaboratorio1.UpdateLAB_TIPO(tipoLaboratorio1);
 
-        string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg : tipoLaboratorio1.msg;
+        string title = tipoLaboratorio1.resultado ? tipoLaboratorio1.msg :
+                       tipoLaboratorio1.numerr == 2627 ? tipoLaboratorio1.msg :
+                       "Error: " + tipoLaboratorio1.numerr + "!";
+
         string icon = tipoLaboratorio1.resultado ? "success" : "error";
         ScriptManager.RegisterStartupScript(this, GetType(), "ShowAlert", $"showAlertAndReload('{title}', '{icon}');", true);
     }

@@ -245,7 +245,7 @@
                                 CssClass="control-label" />
                             <asp:TextBox ID="txtCosto" runat="server" 
                                 CssClass="form-control custom-input" 
-                                placeholder="0.0" />
+                                placeholder="0,0" />
                             <asp:RangeValidator ID="rv_txtCosto" runat="server" 
                                 ControlToValidate="txtCosto" 
                                 MinimumValue="0" 
@@ -413,7 +413,7 @@
                                 CssClass="control-label" />
                             <asp:TextBox ID="txtCostoAct" runat="server" 
                                 CssClass="form-control custom-input" 
-                                placeholder="0.0" />
+                                placeholder="0,0" />
                             <asp:RangeValidator ID="RangeValidator2" runat="server" 
                                 ControlToValidate="txtCostoAct" 
                                 MinimumValue="0" 

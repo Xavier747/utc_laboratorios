@@ -265,6 +265,14 @@ public class WebServiceCalendar : System.Web.Services.WebService
         return JsonConvert.SerializeObject(resultado);
     }
 
+    [WebMethod]
+    public string ObtenerSoftwareReserva(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
+    {
+        List<LAB_RESERSOFTWARE> listSoftReserva = reserSoft1.LoadLAB_RESERSOFTWARE(comodin, filtro1, filtro2, filtro3, filtro4);
+
+        return "";
+    }
+
     public string ObtenerNombreTema(string idTema)
     {
         List<TEMA> listTema = tema1.Load_TEMA("xPK", idTema, "", "", "");

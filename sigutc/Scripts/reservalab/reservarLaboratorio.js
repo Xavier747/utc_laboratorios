@@ -19,6 +19,53 @@ document.addEventListener('DOMContentLoaded', function () {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,listWeek'
         },
+        validRange: function() {
+            // Múltiples rangos permitidos
+            const data = [
+                {
+                    fechaInicio : '2024-10-21',
+                    fechaFin : '2025-02-24',
+                },
+                {
+                    fechaInicio : '2025-04-07',
+                    fechaFin : '2025-08-22',
+                },
+            ];
+
+            // Calcular el rango general (mínimo y máximo de todo)
+            const fechasInicio = data.map(r => new Date(r.fechaInicio));
+            const fechasFin = data.map(r => new Date(r.fechaFin));
+
+            const min = new Date(Math.min.apply(null, fechasInicio));
+            const max = new Date(Math.max.apply(null, fechasFin));
+
+            return {
+                start: min.toISOString().split('T')[0],
+                end: max.toISOString().split('T')[0]
+            };
+        },
+        dayCellDidMount: function(info) {
+            const fecha = info.date.toISOString().split('T')[0];
+            const data = [
+                {
+                    fechaInicio : '2024-10-21',
+                    fechaFin : '2025-02-24',
+                },
+                {
+                    fechaInicio : '2025-04-07',
+                    fechaFin : '2025-08-22',
+                },
+            ];
+
+            // Verificar si la fecha está dentro de algún tramo válido
+            const esValida = data.some(r => {
+                return fecha >= r.fechaInicio && fecha <= r.fechaFin;
+            });
+
+            if (!esValida) {
+                info.el.classList.add('fc-day-disabled');
+            }
+        },
         dayHeaderContent: function (arg) {
             switch (arg.date.getUTCDay()) {
                 case 0: return 'Domingo';
@@ -97,6 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: function(info){
             eventId = info.event.id;
             let fecha = info.event.start.toISOString().split('T')[0];
+            $('#fecha').text(fecha);
 
             mostrarListado(fecha);
             $('#form_listReserva').modal('show');
@@ -130,6 +178,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 mostrarListado(fecha);
                 $('#form_listReserva').modal('show');
             }
+        },
+        selectAllow: function(selectInfo) {
+            const data = [
+                {
+                    fechaInicio: '2024-10-21',
+                    fechaFin: '2025-02-24',
+                },
+                {
+                    fechaInicio: '2025-04-07',
+                    fechaFin: '2025-08-22',
+                },
+            ];
+
+            const start = selectInfo.startStr;
+            const end = selectInfo.endStr;
+
+            return data.some(rango => {
+                return start >= rango.fechaInicio && end <= rango.fechaFin;
+            });
         },
     });
 
@@ -185,8 +252,8 @@ $(document).ready(function () {
         const horaInicio = $(this).val();
         const op = 2;
 
-        selectMateria = $('#selectAsignatura option').first().val();
-        cargarHoraFin(op, data, dropdown)
+        selectHoraFin = $('#selectHoraFin');
+        cargarHoraFin(op, '', selectHoraFin)
     });
 
     $("#switchSoftware").on("change", function () {
@@ -256,7 +323,28 @@ $(document).ready(function () {
     });
 
     $("#btnNuevaReserv").click(function() {
-        $('#form_registrar').modal('show');
+        let fechaSelect = new Date($('#fecha').text() + "T00:00:00");
+
+        $('#form_listReserva').modal('hide');
+
+        $('#form_listReserva').on('hidden.bs.modal', function () {
+            let fechaHoy = new Date();
+            fechaHoy.setHours(0, 0, 0, 0);
+
+
+            if(fechaHoy > fechaSelect){
+                let mensaje = 'Solo puedes reservar apartir de la fecha actual!';
+                let icon = 'warning';
+
+                mostrarMensage(mensaje, icon);
+            }
+            else if(fechaHoy === fechaSelect){
+                $('#form_registrar').modal('show');
+            }
+            else{
+                $('#form_registrar').modal('show');
+            }
+        });
     });
 
     $("#btnEnviar").click(function() {
@@ -319,73 +407,95 @@ $(document).ready(function () {
     });
 
     // Editar
-    $("#btnEditar").click(function() {
-        $('#form_Detalle').modal('hide');
+    $('#tbl_det_reservacion').on('click', '.btn-warning', function(event) {
+        event.preventDefault();
 
-        // Espera a que termine de ocultarse el primero antes de abrir el segundo
-        $('#form_Detalle').on('hidden.bs.modal', function () {
-            consultarEventos('xPK', eventId, '', '', '', function(data) {
-                var reserva = data[0];
-                var codAsignatura = data[0].strCod_Mate;
-                var cedula = data[0].cedula_alu;
-                var codUnidad = data[0].strCod_unidTem;
+        const idReserva = $(this).data('id');
 
-                $('#txtFechaAct').val(data[0].dtFechainicio_reser.split('T')[0]);
-                $('#txtHoraInicioAct').val(data[0].dtFechainicio_reser.split('T')[1]);
-                $('#txtHoraFinAct').val(data[0].dtFechaFin_reser.split('T')[1]);
-                $('#txtNumeroAsistentesAct').val(data[0].intTotalAsistente_reser);
-                $('#txtDescripcionAct').val(data[0].strDescripcion_reser);
-                $('#txtMaterialesAct').val(data[0].strMateriales_reser);
+        consultarEventos('xPK', idReserva, '', '', '', function(data) {
+            var reserva = data[0];
+            var codAsignatura = data[0].strCod_Mate;
+            var cedula = data[0].cedula_alu;
+            var codUnidad = data[0].strCod_unidTem;
 
-                consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
-                    var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
 
-                    $('#txtEmailAct').val(data[0].correo_alu);
-                    $('#txtNombreAct').val(nombre);
-                });
+            $('#txtFechaAct').val(data[0].dtFechainicio_reser.split('T')[0]);
+            $('#txtHoraInicioAct').val(data[0].dtFechainicio_reser.split('T')[1]);
+            $('#txtHoraFinAct').val(data[0].dtFechaFin_reser.split('T')[1]);
+            $('#txtNumeroAsistentesAct').val(data[0].intTotalAsistente_reser);
+            $('#txtDescripcionAct').val(data[0].strDescripcion_reser);
+            $('#txtMaterialesAct').val(data[0].strMateriales_reser);
 
-                consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
-                    $('#txtAsignaturaAct').val(data[0].strNombre_mate);
-                });                
+            consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
+                var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
 
-                consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
-                    $('#txtCicloAct').val(data[0].strnombre_curso);
-                    $('#txtParaleloAct').val(data[0].strparalelo_curso);
-                });
-
-                consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
-                    $('#txtCarreraAct').val(data[0].strnombre_car);
-                });
-
-                //$('#txtTipoMotivoDet').val(data[0].);
-
-                consultarUnidad('xAsignatura', codAsignatura, '', '', '', function(dataUni){
-                    const dropdown = $("#selectUnidadAct");
-                    cargarUnidad(dataUni, dropdown);
-
-                    $('#selectUnidadAct').val(data[0].strCod_unidTem);
-                }); 
-
-                consultarTema('xUnidad', codUnidad, '', '', '', function(data){
-
-                    if(data.length > 0){
-                        $("#content_ddlTema").css("display", 'block');
-                        const dropdown = $("#selectTemaAct");
-                        cargarTema(data, dropdown);
-
-                        $('#selectTemaAct').val(data[0].strCod_tema);
-                    }
-                    else{
-                        $("#content_ddlTema").css("display", 'none');
-                    }
-                });
-
-            }, function(error) {
-                // En caso de error
-                console.error("Error consultando eventos", error);
-                failureCallback(error);
+                $('#txtEmailAct').val(data[0].correo_alu);
+                $('#txtNombreAct').val(nombre);
             });
-            $('#form_actualizar').modal('show');
+
+            consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
+                $('#txtAsignaturaAct').val(data[0].strNombre_mate);
+            });                
+
+            consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
+                $('#txtCicloAct').val(data[0].strnombre_curso);
+                $('#txtParaleloAct').val(data[0].strparalelo_curso);
+            });
+
+            consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
+                $('#txtCarreraAct').val(data[0].strnombre_car);
+            });
+
+            $('#txtTipoMotivoDet').val(data[0].strTipo_reser);
+
+            consultarUnidad('xAsignatura', codAsignatura, '', '', '', function(dataUni){
+                const dropdown = $("#selectUnidadAct");
+                cargarUnidad(dataUni, dropdown);
+
+                $('#selectUnidadAct').val(data[0].strCod_unidTem);
+            }); 
+
+            consultarTema('xUnidad', codUnidad, '', '', '', function(data){
+
+                if(data.length > 0){
+                    $("#content_ddlTema").css("display", 'block');
+                    const dropdown = $("#selectTemaAct");
+                    cargarTema(data, dropdown);
+
+                    $('#selectTemaAct').val(data[0].strCod_tema);
+                }
+                else{
+                    $("#content_ddlTema").css("display", 'none');
+                }
+            });
+
+            let fechaHoy = new Date();
+            let fechaConvertida = convertirFechaForFullCalendar(data[0].dtFechaRegistro_reser);
+            let fechaRegistro = new Date(fechaConvertida);
+
+            fechaRegistro.setHours(fechaRegistro.getHours() + 3);
+
+            if(fechaHoy > fechaRegistro){
+                // Mostrar el mensaje
+                $('#txtMsgInfo').text('¡Has superado las tres horas límite para la reservación!');
+                $('#txtMsgInfo').fadeIn(); // Aparece con una animación
+
+                // Ocultarlo después de 3 segundos (3000 milisegundos)
+                setTimeout(() => {
+                    $('#txtMsgInfo').fadeOut(); // Desaparece con animación
+                }, 2000);
+            }
+            else{
+                $('#form_listReserva').modal('hide');
+
+                $('#form_listReserva').on('hidden.bs.modal', function () {
+                    $('#form_actualizar').modal('show');
+                });
+            }
+        }, function(error) {
+            // En caso de error
+            console.error("Error consultando eventos", error);
+            failureCallback(error);
         });
     });
 
@@ -454,8 +564,6 @@ function consultarAsignatura(comodin, filtro1, filtro2, filtro3, filtro4, callba
 
 //Consulta el horario de los docentes por cada dia
 function consultarHorario(comodin, filtro1, filtro2, filtro3, filtro4, callback){
-    console.log('dia: ', filtro2);
-
     $.ajax({
         type: "POST",
         // Página y método del backend que procesará la solicitud
@@ -794,29 +902,44 @@ function cargarMaterias(data){
     });
 }
 
-function validarReservacion(){
-    const nuevaInicio = $('#txtFecha').val() + 'T' + $('#selectHoraInicio').val() + ':00';
-    const nuevaFin = $('#txtFecha').val() + 'T' + $('#selectHoraFin').val() + ':00';
+function validarReservacion() {
+    var fechaHoy = $('#txtFecha').val(); // formato: YYYY-MM-DD
 
-    consultarEventos('xCodLab', codLab, '', '', '', function(data){
+    // Construye correctamente las fechas de inicio y fin como objetos Date
+    const nuevaInicio = new Date(fechaHoy + 'T' + $('#selectHoraInicio').val() + ':00');
+    const nuevaFin = new Date(fechaHoy + 'T' + $('#selectHoraFin').val() + ':00');
+
+    consultarEventos('xFecha', codLab, fechaHoy, '', '', function(data) {
+        let hayConflicto = false;
+
         data.forEach(reser => {
             let resInicio = new Date(reser.dtFechainicio_reser);
             let resFin = new Date(reser.dtFechaFin_reser);
 
-            if (nuevaInicio > resFin && nuevaFin < resInicio) {
-                consultarUnidad('xAsignatura', selectMateria, '', '', '', function(data){
-                    const dropdown = $("#selectUnidad");
-                    cargarUnidad(data, dropdown);
-
-                    var selectUnidad = $('#selectUnidad option').first().val();
-                }); 
-
-                $('#det_reservacion').css('display', 'block');                
+            // Comparación real entre objetos Date
+            if (
+                (nuevaInicio >= resInicio && nuevaInicio < resFin) ||
+                (nuevaFin > resInicio && nuevaFin <= resFin) ||
+                (nuevaInicio <= resInicio && nuevaFin >= resFin)
+            ) {
+                hayConflicto = true;
             }
         });
-    });
 
+        if (hayConflicto) {
+            mostrarTooltipSimple();
+        } else {
+            consultarUnidad('xAsignatura', selectMateria, '', '', '', function(data) {
+                const dropdown = $("#selectUnidad");
+                cargarUnidad(data, dropdown);
+                var selectUnidad = $('#selectUnidad option').first().val();
+            });
+
+            $('#det_reservacion').css('display', 'block');
+        }
+    });
 }
+
 
 function cargarUnidad(data, dropdown){
     dropdown.empty();
@@ -825,7 +948,7 @@ function cargarUnidad(data, dropdown){
     data.forEach(item => {
         const opcion = document.createElement("option");
         opcion.value = item.strcod_unidtem;          // valor que se enviará
-        opcion.textContent = item.strdesc_unidtem; // lo que se muestra al usuario
+        opcion.textContent = item.strdesc_unidtem;   // lo que se muestra al usuario
         dropdown.append(opcion);
     });
 }
@@ -836,7 +959,7 @@ function cargarTema(data, dropdown){
     data.forEach(item => {
         const opcion = document.createElement("option");
         opcion.value = item.strCod_tema;          // valor que se enviará
-        opcion.textContent = item.strDesc_tema; // lo que se muestra al usuario
+        opcion.textContent = item.strDesc_tema;   // lo que se muestra al usuario
         dropdown.append(opcion);
     });
 }
@@ -858,8 +981,7 @@ function convertirFechaForFullCalendar(fecha){
 }
 
 function mostrarListado(fecha){
-    var now = new Date();
-    consultarEventos('xFecha', fecha, '', '', '',function(data) {
+    consultarEventos('xFecha', codLab, fecha, '', '',function(data) {
         const tbody = $('#tbl_det_reservacion');
         tbody.empty(); // Limpiar contenido anterior
                     
@@ -883,23 +1005,7 @@ function mostrarListado(fecha){
                     var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
 
                     tr.append(`<td>${nombre}</td>`);
-
-                    let fechaOriginal = convertirFechaForFullCalendar(item.dtFechaRegistro_reser);
-                    let fechaRegistro = new Date(fechaOriginal);
-                    let fechaConTresHoras = new Date(fechaRegistro.getTime() + 2 * 60 * 60 * 1000);
-                    let fechaActual = new Date();
-
-                    console.log(fechaConTresHoras);
-                    console.log("Fecha actual     :", fechaActual.toString());
-                    console.log("Fecha + 3 horas  :", fechaConTresHoras.toString());
-
-
-                    if(cedula === item.cedula_alu && fechaConTresHoras > fechaActual){
-                        tr.append(`<td>${btnDetalle} ${btnActualizar} ${btnEliminar}</td>`);
-                    }else{
-                        tr.append(`<td>${btnDetalle}</td>`);
-                    }
-
+                    tr.append(`<td>${btnDetalle} ${btnActualizar} ${btnEliminar}</td>`);
                 });
                 tbody.append(tr);
             });
@@ -952,7 +1058,6 @@ function mostrarDetalle(idReserva){
             $('#txtCarreraDet').val(data[0].strnombre_car);
         });
 
-        //$('#txtTipoMotivoDet').val(data[0].);
         consultarUnidad('xPK', codUnidad, '', '', '', function(data){
             $('#txtUnidadDet').val(data[0].strdesc_unidtem);
         });
@@ -961,6 +1066,14 @@ function mostrarDetalle(idReserva){
         console.error("Error consultando eventos", error);
         failureCallback(error);
     });
+}
+
+function mostrarTooltipSimple() {
+    $('#tooltipError').fadeIn();
+
+    setTimeout(() => {
+        $('#tooltipError').fadeOut();
+    }, 3000);
 }
 
 function mostrarMensage(mensaje, icon){
