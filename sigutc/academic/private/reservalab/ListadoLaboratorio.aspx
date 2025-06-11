@@ -9,36 +9,43 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">     
     <!-- GridView para listar laboratorios -->
     <div class="table-responsive">
-        <asp:GridView ID="gvLaboratorios" runat="server" AutoGenerateColumns="false" AllowPaging="True" PageSize="10" OnPageIndexChanging="gvLaboratorios_PageIndexChanging" CssClass="table table-striped table-bordered" OnRowCommand="gvLaboratorios_RowCommand">
+        <asp:GridView ID="gvLaboratorios" runat="server" 
+            AutoGenerateColumns="false" 
+            AllowPaging="True" 
+            PageSize="10" 
+            OnPageIndexChanging="gvLaboratorios_PageIndexChanging" 
+            CssClass="table table-striped table-bordered" 
+            OnRowCommand="gvLaboratorios_RowCommand">
             <Columns>
-                
-                 <asp:BoundField DataField="strNombre_lab" HeaderText="Nombre" />
+                <asp:BoundField DataField="strNombre_lab" HeaderText="Nombre" />
                 <asp:BoundField DataField="strUbicacion_lab" HeaderText="Ubicación" />
                 <asp:TemplateField HeaderText="Imagen 1">
                     <ItemTemplate>
                         <div class="content">
                             <div class="content-img">
                                 <!--Ruta de la imagen envia desde el codigo para mostrar la imagen -->
-                                <asp:Image ID="imgLaboratorio1" runat="server" ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' />
+                                <asp:Image ID="imgLaboratorio1" runat="server" 
+                                    ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' />
                             </div>
                             <br />
                             <!--Boton para mostrar la imagen en grande atraves de una ventana modal -->
-                            <asp:Button ID="btnViewImage1" CssClass="btn btn-info" OnClick="btnViewImage1_Click" CommandArgument='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' runat="server" Text="Ver Imagen" />
+                            <asp:Button ID="btnViewImage1" runat="server" 
+                                CssClass="btn btn-info" 
+                                OnClick="btnViewImage1_Click" 
+                                CommandArgument='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' 
+                                Text="Ver Imagen" />
                         </div>
                     </ItemTemplate>
                 </asp:TemplateField>
                 
                 
                 <asp:TemplateField ShowHeader="False" HeaderText="Accion">
-                    <ItemTemplate>
-                        <div style="display:flex;">
-                            
-                            
-                            <!--Boton para eliminar el laboratorio-->
-                            <asp:Button ID="btnVerReservaciones" runat="server" CommandName="VerReservaciones" CssClass="btn btn-danger" CommandArgument ='<%# Eval("strCod_lab") %>' OnClientClick="return confirm('¿Seguro que desea eliminar?');" Text="VerReservaciones" />&nbsp;&nbsp;
-                           
-                          
-                        </div>
+                    <ItemTemplate><!--Boton para eliminar el laboratorio-->
+                        <asp:Button ID="btnVerReservaciones" runat="server" 
+                            CommandName="VerReservaciones" 
+                            CssClass="btn btn-info" 
+                            CommandArgument ='<%# Eval("strCod_lab") %>' 
+                            Text="VerReservaciones" />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>

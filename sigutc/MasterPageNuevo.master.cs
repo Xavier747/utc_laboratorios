@@ -1664,7 +1664,7 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         lab_reservas.Id = "3";
         lab_reservas.Nombre = "Reservaciones";
         lab_reservas.Usuario = "laboratorio";
-        lab_reservas.Url = "/academic/private/reservalab/reservaciones.aspx";
+        lab_reservas.Url = "/academic/private/reservalab/ListadoLaboratorio.aspx";
         lab_reservas.SubMenu_Master = null;
 
         Menu_Master lab_software = new Menu_Master();

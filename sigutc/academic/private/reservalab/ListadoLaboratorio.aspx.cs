@@ -42,10 +42,6 @@ public partial class academic_private_reservalab_ListadoLaboratorio : System.Web
         {
             //llamado a los metodos que se ejecuta al iniciar la pagina     
             cargarTabla();
-
-           
-           
-            cargarCampoAmplio();
         }
     }
     protected void gvLaboratorios_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -56,38 +52,10 @@ public partial class academic_private_reservalab_ListadoLaboratorio : System.Web
 
     protected void gvLaboratorios_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        if (e.CommandName == "Select")
-        {
-            string codLab = e.CommandArgument.ToString();
-
-
-            // Muestra el modal para actualizar los datos
-            ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar').modal('show');", true);
-        }
-        if (e.CommandName == "Eliminar")
-        {
-            string codLab = e.CommandArgument.ToString();
-            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
-            string strUser_log = Context.User.Identity.Name;
-
-            //Carga los detalles del laboratorio según el ID seleccionado
-            laboratorio2.DelLAB_LABORATORIOS("xPkLab", codLab, dtFecha_log, strUser_log, "");
-
-            string title = laboratorio2.resultado ? laboratorio2.msg : laboratorio2.msg;
-            string icon = laboratorio2.resultado ? "success" : "error";
-
-            string script = $"showAlertAndReload('{title}', '{icon}');";
-            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
-        }
-        if (e.CommandName == "Laboratoristas")
-        {
-            string codLab = e.CommandArgument.ToString();
-      
-        }
-        if (e.CommandName == "Carrera")
+        if (e.CommandName == "VerReservaciones")
         {
             Session["laboratorioId"] = e.CommandArgument.ToString();
-            Response.Redirect("LaboratorioCarrera.aspx");
+            Response.Redirect("~/academic/public/ReservaLaboratorioResp.aspx");
         }
     }
     public void cargarTabla()
@@ -103,36 +71,7 @@ public partial class academic_private_reservalab_ListadoLaboratorio : System.Web
             gvLaboratorios.DataBind();
         }
     }
-    public void cargarCampoAmplio()
-    {
-        string tipoConsulta = "ALL";
 
-        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetAREAC", conexion);
-        comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO1", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
-        comandoConsulta.CommandType = CommandType.StoredProcedure;
-        try
-        {
-            this.conexion.Open();
-            SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
-            DataTable dt = new DataTable();
-            adaptadorAlbum.Fill(dt);
-
-            foreach (DataRow row in dt.Rows)
-            {
-               
-              
-            }
-        }
-        catch (Exception ex)
-        {
-            Response.Write("TIENES UN ERROR: " + ex.Message);
-        }
-        conexion.Close();
-    }
     protected void btnViewImage1_Click(object sender, EventArgs e)
     {
         Button btn = (Button)sender;

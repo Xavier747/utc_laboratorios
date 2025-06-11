@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="ReservaLaboratorio.aspx.cs" Inherits="academic_public_reservalab_ReservaLaboratorio" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="ReservaLaboratorioResp.aspx.cs" Inherits="academic_public_reservalab_ReservaLaboratorio" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
     <style>
@@ -422,7 +422,7 @@
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="Label2" runat="server" Text="SOFTWARE:"></asp:Label>
-                                <input type="text" class="form-control" id="txtSoftwareDet" disabled/>
+                                <select id="ddlSoftwareDet" class="form-control"></select>
                             </div>                         
                         </div>
                     </fieldset>

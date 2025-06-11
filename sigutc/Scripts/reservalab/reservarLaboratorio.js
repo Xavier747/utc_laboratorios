@@ -1057,10 +1057,18 @@ function mostrarDetalle(idReserva){
         consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
             $('#txtCarreraDet').val(data[0].strnombre_car);
         });
+        
+        consultarSoftware('xCodReserva', idReserva, '', '', '', function(data) {
+            // Llenar el select con datos
+            let selectSoftware = $('#ddlSoftwareDet');
+            cargarSoftware(data, selectSoftware);
+        });
 
         consultarUnidad('xPK', codUnidad, '', '', '', function(data){
             $('#txtUnidadDet').val(data[0].strdesc_unidtem);
         });
+
+
     }, function(error) {
         // En caso de error
         console.error("Error consultando eventos", error);
