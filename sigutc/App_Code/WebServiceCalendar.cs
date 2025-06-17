@@ -29,6 +29,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
     LAB_LABORATORIOS laboratorio1 = new LAB_LABORATORIOS();
     LAB_RESERVA reserva1 = new LAB_RESERVA();
     LAB_RESERSOFTWARE reserSoft1 = new LAB_RESERSOFTWARE();
+    LAB_EXCLUSIVO labEx1 = new LAB_EXCLUSIVO();
 
 
     public WebServiceCalendar()
@@ -271,6 +272,35 @@ public class WebServiceCalendar : System.Web.Services.WebService
         List<LAB_RESERSOFTWARE> listSoftReserva = reserSoft1.LoadLAB_RESERSOFTWARE(comodin, filtro1, filtro2, filtro3, filtro4);
 
         return "";
+    }
+
+    [WebMethod]
+    public string ObtenerExclusivo(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
+    {
+        List<LAB_EXCLUSIVO> listExclusivo = labEx1.LoadLAB_EXCLUSIVO(comodin, filtro1, filtro2, filtro3, filtro4);
+
+        var resultado = listExclusivo.Select(exlusivo => new
+        {
+            strCod_labEx = exlusivo.strCod_labEx,
+            strCod_Sede = exlusivo.strCod_Sede,
+            strCod_Fac = exlusivo.strCod_Fac,
+            strCod_Car = exlusivo.strCod_Car,
+            strCod_lab = exlusivo.strCod_lab,
+            dtFechaRegistro_labEx = exlusivo.dtFechaRegistro_labEx,
+            bitEstado_labEx = exlusivo.bitEstado_labEx,
+            dtFecha_log = exlusivo.dtFecha_log,
+            strUser_log = exlusivo.strUser_log,
+            strObs1_labEx = exlusivo.strObs1_labEx,
+            strObs2_labEx = exlusivo.strObs2_labEx,
+            bitObs1_labEx = exlusivo.bitObs1_labEx,
+            bitObs2_labEx = exlusivo.bitObs2_labEx,
+            decObs1_labEx = exlusivo.decObs1_labEx,
+            decObs2_labEx = exlusivo.decObs2_labEx,
+            dtObs1_labEx = exlusivo.dtObs1_labEx,
+            dtObs2_labEx = exlusivo.dtObs2_labEx
+        });
+
+        return JsonConvert.SerializeObject(resultado);
     }
 
     public string ObtenerNombreTema(string idTema)

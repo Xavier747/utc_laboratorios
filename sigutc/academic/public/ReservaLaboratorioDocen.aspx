@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="ReservaLaboratorio.aspx.cs" Inherits="academic_public_reservalab_ReservaLaboratorio" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="ReservaLaboratorioDocen.aspx.cs" Inherits="academic_public_ReservaLaboratorioDocen" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
     <style>
@@ -188,12 +188,12 @@
                         <legend>DATOS DEL SOLICITANTE</legend>
                         <div class="row">
                             <div class="col-md-6">
-                                <asp:Label ID="lblEmail" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
-                                <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" Enabled="false"></asp:TextBox>
-                            </div>
-                            <div class="col-md-6">
                                 <asp:Label ID="lblNombres" runat="server" Text="NOMBRES:"></asp:Label>
                                 <asp:TextBox ID="txtNombreSolicitante" runat="server" CssClass="form-control" Enabled="false"></asp:TextBox>
+                            </div>
+                            <div class="col-md-6">
+                                <asp:Label ID="lblEmail" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
+                                <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" Enabled="false"></asp:TextBox>
                             </div>
                         </div>
                     </fieldset>
@@ -239,8 +239,13 @@
                             <div class="col-md-2">
                                 <br />
                                 <input type="text" id="id_horario" hidden="hidden"/>
-                                <button type="button" class="btn btn-primary" onclick="validarReservacion()">Verificar</button>  
-                                <span id="tooltipError" class="alert alert-danger form-control" style="display:none;">Esta hora ya está ocupada</span>          
+                                <button type="button" class="btn btn-primary" id="btnValidar">Verificar</button>  
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <br />
+                                <span id="tooltipError" class="alert alert-danger form-control" style="display:none;"></span>
                             </div>
                         </div>
                     </fieldset>
@@ -645,6 +650,9 @@
         var codLab = '<%= Session["laboratorioId"] %>';
         var cedula = '<%= Context.User.Identity.Name%>'
     </script>
+    <script src="../../Scripts/reservalab/reservas_utilidades.js"></script>
+    <script src="../../Scripts/reservalab/reservas_carga.js"></script>
+    <script src="../../Scripts/reservalab/reservas_crud.js"></script>
     <script src="../../Scripts/reservalab/reservarLaboratorio.js"></script>
 </asp:Content>
 

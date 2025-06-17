@@ -4,7 +4,7 @@ var selectMateria = '';
 var listSoftware = [];
 
 document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar');
+    var calendarEl = document.getElementById('calendarLab');
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         buttonText: {
@@ -19,16 +19,16 @@ document.addEventListener('DOMContentLoaded', function () {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,listWeek'
         },
-        validRange: function() {
+        validRange: function () {
             // Múltiples rangos permitidos
             const data = [
                 {
-                    fechaInicio : '2024-10-21',
-                    fechaFin : '2025-02-24',
+                    fechaInicio: '2024-10-21',
+                    fechaFin: '2025-02-24',
                 },
                 {
-                    fechaInicio : '2025-04-07',
-                    fechaFin : '2025-08-22',
+                    fechaInicio: '2025-04-07',
+                    fechaFin: '2025-08-22',
                 },
             ];
 
@@ -44,16 +44,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 end: max.toISOString().split('T')[0]
             };
         },
-        dayCellDidMount: function(info) {
+        dayCellDidMount: function (info) {
             const fecha = info.date.toISOString().split('T')[0];
             const data = [
                 {
-                    fechaInicio : '2024-10-21',
-                    fechaFin : '2025-02-24',
+                    fechaInicio: '2024-10-21',
+                    fechaFin: '2025-02-24',
                 },
                 {
-                    fechaInicio : '2025-04-07',
-                    fechaFin : '2025-08-22',
+                    fechaInicio: '2025-04-07',
+                    fechaFin: '2025-08-22',
                 },
             ];
 
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
         dateClick: function (info) {
             var fechaCompleta = info.dateStr;
             var fecha = fechaCompleta.substring(0, 10);
-            $('#txtFecha').val(fecha);
+            $('#' + txtFecha).text(fecha);
             $('#fecha').text(fecha);
 
             dia = obtenerDiaSemana(fecha);
@@ -91,34 +91,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 selectMateria = $('#selectAsignatura option').first().val();
 
-                consultarHorario('xCodMat', selectMateria, dia, '', '', function(data){
+                consultarHorario('xCodMat', selectMateria, dia, '', '', function (data) {
                     const dropdown = $("#selectHoraInicio");
                     cargarHora(data, dropdown);
                 });
 
-                consultarCiclo('xAsignatura', selectMateria, '', '', '', function(data){
+                consultarCiclo('xAsignatura', selectMateria, '', '', '', function (data) {
                     const txtCiclo = $("#txtCiclo");
                     const txtParalelo = $("#txtParalelo");
                     cargarCiclo(data, txtCiclo, txtParalelo);
                 });
 
-                consultarCarrera('xAsignatura', selectMateria, '', '', '', function(data){
+                consultarCarrera('xAsignatura', selectMateria, '', '', '', function (data) {
                     const txtCarrera = $("#txtCarrera");
                     cargarCarrera(data, txtCarrera);
                 });
 
-                consultarAlumno('xAsignatura', selectMateria, '', '', '', function(data){
+                consultarAlumno('xAsignatura', selectMateria, '', '', '', function (data) {
                     const txtNumeroAsistentes = $("#txtNumeroAsistentes");
                     cargarNumeroEstudiante(data, txtNumeroAsistentes);
                 });
             });
         },
         events: function (fetchInfo, successCallback, failureCallback) {
-            consultarEventos('xCodLab', codLab, '', '', '',function(data) {
+            consultarEventos('xCodLab', codLab, '', '', '', function (data) {
                 const eventos = [];
 
                 // Iterar sobre los datos recibidos
-                $.each(data, function(i, item) {
+                $.each(data, function (i, item) {
                     eventos.push({
                         id: item.strCod_reser,
                         title: item.strTema_reser,
@@ -130,20 +130,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Enviar eventos a FullCalendar
                 successCallback(eventos);
-            }, function(error) {
+            }, function (error) {
                 // En caso de error
                 console.error("Error consultando eventos", error);
                 failureCallback(error);
             });
         },
-        eventDidMount: function(info) {
+        eventDidMount: function (info) {
             info.el.classList.add('evento-personalizado');
         },
         eventTimeFormat: {
             hour: 'numeric',
             hour12: true
         },
-        eventClick: function(info){
+        eventClick: function (info) {
             eventId = info.event.id;
             let fecha = info.event.start.toISOString().split('T')[0];
             $('#fecha').text(fecha);
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
             mostrarListado(fecha);
             $('#form_listReserva').modal('show');
         },
-        
+
         selectable: true,
         select: function (info) {
             var now = new Date();
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 mostrarMensage(mensaje, icon);
                 calendar.unselect();
             }
-            else if(dayOfWeek === 0 || dayOfWeek === 6){
+            else if (dayOfWeek === 0 || dayOfWeek === 6) {
                 mensaje = 'No se permiten reservas los fines de semana. Por favor, selecciona un día laborable.';
                 icon = 'warning';
 
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 $('#form_listReserva').modal('show');
             }
         },
-        selectAllow: function(selectInfo) {
+        selectAllow: function (selectInfo) {
             const data = [
                 {
                     fechaInicio: '2024-10-21',
@@ -209,24 +209,24 @@ document.addEventListener('DOMContentLoaded', function () {
 $(document).ready(function () {
     $("#selectAsignatura").on('change', function () {
         var asignaturaId = this.value; // Capturar el valor seleccionado
-        consultarHorario('xCodMat', asignaturaId, dia, '', '', function(data){
+        consultarHorario('xCodMat', asignaturaId, dia, '', '', function (data) {
             const dropdown = $("#selectHoraInicio");
             cargarHora(data, dropdown);
 
             selectMateria = $('#selectAsignatura').val();
 
-            consultarCiclo('xAsignatura', selectMateria, '', '', '', function(data){
+            consultarCiclo('xAsignatura', selectMateria, '', '', '', function (data) {
                 const txtCiclo = $("#txtCiclo");
                 const txtParalelo = $("#txtParalelo");
                 cargarCiclo(data, txtCiclo, txtParalelo);
             });
 
-            consultarCarrera('xAsignatura', selectMateria, '', '', '', function(data){
+            consultarCarrera('xAsignatura', selectMateria, '', '', '', function (data) {
                 const txtCarrera = $("#txtCarrera");
                 cargarCarrera(data, txtCarrera);
             });
 
-            consultarAlumno('xAsignatura', selectMateria, '', '', '', function(data){
+            consultarAlumno('xAsignatura', selectMateria, '', '', '', function (data) {
                 const txtNumeroAsistentes = $("#txtNumeroAsistentes");
                 cargarNumeroEstudiante(data, txtNumeroAsistentes);
             });
@@ -237,14 +237,14 @@ $(document).ready(function () {
 
     $("#selectUnidad").on('change', function () {
         var unidadId = this.value; // Capturar el valor seleccionado
-        consultarTema('xUnidad', unidadId, '', '', '', function(data){
+        consultarTema('xUnidad', unidadId, '', '', '', function (data) {
 
-            if(data.length > 0){
+            if (data.length > 0) {
                 $("#content_ddlTema").css("display", 'block');
                 const dropdown = $("#selectTema");
                 cargarTema(data, dropdown);
             }
-            else{
+            else {
                 $("#content_ddlTema").css("display", 'none');
             }
         });
@@ -266,16 +266,16 @@ $(document).ready(function () {
             $('.mult-select-tag').remove();
 
             // Llamada al backend
-            consultarSoftware('xLaboratorio', codLab, '', '', '', function(data) {
+            consultarSoftware('xLaboratorio', codLab, '', '', '', function (data) {
                 // Llenar el select con datos
                 cargarSoftware(data, selectSoftware);
 
                 // Re-inicializar el plugin con el nuevo select
-                new MultiSelectTag('countries', {        
+                new MultiSelectTag('countries', {
                     rounded: true,    // default true
                     shadow: true,      // default false
                     placeholder: 'Search',  // default Search...
-                    onChange: function(values) {
+                    onChange: function (values) {
                         listSoftware = values
                     }
                 });
@@ -324,7 +324,7 @@ $(document).ready(function () {
         }
     });
 
-    $("#btnNuevaReserv").click(function() {
+    $("#btnNuevaReserv").click(function () {
         let fechaSelect = new Date($('#fecha').text() + "T00:00:00");
 
         $('#form_listReserva').modal('hide');
@@ -334,16 +334,16 @@ $(document).ready(function () {
             fechaHoy.setHours(0, 0, 0, 0);
 
 
-            if(fechaHoy > fechaSelect){
+            if (fechaHoy > fechaSelect) {
                 let mensaje = 'Solo puedes reservar apartir de la fecha actual!';
                 let icon = 'warning';
 
                 mostrarMensage(mensaje, icon);
             }
-            else if(fechaHoy === fechaSelect){
+            else if (fechaHoy === fechaSelect) {
                 $('#form_registrar').modal('show');
             }
-            else{
+            else {
                 $('#form_registrar').modal('show');
             }
         });
@@ -355,7 +355,7 @@ $(document).ready(function () {
         validarReservacion(fechaHoy);
     });
 
-    $("#btnEnviar").click(function() {
+    $("#btnEnviar").click(function () {
         let reservacion = [];
 
         reservacion[0] = $('#selectAsignatura').val();
@@ -384,7 +384,7 @@ $(document).ready(function () {
                 var icon = data.resultado == true ? 'success' : 'error';
                 var codReser = data.strCod_reser;
 
-                guardarSoftware(codReser, function(data){
+                guardarSoftware(codReser, function (data) {
                     console.log(data[0].msg)
                 });
 
@@ -394,18 +394,18 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.log("Status: " + xhr.status);
-                console.log("Response: " + xhr.responseText);                
+                console.log("Response: " + xhr.responseText);
             }
         });
     });
 
     // Detalle
-    $('#tbl_det_reservacion').on('click', '.btn-info', function(event) {
+    $('#tbl_det_reservacion').on('click', '.btn-info', function (event) {
         event.preventDefault();
 
         $('#form_listReserva').modal('hide');
         const idReserva = $(this).data('id');
-        
+
         // Espera a que termine de ocultarse el primero antes de abrir el segundo
         $('#form_listReserva').on('hidden.bs.modal', function () {
             mostrarDetalle(idReserva);
@@ -415,12 +415,12 @@ $(document).ready(function () {
     });
 
     // Editar
-    $('#tbl_det_reservacion').on('click', '.btn-warning', function(event) {
+    $('#tbl_det_reservacion').on('click', '.btn-warning', function (event) {
         event.preventDefault();
 
         const idReserva = $(this).data('id');
 
-        consultarEventos('xPK', idReserva, '', '', '', function(data) {
+        consultarEventos('xPK', idReserva, '', '', '', function (data) {
             var reserva = data[0];
             var codAsignatura = data[0].strCod_Mate;
             var cedula = data[0].cedula_alu;
@@ -434,45 +434,45 @@ $(document).ready(function () {
             $('#txtDescripcionAct').val(data[0].strDescripcion_reser);
             $('#txtMaterialesAct').val(data[0].strMateriales_reser);
 
-            consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
+            consultarAlumno('xCEDULA', cedula, '', '', '', function (data) {
                 var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
 
                 $('#txtEmailAct').val(data[0].correo_alu);
                 $('#txtNombreAct').val(nombre);
             });
 
-            consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
+            consultarAsignatura('xPK', codAsignatura, '', '', '', function (data) {
                 $('#txtAsignaturaAct').val(data[0].strNombre_mate);
-            });                
+            });
 
-            consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
+            consultarCiclo('xAsignatura', codAsignatura, '', '', '', function (data) {
                 $('#txtCicloAct').val(data[0].strnombre_curso);
                 $('#txtParaleloAct').val(data[0].strparalelo_curso);
             });
 
-            consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
+            consultarCarrera('xAsignatura', codAsignatura, '', '', '', function (data) {
                 $('#txtCarreraAct').val(data[0].strnombre_car);
             });
 
             $('#txtTipoMotivoDet').val(data[0].strTipo_reser);
 
-            consultarUnidad('xAsignatura', codAsignatura, '', '', '', function(dataUni){
+            consultarUnidad('xAsignatura', codAsignatura, '', '', '', function (dataUni) {
                 const dropdown = $("#selectUnidadAct");
                 cargarUnidad(dataUni, dropdown);
 
                 $('#selectUnidadAct').val(data[0].strCod_unidTem);
-            }); 
+            });
 
-            consultarTema('xUnidad', codUnidad, '', '', '', function(data){
+            consultarTema('xUnidad', codUnidad, '', '', '', function (data) {
 
-                if(data.length > 0){
+                if (data.length > 0) {
                     $("#content_ddlTema").css("display", 'block');
                     const dropdown = $("#selectTemaAct");
                     cargarTema(data, dropdown);
 
                     $('#selectTemaAct').val(data[0].strCod_tema);
                 }
-                else{
+                else {
                     $("#content_ddlTema").css("display", 'none');
                 }
             });
@@ -483,7 +483,7 @@ $(document).ready(function () {
 
             fechaRegistro.setHours(fechaRegistro.getHours() + 3);
 
-            if(fechaHoy > fechaRegistro){
+            if (fechaHoy > fechaRegistro) {
                 // Mostrar el mensaje
                 $('#txtMsgInfo').text('¡Has superado las tres horas límite para la reservación!');
                 $('#txtMsgInfo').fadeIn(); // Aparece con una animación
@@ -493,21 +493,21 @@ $(document).ready(function () {
                     $('#txtMsgInfo').fadeOut(); // Desaparece con animación
                 }, 2000);
             }
-            else{
+            else {
                 $('#form_listReserva').modal('hide');
 
                 $('#form_listReserva').on('hidden.bs.modal', function () {
                     $('#form_actualizar').modal('show');
                 });
             }
-        }, function(error) {
+        }, function (error) {
             // En caso de error
             console.error("Error consultando eventos", error);
             failureCallback(error);
         });
     });
 
-    $("#btnActualizar").click(function() {
+    $("#btnActualizar").click(function () {
         /*let reservacion = [];
 
         reservacion[0] = $('#selectAsignatura').val();
@@ -551,7 +551,7 @@ function validarReservacion(fechaHoy) {
     const nuevaInicio = new Date(fechaHoy + 'T' + $('#selectHoraInicio').val() + ':00');
     const nuevaFin = new Date(fechaHoy + 'T' + $('#selectHoraFin').val() + ':00');
 
-    consultarEventos('xFecha', codLab, fechaHoy, '', '', function(data) {
+    consultarEventos('xFecha', codLab, fechaHoy, '', '', function (data) {
         let hayConflicto = false;
 
         data.forEach(reser => {
@@ -569,82 +569,27 @@ function validarReservacion(fechaHoy) {
         });
 
         if (hayConflicto) {
-            let msg = 'Ya existe una reservacion en esta hora';
-
-            mostrarTooltipSimple(msg);
+            mostrarTooltipSimple();
         } else {
-            consultarExclusivo('xLabExclusivo', codLab, '', '', '', function (data) {
-                consultarUnidad('xAsignatura', selectMateria, '', '', '', function(dataAsig) {
-                    const dropdown = $("#selectUnidad");
-                    cargarUnidad(dataAsig, dropdown);
-                    var selectUnidad = $('#selectUnidad option').first().val();
-
-                    if (data.length === 0){
-                        $('#det_reservacion').css('display', 'block');
-                    }
-                    else if (data.length > 0) {
-                        var valMensaje = true;
-                        var listCarreras = [];
-                        var pendientes = data.length;
-
-                        console.log(data);
-
-                        data.forEach(excl => {
-                            consultarCarrera('xPK', excl.strCod_Car, '', '', '', function (data) {
-                                let acum = 0;
-                                if(data.length > 0){
-                                    let nombreCarConsulta = data[0].strnombre_car;
-                                    let nombreCarForm = $('#txtCarrera').val();
-
-                                    if (nombreCarConsulta === nombreCarForm) {
-                                        ++acum;
-                                        valMensaje = true;
-                                        $('#det_reservacion').css('display', 'block');
-                                    }
-                                    else if(acum === 0) {
-                                        valMensaje = false;
-                                        listCarreras.push(nombreCarConsulta);
-                                    }
-                                }
-
-                                // Cuando se termina de procesar cada elemento:
-                                pendientes--;
-                                if (pendientes === 0) {
-                                    // Aquí recién puedes hacer el if cuando todos han terminado
-                                    if (!valMensaje && acum === 0) {
-                                        let msg = 'El laboratorio es exclusivo de ';
-
-                                        if (listCarreras.length === 1) {
-                                            msg += listCarreras[0];
-                                        }
-                                        else if (listCarreras.length === 2) {
-                                            msg += listCarreras[0] + ' y ' + listCarreras[1];
-                                        }
-                                        else {
-                                            let todosMenosUltimo = listCarreras.slice(0, -1).join(', ');
-                                            let ultimo = listCarreras[listCarreras.length - 1];
-                                            msg += todosMenosUltimo + ' y ' + ultimo;
-                                        }
-                                        mostrarTooltipSimple(msg);
-                                    }
-                                }
-                            });
-                        });
-                    }
-                });
+            consultarUnidad('xAsignatura', selectMateria, '', '', '', function (data) {
+                const dropdown = $("#selectUnidad");
+                cargarUnidad(data, dropdown);
+                var selectUnidad = $('#selectUnidad option').first().val();
             });
+
+            $('#det_reservacion').css('display', 'block');
         }
     });
 }
 
-function mostrarListado(fecha){
-    consultarEventos('xFecha', codLab, fecha, '', '',function(data) {
+function mostrarListado(fecha) {
+    consultarEventos('xFecha', codLab, fecha, '', '', function (data) {
         const tbody = $('#tbl_det_reservacion');
         tbody.empty(); // Limpiar contenido anterior                    
 
-        if(data.length > 0){
+        if (data.length > 0) {
             // Iterar sobre los datos recibidos
-            $.each(data, function(i, item) {
+            $.each(data, function (i, item) {
                 const tr = $('<tr></tr>');
 
                 tr.append(`<td>${item.strTema_reser}</td>`);
@@ -657,7 +602,7 @@ function mostrarListado(fecha){
                 const btnActualizar = `<button class="btn btn-warning" data-id="${item.strCod_reser}">Actualizar</button>`;
                 const btnEliminar = `<button class="btn btn-danger" data-id="${item.strCod_reser}">Eliminar</button>`;
 
-                consultarAlumno('xCEDULA', item.cedula_alu, '', '', '', function(data){
+                consultarAlumno('xCEDULA', item.cedula_alu, '', '', '', function (data) {
                     var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
 
                     tr.append(`<td>${nombre}</td>`);
@@ -666,20 +611,20 @@ function mostrarListado(fecha){
                 tbody.append(tr);
             });
         }
-        else{
+        else {
             const tr = $('<tr></tr>');
 
             tr.append(`<td colspan="6" class='text-center'>No sé a encontrado reservaciones para el día de hoy</td>`);
             tbody.append(tr);
         }
-    }, function(error) {
+    }, function (error) {
         // En caso de error
         console.error("Error consultando eventos", error);
     });
 }
 
-function mostrarDetalle(idReserva){
-    consultarEventos('xPK', idReserva, '', '', '', function(data) {
+function mostrarDetalle(idReserva) {
+    consultarEventos('xPK', idReserva, '', '', '', function (data) {
         var reserva = data[0];
         var codAsignatura = data[0].strCod_Mate;
         var cedula = data[0].cedula_alu;
@@ -694,37 +639,37 @@ function mostrarDetalle(idReserva){
         $('#txtMaterialDet').val(data[0].strMateriales_reser);
         $('#txtTipoMotivoDet').val(data[0].strTipo_reser.toUpperCase());
 
-        consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
+        consultarAlumno('xCEDULA', cedula, '', '', '', function (data) {
             var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
 
             $('#txtCorreoDet').val(data[0].correo_alu);
             $('#txtNombresDet').val(nombre);
         });
 
-        consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
+        consultarAsignatura('xPK', codAsignatura, '', '', '', function (data) {
             $('#txtAsigDet').val(data[0].strNombre_mate);
-        });                
+        });
 
-        consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
+        consultarCiclo('xAsignatura', codAsignatura, '', '', '', function (data) {
             $('#txtCicloDet').val(data[0].strnombre_curso);
             $('#txtParaleloDet').val(data[0].strparalelo_curso);
         });
 
-        consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
+        consultarCarrera('xAsignatura', codAsignatura, '', '', '', function (data) {
             $('#txtCarreraDet').val(data[0].strnombre_car);
         });
-        
-        consultarSoftware('xCodReserva', idReserva, '', '', '', function(data) {
+
+        consultarSoftware('xCodReserva', idReserva, '', '', '', function (data) {
             // Llenar el select con datos
             let selectSoftware = $('#ddlSoftwareDet');
             cargarSoftware(data, selectSoftware);
         });
 
-        consultarUnidad('xPK', codUnidad, '', '', '', function(data){
+        consultarUnidad('xPK', codUnidad, '', '', '', function (data) {
             $('#txtUnidadDet').val(data[0].strdesc_unidtem);
         });
 
-    }, function(error) {
+    }, function (error) {
         // En caso de error
         console.error("Error consultando eventos", error);
         failureCallback(error);

@@ -114,7 +114,7 @@
     <div class="container-fluid">
         <h3 runat="server" id="titulo" class="text-center"></h3>
         <br />
-        <div id="calendar"></div>
+        <div id="calendarLab"></div>
     </div>
 
     <!--Formulario para una nueva reservacion-->
@@ -188,12 +188,12 @@
                         <legend>DATOS DEL SOLICITANTE</legend>
                         <div class="row">
                             <div class="col-md-6">
-                                <asp:Label ID="lblEmail" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
-                                <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" Enabled="false"></asp:TextBox>
+                                <asp:Label ID="lblNombres" runat="server" Text="NOMBRES:"></asp:Label>
+                                <asp:DropDownList ID="ddlDocentes" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                             <div class="col-md-6">
-                                <asp:Label ID="lblNombres" runat="server" Text="NOMBRES:"></asp:Label>
-                                <asp:TextBox ID="txtNombreSolicitante" runat="server" CssClass="form-control" Enabled="false"></asp:TextBox>
+                                <asp:Label ID="lblEmail" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
+                                <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" Enabled="false"></asp:TextBox>
                             </div>
                         </div>
                     </fieldset>
@@ -203,7 +203,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <asp:Label ID="lblFecha" runat="server" Text="FECHA:"></asp:Label>
-                                <input type="text" id="txtFecha" class="form-control" disabled="disabled"/>
+                                <asp:TextBox ID="txtFecha" runat="server" CssClass="form-control" Enabled="false"/>
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="lblAsignatura" runat="server" Text="ASIGNATURA:"></asp:Label>
@@ -644,7 +644,11 @@
     <script>
         var codLab = '<%= Session["laboratorioId"] %>';
         var cedula = '<%= Context.User.Identity.Name%>'
+        var txtFecha = '<%= txtFecha.ClientID %>'
     </script>
-    <script src="../../Scripts/reservalab/reservarLaboratorio.js"></script>
+    <script src="../../Scripts/reservalab/reservas_utilidades.js"></script>
+    <script src="../../Scripts/reservalab/reservas_carga.js"></script>
+    <script src="../../Scripts/reservalab/reservas_crud.js"></script>
+    <script src="../../Scripts/reservalab/calendario_laboratoristas.js"></script>
 </asp:Content>
 

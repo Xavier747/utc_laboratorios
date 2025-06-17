@@ -36,7 +36,7 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
     {
         if (Session["laboratorioId"] == null)
         {
-            Response.Redirect("~/academic/private/reservalab/Laboratorios.aspx");
+            Response.Redirect("~/academic/private/reservalab/ListadoLaboratorio.aspx");
         }
         string codLab = Session["laboratorioId"].ToString();
         var listLab = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
@@ -71,10 +71,28 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
 
     public void llenarDocenteSolicitante()
     {
-        string cedula = Context.User.Identity.Name;
-        var listPersonal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
+        string codLab = Session["laboratorioId"].ToString();
+        var listLab = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
-        txtEmail.Text = listPersonal[0].correo_alu;
-        txtNombreSolicitante.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
+        string codSede = listLab[0].strCod_Sede;
+        string codFacultad = listLab[0].strCod_Fac;
+
+        var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
+
+        if (docente.Count > 0)
+        {
+            var listaConcatenada = docente
+                .Select(labResp => new {
+                    CEDULA_ALU = labResp.cedula_alu,
+                    NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu // Aquí concatenas lo que necesites
+                }).ToList();
+
+            ddlDocentes.DataSource = listaConcatenada;
+            ddlDocentes.DataTextField = "NOMBRE_COMPLETO";
+            ddlDocentes.DataValueField = "CEDULA_ALU";
+            ddlDocentes.DataBind();
+
+            txtEmail.Text = docente[0].correo_alu;
+        }
     }
 }

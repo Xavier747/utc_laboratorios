@@ -14,7 +14,7 @@ using System.Web.Services;
 using ClassLibraryLaboratorios;
 using ClassLibraryTesis;
 
-public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.UI.Page
+public partial class academic_public_ReservaLaboratorioDocen : System.Web.UI.Page
 {
     string cadenaConexion;
     SqlConnection conexion;

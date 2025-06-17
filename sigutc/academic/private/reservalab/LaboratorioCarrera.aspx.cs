@@ -70,8 +70,6 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         // Llamada a tu clase de acceso a datos, como haces con sede.LoadUB_SEDES
         var listCarreras = car.LoadUB_CARRERAS(tipoConsulta, facultadId, sedeId, codLab, "");
 
-
-
         if (listCarreras.Count != 0)
         {
             ddlCarreras.Items.Clear();
