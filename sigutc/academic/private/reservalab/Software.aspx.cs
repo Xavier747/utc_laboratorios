@@ -168,6 +168,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     {
         var registroSoftware = software1.LoadLAB_SOFTWARE("xPK", codSoft, "", "", "");
 
+        //Asignar registro al formulario de actualizar software
         lblIdSoftAct.Text = registroSoftware[0].strCod_sof;
         txtNombreAct.Text = registroSoftware[0].strNombre_sof;
         txtCantidadAct.Text = registroSoftware[0].intCantidad_sof.ToString();
@@ -180,18 +181,24 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         ddlEstadoAct.SelectedValue = registroSoftware[0].bitEstado_sof.ToString();
         txtLinkAct.Text = registroSoftware[0].strUrl_sof;
         txtDescripcionAct.Text = registroSoftware[0].strDescripcion_sof;
+
+        //Asignar la ruta de la imagen a un elemento label 
         lblImg1NameAct.Text = registroSoftware[0].strImagen_sof;
     }
 
+    //Llenar elementos DropDownList para definir los tipos de software
     public void cargarTipoLicencia()
     {
+        //DDL del formulario nuevo software
         ddlTipo.Items.Add(new ListItem("Propietario", "Propietario"));
         ddlTipo.Items.Add(new ListItem("Libre", "Libre"));
 
+        //DDL del formulario actualizar software
         ddlTipoAct.Items.Add(new ListItem("Propietario", "Propietario"));
         ddlTipoAct.Items.Add(new ListItem("Libre", "Libre"));
 
-        ddlTipo.Visible = ddlTipo.SelectedValue == "Propietario" ? true : false;
+        //Mostrar el cuadro de texto para ingresar el nombre de la licencia
+        content_NombreLicencia.Visible = ddlTipo.SelectedValue == "Propietario" ? true : false;
     }
 
     //guardar nuevo software
@@ -201,11 +208,14 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         decimal precioUnitario = costo != "" ? decimal.Parse(costo) : 0;
         string rutaCarpeta = crearDirectorio();
 
+        //Lenado de atributos
         software1.strNombre_sof = txtNombre.Text.ToUpper().Trim();
         software1.strTipoLicencia_sof = ddlTipo.SelectedValue;
         software1.strNombreLicencia_sof = txtNombreLicencia.Text.ToUpper().Trim();
         software1.intCantidad_sof = int.Parse(txtCantidad.Text);
         software1.decCostoUnitario_sof = precioUnitario;
+
+        //Calulo del precio total de los softwares
         software1.decCostoTotal_sof = decimal.Parse(txtCantidad.Text) * precioUnitario;
         software1.strDescripcion_sof = txtDescripcion.Text.Trim();
         software1.strUrl_sof = txtLink.Text.Trim();
@@ -225,6 +235,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         software1.strCod_Sede = ddlSede.SelectedValue;
         software1.strCod_sof = generarIdSoft();        
 
+        //Validacion de la imagen
         if (fulImg1.HasFile)
         {
             try
@@ -234,7 +245,10 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
                 string newFilename = filename + extension;
                 string path = Path.Combine(rutaCarpeta, newFilename);
 
+                //Inicializar un contador
                 int counter = 1;
+
+                //Valida si existe archivos con el mismo nombre caso de que si crea otro nombre oara ek nuevo archivo
                 while (File.Exists(path))
                 {
                     newFilename = $"{filename}_{counter}{extension}";
@@ -242,6 +256,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
                     counter++;
                 }
 
+                //Guaradamos la imagen en la ruta definida
                 fulImg1.SaveAs(path);
                 software1.strImagen_sof = path;
             }
@@ -253,14 +268,13 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
         software1.AddLAB_SOFTWARE(software1);
 
+        //Generacion del naotificacion segun la respuesta
         string title = software1.resultado ? software1.msg :
                        software1.numerr == 2627 ? software1.msg :
                        "Error: " + software1.numerr;
-
         string icon = software1.resultado ? "success" : "error";
-        string ruta = "Software.aspx";
 
-        string script = $"showAlertAndReload('{title}', '{icon}', '{ruta}');";
+        string script = $"mostrarMensageCRUD('{title}', '{icon}');";
         ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
     }
 
@@ -289,6 +303,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         return rutaCarpeta;
     }
 
+
     private string generarIdSoft()
     {
         string facultadId = ddlFacultad.SelectedValue;
@@ -315,13 +330,11 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     {
         //Definimos dos condicion con una opciones de acuerdo al nombre del Comando
         if (e.CommandName == "Select")
-
         {
             //capturamos el id para transportar a otro formulario
             string codSoft = e.CommandArgument.ToString();
             consultarRegistro(codSoft);
             ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#form_actualizar_software').modal('show');", true);
-
         }
         if (e.CommandName == "Eliminar")
         {
@@ -335,7 +348,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
                            "Error: " + software1.numerr;
             string icon = software1.resultado ? "success" : "error";
 
-            string script = $"showAlertAndReload('{title}', '{icon}');";
+            string script = $"mostrarMensageCRUD('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
     }
@@ -418,7 +431,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
                        "Error: " + software1.numerr;
         string icon = software1.resultado ? "success" : "error";
 
-        string script = $"showAlertAndReload('{title}', '{icon}');";
+        string script = $"mostrarMensageCRUD('{title}', '{icon}');";
         ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
     }
 

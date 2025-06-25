@@ -317,6 +317,10 @@
         <script type="text/javascript" src="/Styles/Nuevo/assets/js/popper.js/popper.min.js"></script>
         <script type="text/javascript" src="/Styles/Nuevo/assets/js/bootstrap/js/bootstrap.min.js "></script>
         <script type="text/javascript" src="/Styles/Nuevo/assets/pages/widget/excanvas.js "></script>
+
+        <!--jQuery Validate-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
         <!-- waves js -->
         <script src="/Styles/Nuevo/assets/pages/waves/js/waves.min.js"></script>
         <!-- jquery slimscroll js -->

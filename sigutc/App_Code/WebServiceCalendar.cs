@@ -170,7 +170,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
         reserva1.strCod_Mate = reservacion[0];
         reserva1.cedula_alu = reservacion[8] != "" ? reservacion[8] : Context.User.Identity.Name;
         reserva1.strCod_unidTem = reservacion[1];
-        reserva1.strTema_reser = reservacion[2] ?? string.Empty;
+        reserva1.strTema_reser = reservacion[2] ?? reservacion[1];
         reserva1.strTipo_reser = reservacion[10];
         reserva1.strDescripcion_reser = reservacion[3];
         reserva1.strMateriales_reser = reservacion[4];
@@ -310,5 +310,19 @@ public class WebServiceCalendar : System.Web.Services.WebService
         string tema = listTema.Count > 0 ? listTema[0].strDesc_tema : string.Empty;
 
         return  tema ;
+    }
+
+    public string EliminarSoftwareReserva(string codReserva)
+    {
+        reserSoft1.DelLAB_RESERSOFTWARE("xCodReserva", codReserva, "", "", "");
+
+        return JsonConvert.SerializeObject(reserSoft1);
+    }
+
+    public string EliminarReserva(string codReserva)
+    {
+        reserva1.DeleteLAB_RESERVA("xPK", codReserva, "", "", "");
+
+        return JsonConvert.SerializeObject(reserSoft1);
     }
 }

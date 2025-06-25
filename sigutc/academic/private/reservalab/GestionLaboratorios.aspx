@@ -7,8 +7,9 @@
     Listado de laboratorios
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
+    
+    <!--Boton para agregar un nuevo laboratorio-->
     <div class="row">
-        <!--Boton para agregar un nuevo laboratorio-->
         <div class="col-md-12 text-right">
             <button type="button" class="btn btn-primary btn-nuevo" data-toggle="modal" data-target="#form_registrar">
                 <i class="bi bi-plus-lg"></i>Nuevo laboratorio
@@ -16,6 +17,7 @@
         </div>  
     </div>  
     <br />
+
     <!-- GridView para listar laboratorios -->
     <div class="table-responsive">
         <asp:GridView ID="gvLaboratorios" runat="server" 
@@ -33,12 +35,14 @@
                     <ItemTemplate>
                         <div class="content">
                             <div class="content-img">
-                                <!--Ruta de la imagen envia desde el codigo para mostrar la imagen -->
+
+                                <!-- Ruta de la imagen envia desde el codigo para mostrar la imagen -->
                                 <asp:Image ID="imgLaboratorio1" runat="server" 
                                     ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia1_lab").ToString()) %>' />
                             </div>
                             <br />
-                            <!--Boton para mostrar la imagen en grande atraves de una ventana modal -->
+
+                            <!-- Boton para mostrar la imagen en grande atraves de una ventana modal -->
                             <asp:Button ID="btnViewImage1" runat="server"
                                 CssClass="btn btn-info" 
                                 OnClick="btnViewImage1_Click" 
@@ -51,10 +55,14 @@
                     <ItemTemplate>
                         <div class="content">
                             <div class="content-img">
+
+                                <!-- Ruta de la imagen envia desde el codigo para mostrar la imagen -->
                                 <asp:Image ID="imgLaboratorio2" runat="server" 
                                     ImageUrl='<%# "ImageHandlerLaboratorio.ashx?image=" + System.IO.Path.GetFileName(Eval("strFotografia2_lab").ToString()) %>'/>
                             </div>
                             <br />
+
+                            <!-- Boton para mostrar la imagen en grande atraves de una ventana modal -->
                             <asp:Button ID="btnViewImage2" runat="server"
                                 CssClass="btn btn-info" 
                                 OnClick="btnViewImage2_Click" 
@@ -65,6 +73,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField ShowHeader="False" HeaderText="Carrera">
                     <ItemTemplate>
+                        <!-- Boton para asignar carreras a un laboratorio-->
                         <div style="display:flex;">
                             <asp:Button ID="btnCarrera" runat="server"  
                                 Text="Relacionar" 
@@ -78,20 +87,23 @@
                 <asp:TemplateField ShowHeader="False" HeaderText="Accion">
                     <ItemTemplate>
                         <div style="display:flex;">
-                            <!--Boton que refleja formulario para actualizar el laboratorio-->
+
+                            <!-- Boton que refleja formulario para actualizar el laboratorio -->
                             <asp:Button ID="btnEditar" runat="server" 
                                 CommandName="Select" 
                                 CssClass="btn btn-warning" 
                                 CommandArgument ='<%# Eval("strCod_lab") %>' 
                                 Text="Editar" />&nbsp;&nbsp;
-                            <!--Boton para eliminar el laboratorio-->
+
+                            <!-- Boton para eliminar el laboratorio -->
                             <asp:Button ID="btnDelete" runat="server" 
                                 Text="Eliminar" 
                                 CssClass="btn btn-danger" 
                                 OnClientClick="return showAlertDelete(this);"      
                                 CommandName="Eliminar" 
                                 CommandArgument ='<%# Eval("strCod_lab") %>' />&nbsp;&nbsp;
-                            <!--Boton que refleja formulario para asignar responsable el laboratorio-->
+
+                            <!-- Boton que refleja formulario para asignar responsable el laboratorio -->
                             <asp:Button ID="btnLaboratoristas" runat="server" 
                                 CommandName="Laboratoristas" 
                                 CssClass="btn btn-success" 
@@ -104,9 +116,10 @@
         </asp:GridView> 
     </div>   
     
+    <!-- Mostrar mensaje despues de una consulta -->
     <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
 
-    <!--Formulario para agregar nuevo laboratorio-->
+    <!-- Formulario para agregar nuevo laboratorio -->
     <!-- Ventana Modal -->
     <div class="modal fade" id="form_registrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog  modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
@@ -212,6 +225,8 @@
                                 ErrorMessage="Campo requerido" />
                         </div>
                     </div>
+
+                    <!-- Seleccionar Sede y Facultad -->
                     <div class="row">
                         <div class="col-md-6">
                             <asp:UpdatePanel ID="upSede" runat="server">
@@ -253,7 +268,6 @@
                                 </Triggers>
                             </asp:UpdatePanel>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -263,6 +277,8 @@
                                         <asp:Label ID="lblSoftware" runat="server" 
                                             Text="Software" 
                                             CssClass="control-label" />
+
+                                        <!-- Listado de software -->
                                         <div class="softwareContainer">
                                             <asp:Repeater ID="rptSoftware" runat="server">
                                                 <ItemTemplate>
@@ -307,6 +323,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default border-radius" data-dismiss="modal">Cerrar</button>
+
+                    <!-- Boton para validar el tamaño de imagenes y posteriormente guardar el registro -->
                     <asp:Button ID="btnSubmit" runat="server" 
                         Text="Guardar" 
                         CausesValidation="true" 
@@ -319,6 +337,7 @@
         </div>
     </div>
     
+    <!-- Formulario para actualizar laboratorio -->
     <!-- Ventana Modal -->
     <div class="modal fade" id="form_actualizar1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
@@ -339,7 +358,8 @@
                                 Text="Nombre" 
                                 CssClass="control-label required" />
                             <asp:TextBox ID="txtNombreAct" runat="server" 
-                                CssClass="form-control custom-input" placeholder="Nombre" />
+                                CssClass="form-control custom-input" 
+                                placeholder="Nombre" />
                             <asp:RequiredFieldValidator ID="rfv_txtNombreAct" runat="server" 
                                 ControlToValidate="txtNombreAct" 
                                 CssClass="alert alert-danger form-control" 
@@ -445,14 +465,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div id="listSoftwareAct" runat="server">
-                                <asp:Label ID="lblSoftwareAct" runat="server" Text="Software" CssClass="control-label"></asp:Label>
+                                <asp:Label ID="lblSoftwareAct" runat="server" 
+                                    Text="Software" 
+                                    CssClass="control-label" />
+
+                                <!-- Listado de software -->
                                 <div class="softwareContainer">
                                     <asp:Repeater ID="rptSoftwareAct" runat="server" >
                                         <ItemTemplate>
                                             <div class="form-control item">
                                                 <div class="row" style="max-width: 100%;" >
                                                     <div class="col-md-1">
-                                                        <asp:CheckBox ID="chkSoftwareAct" runat="server" ToolTip='<%# Eval("strCod_sof") %>' />
+                                                        <asp:CheckBox ID="chkSoftwareAct" runat="server" 
+                                                            ToolTip='<%# Eval("strCod_sof") %>' />
                                                     </div>
                                                     <div class="col-md-10">
                                                         <label for="chkSoftwareAct"><%# Eval("strNombre_sof") %></label>
@@ -476,7 +501,9 @@
                     <br />
                     <div class="row">
                         <div class="col-md-12">
-                            <asp:Label ID="lblUbicacionAct" runat="server" Text="Ubicación" CssClass="control-label required"></asp:Label>
+                            <asp:Label ID="lblUbicacionAct" runat="server" 
+                                Text="Ubicación" 
+                                CssClass="control-label required"></asp:Label>
                             <asp:TextBox ID="txtUbicacionAct" runat="server" 
                                 CssClass="form-control custom-input text-multiple" 
                                 placeholder="Ubicación" 
@@ -504,7 +531,7 @@
         </div>
     </div>
     
-     <!-- Ventana Modal Imagen-->
+    <!-- Ventana Modal Imagen-->
     <div class="modal fade" id="view-image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
             <div class="modal-content">
@@ -522,7 +549,7 @@
         </div>
     </div>
     
-    <!-- Ventana Modal Detalle del personal de laboratorio-->
+    <!-- Ventana Modal Detalle del personal encargado del laboratorio -->
     <div class="modal fade" id="Lab_Detalle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
             <div class="modal-content">
@@ -535,6 +562,8 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4">
+
+                            <!-- label que contiene Codigo del Laboratorio -->
                             <asp:Label ID="lblCodLab" runat="server" 
                                 Text="" 
                                 Visible="false" />
@@ -631,9 +660,6 @@
                         <div class="col-md-6">
                             <asp:Label ID="lblRespAdminNuevo" runat="server" 
                                 Text="Responsable Administrativo:" />
-                            <asp:Label ID="lblRespAdminTipoNuevo" runat="server" 
-                                Text="Responsable Administrativo" 
-                                Visible="false" />
                             <asp:DropDownList ID="ddlRespAdminNuevo" runat="server" 
                                 CssClass="form-control custom-input" />
                             <asp:RequiredFieldValidator ID="rfv_ddlRespAdminNuevo" runat="server" 
@@ -645,9 +671,6 @@
                         <div class="col-md-6">
                             <asp:Label ID="lblRespAcadNuevo" runat="server" 
                                 Text="Responsable Academico:"></asp:Label>
-                            <asp:Label ID="lblRespAcadTipoNuevo" runat="server" 
-                                Text="Responsable Academico" 
-                                Visible="false" />
                             <asp:DropDownList ID="ddlRespAcadNuevo" runat="server" 
                                 CssClass="form-control custom-input" />
                             <asp:RequiredFieldValidator ID="rfv_ddlRespAcadNuevo" runat="server" 
@@ -669,7 +692,7 @@
         </div>
     </div>
     
-    <!-- Ventana Modal Actulizacion del personal de laboratorio-->
+    <!-- Ventana Modal Actulizacion del personal responsable de laboratorio-->
     <div class="modal fade" id="Form_ActualizarResponsable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
             <div class="modal-content">
@@ -706,14 +729,19 @@
                         <div class="col-md-6">
                             <asp:Label ID="lblRespAdminActualizar" runat="server" 
                                 Text="Responsable Administrativo:" />
+
+                            <!-- Numero de cedula del anterior responsable -->
                             <asp:Label ID="lblCedulaRespAdmin" runat="server" 
-                                Text="" 
                                 Visible="false" />
-                            <asp:Label ID="lblIdRespAdmin" runat="server" 
-                                Text="Responsable Administrativo" 
+
+                            <!-- Codigo de registro -->
+                            <asp:Label ID="lblInfoRespAdmin" runat="server" 
                                 Visible="false" />
+
+                            <!-- Lista desplegable de los laboratorista -->
                             <asp:DropDownList ID="ddlRespAdminActualizar" runat="server" 
                                 CssClass="form-control custom-input" />
+
                             <asp:RequiredFieldValidator ID="rfv_ddlRespAdminActualizar" runat="server" 
                                 ControlToValidate="ddlRespAdminActualizar" 
                                 CssClass="alert alert-danger form-control" 
@@ -723,14 +751,19 @@
                         <div class="col-md-6">
                             <asp:Label ID="lblRespAcadActualizar" runat="server" 
                                 Text="Responsable Academico:" />
+
+                            <!-- Numero de cedula del anterior responsable -->
                             <asp:Label ID="lblCedulaRespAcad" runat="server" 
-                                Text="" 
                                 Visible="false" />
-                            <asp:Label ID="lblIdRespAcad" runat="server" 
-                                Text="Responsable Academico" 
+
+                            <!-- Codigo de registro -->
+                            <asp:Label ID="lblInfoRespAcad" runat="server" 
                                 Visible="false" />
+
+                            <!-- Lista desplegable de los docentes -->
                             <asp:DropDownList ID="ddlRespAcadActualizar" runat="server" 
                                 CssClass="form-control custom-input" />
+
                             <asp:RequiredFieldValidator ID="rfv_ddlRespAcadActualizar" runat="server" 
                                 ControlToValidate="ddlRespAcadActualizar" 
                                 CssClass="alert alert-danger form-control" 
@@ -752,6 +785,7 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
+    <script src="../../Scripts/reservalab/reservas_utilidades.js"></script>
     <script>
         function validarArchivo() {
             var input1 = $('#<%= fulImg1.ClientID %>')[0].files.length > 0
@@ -762,7 +796,8 @@
                 ? $('#<%= fulImg2.ClientID %>')[0]
                 : $('#<%= fulImg2Act.ClientID %>')[0]
 
-            var maxMB = 4; // Límite permitido (ajustable)
+            // Límite permitido (ajustable)
+            var maxMB = 4; 
 
             if (input1.files.length > 0 || input2.files.length > 0) {
                 var file1 = input1.files.length > 0 ? input1.files[0] : null;
@@ -772,18 +807,23 @@
                 var sizeMB2 = file2 ? file2.size / (1024 * 1024) : 0;
 
                 if (sizeMB1 > maxMB && sizeMB2 > maxMB) {
-                    showAlertImageBig("Las imagenes han excedido el tamaño máximo permitido de " + maxMB + " MB.", "error");
-                    return false; // evita que se envíe el formulario
+                    mostrarMensage("Las imagenes han excedido el tamaño máximo permitido de " + maxMB + " MB.", "error");
+
+                    // evita que se envíe el formulario
+                    return false; 
                 }
                 else if (sizeMB1 > maxMB) {
-                    showAlertImageBig("La imagen 1 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
-                    return false; // evita que se envíe el formulario
+                    mostrarMensage("La imagen 1 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
+
+                    // evita que se envíe el formulario
+                    return false; 
                 }
                 else if (sizeMB2 > maxMB) {
-                    showAlertImageBig("La imagen 2 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
-                    return false; // evita que se envíe el formulario
-                }
+                    mostrarMensage("La imagen 2 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
 
+                    // evita que se envíe el formulario
+                    return false; 
+                }
             }
 
             // Detectar qué formulario está visible o activo
@@ -802,72 +842,8 @@
                 }
             }
 
-            return true; // permite enviar si pasa la validación
-        }
-
-        //Notificacion imagen muy grande
-        function showAlertImageBig(title, icon) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
-            });
-
-            Toast.fire({
-                icon: icon,
-                title: title
-            });
-        }
-
-
-        //Metodo para mostrar mensajes de exito o error
-        function showAlertAndReload(title, icon) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
-            });
-
-            Toast.fire({
-                icon: icon,
-                title: title
-            }).then(() => {
-                window.location.href = window.location.href;
-            });
-        }
-
-        function showAlertDelete(btn) {
-            event.preventDefault(); // Detiene el postback
-
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: "¡No podrás revertir esta acción!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, eliminar",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    __doPostBack(btn.name, '');
-                }
-            });
-
-            return false; // Siempre evitar el postback automático
+            // permite enviar si pasa la validación
+            return true; 
         }
     </script>
 </asp:Content>
-

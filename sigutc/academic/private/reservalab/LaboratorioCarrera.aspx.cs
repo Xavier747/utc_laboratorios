@@ -9,13 +9,11 @@ using System.Data;
 using System.Data.SqlClient;
 using ClassLibraryLaboratorios;
 using System.Web.Configuration;
-
-using System.Web.UI.WebControls;
-using ClassLibraryLaboratorios;
 using ClassLibraryTesis;
 
 public partial class academic_private_reservalab_LaboratorioCarrera : System.Web.UI.Page
 {
+    //Llamado a las clases de la libreria de clase
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_EXCLUSIVO labExc1= new LAB_EXCLUSIVO();
     UB_CARRERAS car = new UB_CARRERAS();
@@ -26,6 +24,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
 
         if (!IsPostBack)
         {
+            //Llamado a los metodos que se deben cargar con la pagina
             cargarLaboratorio();
             cargarCarreras();
             cargarCarrerasExclusivas();
@@ -42,8 +41,10 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             return;
         }
 
+        //Consultar registro
         var labList = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCod_lab, "", "", "");
 
+        //Cargar datos mostrar en el formulario
         if (labList != null && labList.Count > 0)
         {
             var lab = labList[0];
@@ -51,15 +52,14 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             lblFacultadId.Text = lab.strCod_Fac;
             lblSedeId.Text = lab.strCod_Sede;
             nombreLboratorio.InnerText = lab.strNombre_lab?.ToUpper();
-
-            lblMsg.Text = laboratorio2.msg;
         }
         else
         {
-            lblMsg.Text = "No se encontró información del laboratorio.";
+            lblMsg.Text = laboratorio2.msg;
         }
     }
 
+    //Mostrar carreras relacionado con el laboratorio
     public void cargarCarreras()
     {
         string tipoConsulta = "xCodLaboratorio";
@@ -70,14 +70,16 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         // Llamada a tu clase de acceso a datos, como haces con sede.LoadUB_SEDES
         var listCarreras = car.LoadUB_CARRERAS(tipoConsulta, facultadId, sedeId, codLab, "");
 
+        //Llenar el lista desplegable
         if (listCarreras.Count != 0)
         {
             ddlCarreras.Items.Clear();
 
-            foreach (var item in listCarreras)
-            {
-                ddlCarreras.Items.Add(new ListItem(item.strnombre_car, item.strcod_car));
-            }
+            //Carga registros a un GridView
+            ddlCarreras.DataSource = listCarreras;
+            ddlCarreras.DataTextField = "strnombre_car";
+            ddlCarreras.DataValueField = "strCod_Car"; 
+            ddlCarreras.DataBind();
 
             lblMsg.Text = car.msg;
         }
@@ -86,6 +88,8 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             lblMsg.Text = car.msg;
         }
     }
+
+
     private void cargarCarrerasExclusivas()
     {
         var labId = Session["laboratorioId"]?.ToString();
@@ -98,29 +102,25 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         {
             gvCarreras.DataSource = listCarreras;
             gvCarreras.DataBind();
-            lblMsgLstRegistros.Visible = false;
         }
         else
         {
             gvCarreras.DataSource = null;
             gvCarreras.DataBind();
-            lblMsgLstRegistros.Visible = true;
+            lblMsg.Text = car.msg;
         }
     }
 
     protected void btnGuardar_Click(object sender, EventArgs e)
     {
-        string tipoConsulta = "xCarreraLabExc";
-
         if (string.IsNullOrEmpty(ddlCarreras.SelectedValue))
         {
-            string alerta = $"showAlertAndReload('Debe seleccionar una carrera.', 'warning');";
+            string alerta = $"mostrarMensage('Debe seleccionar una carrera.', 'warning');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", alerta, true);
             return;
         }
 
         string strCod_Car = ddlCarreras.SelectedValue;
-
         int validar = validarCarreraUnico(strCod_Car);
 
         if (validar == 0)
@@ -132,18 +132,15 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCod_lab, "", "", "");
             
             // Llenar datos
+            labExc1.strCod_labEx = $"{listLaboratorio[0].strCod_Sede}_{listLaboratorio[0].strCod_Fac}_{ddlCarreras.SelectedValue}_{num}";
             labExc1.strCod_lab = listLaboratorio[0].strCod_lab;
             labExc1.strCod_Fac = listLaboratorio[0].strCod_Fac;
             labExc1.strCod_Sede = listLaboratorio[0].strCod_Sede;
             labExc1.strCod_Car = ddlCarreras.SelectedValue;
-            labExc1.strCod_labEx = $"{listLaboratorio[0].strCod_Sede}_{listLaboratorio[0].strCod_Fac}_{ddlCarreras.SelectedValue}_{num}";
-
             labExc1.dtFechaRegistro_labEx = DateTime.Now;
             labExc1.dtFecha_log = DateTime.Now;
             labExc1.strUser_log = Context.User.Identity.Name;
             labExc1.bitEstado_labEx = true;
-
-            // Valores opcionales (pueden ajustarse si es necesario)
             labExc1.strObs1_labEx = "";
             labExc1.strObs2_labEx = "";
             labExc1.bitObs1_labEx = false;
@@ -153,22 +150,21 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             labExc1.dtObs1_labEx = DateTime.Now;
             labExc1.dtObs2_labEx = DateTime.Now;
 
+            //Guardar registro
             labExc1.AddLAB_EXCLUSIVO(labExc1);
 
-            string title = labExc1.resultado ? labExc1.msg : labExc1.msg;
+            //Construccion del mensaje
+            string title = labExc1.resultado ? labExc1.msg :
+                           labExc1.numerr == 2627 ? labExc1.msg :
+                           "Error: " + labExc1.numerr + "!";
             string icon = labExc1.resultado ? "success" : "error";
 
-            if (labExc1.resultado)
-            {
-                cargarCarrerasExclusivas(); // Recarga el GridView
-            }
-
-            string script = $"showAlertAndReload('{title}', '{icon}');";
+            string script = $"mostrarMensageCRUD('{title}', '{icon}');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
         else
         {
-            string script = $"showAlertAndReload('La carrera ya se encuentra relacionada con este laboratorio.', 'error');";
+            string script = $"mostrarMensage('La carrera ya se encuentra relacionada con este laboratorio.', 'error');";
             ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
         }
     }
@@ -192,17 +188,21 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         if (e.CommandName == "Eliminar")
         {
             string codCar = e.CommandArgument.ToString();
-            string codLabExc = consultarExclusivo(codCar);
 
-            string strCod_labEx = codLabExc;
+            string strCod_labEx = consultarExclusivo(codCar);
             string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string strUser_log = Context.User.Identity.Name;
 
+            //Eliminar registro
             labExc1.DelLAB_EXCLUSIVO("xLabExclusivo", strCod_labEx, dtFecha_log, strUser_log,"" );
-            string title = labExc1.resultado ? labExc1.msg : labExc1.msg;
+
+            //Construccion del mensaje
+            string title = labExc1.resultado ? labExc1.msg :
+                           labExc1.numerr == 2627 ? labExc1.msg :
+                           "Error: " + labExc1.numerr + "!";
             string icon = labExc1.resultado ? "success" : "error";
 
-            ScriptManager.RegisterStartupScript(this, GetType(), "alert", $"showAlertAndReload('{title}','{icon}');", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "alert", $"mostrarMensageCRUD('{title}','{icon}');", true);
         }
     }
 }

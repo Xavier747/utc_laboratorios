@@ -1,4 +1,5 @@
-﻿function mostrarMensage(mensaje, icon) {
+﻿//Mostrar mensaje de informacion 
+function mostrarMensage(mensaje, icon) {
     const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
@@ -17,6 +18,7 @@
     });
 }
 
+//Mostrar mensaje de informacion y recargar la pagina
 function mostrarMensageCRUD(mensaje, icon) {
     const Toast = Swal.mixin({
         toast: true,
@@ -38,10 +40,36 @@ function mostrarMensageCRUD(mensaje, icon) {
     });
 }
 
+//Muestra un modal de confirmacion
+function showAlertDelete(btn) {
+    // Detiene el postback
+    event.preventDefault(); 
+
+    Swal.fire({
+        title: "¿Estás seguro?",
+        text: "¡No podrás revertir esta acción!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            __doPostBack(btn.name, '');
+        }
+    });
+
+    // Siempre evitar el postback automático
+    return false; 
+}
+
+//Recarga la pagina
 function cerrar() {
     window.location.href = window.location.href;
 }
 
+//Muestea un mensaje por una fraccion de tiempo y desaparece
 function mostrarTooltipSimple(msg) {
     $('#tooltipError').text(msg).fadeIn();
 
@@ -50,10 +78,12 @@ function mostrarTooltipSimple(msg) {
     }, 4000);
 }
 
+//Convierte el formato de hora a uno entendible para js
 function convertirFechaForFullCalendar(fecha) {
     return fecha.replace(' ', 'T');
 }
 
+//Segun la fecha determina el numero de dia(Domingo = 1, Lunes = 2, ...)
 function obtenerDiaSemana(fechaStr) {
     // Dividir la fecha
     const [anio, mes, dia] = fechaStr.split('-').map(Number);
@@ -66,6 +96,7 @@ function obtenerDiaSemana(fechaStr) {
     return diaSemana;
 }
 
+//Apartir de una fecha y hora obtiene solo la hora
 function convertirHora(fechaCompleta){
     const fecha = new Date(fechaCompleta);
 

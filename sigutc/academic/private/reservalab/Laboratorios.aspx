@@ -1,64 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="Laboratorios.aspx.cs" Inherits="academic_private_reservalab_Laboratorios" %>
-
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
-    <style>
-        /*Contenedor de imagenes*/
-        .conten-img{
-            height:200px;
-            overflow:hidden;
-        }
-
-        .list_laboratorio{
-            position:relative;
-            top: 40px;
-        }
-
-        /*imagen*/
-        .lab-image{
-            width:100%;
-        }
-
-        /*Contendor de imagenes de responsable*/
-        .resp-image{
-            height:50px;
-            width:50px;
-            border-radius: 50%;
-            border: 3px solid #000;
-            overflow:hidden;
-            margin: 0 auto 20px auto;
-        }
-
-        /*Imagen de responsable*/
-        .imgRespAcad{
-            height: 100%;
-        }
-
-        .card-title{
-            color: #312783;
-            font-weight: bold;
-            text-align:center;
-            font-size: 18px;
-        }
-
-        .card-body__{
-            text-align:center;
-        }
-
-        .lblNombre{
-            height: 50px;
-            margin-bottom: 20px;
-        }
-
-        h6{
-            font-size: 13px;
-            font-weight: bold;
-        }
-        
-        .card-title{
-            height: 45px; 
-            margin-bottom: 15px;
-        }
-    </style>
+    <link href="../../../Styles/Nuevo/assets/css/Laboratorio/grid-laboratorio.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Listado de laboratorios
@@ -157,14 +99,14 @@
                                                     <div class="col-md-6">
                                                         <asp:Button ID="btnReservar" runat="server" 
                                                             Text="Reservar" 
-                                                            CssClass="btn btnReservar btn-block" 
+                                                            CssClass="btn btn-primary btn-block" 
                                                             CommandName="Reservar" 
                                                             CommandArgument='<%# Eval("strCod_lab") %>'/>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <asp:Button ID="btnInformacion" runat="server" 
                                                             Text="Informacion" 
-                                                            CssClass="btn btnReservar btn-block" 
+                                                            CssClass="btn btn-info btn-block" 
                                                             CommandName="Informacion" 
                                                             CommandArgument='<%# Eval("strCod_lab") %>'/>
                                                     </div>

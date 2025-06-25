@@ -16,8 +16,8 @@
         </div>
     </div>   
     <div class=" row">
+        <!--ddl para mostrar y seleccionar SEDES -->
         <div class="col-md-6">
-            <!--ddl para mostrar y seleccionar SEDES -->
             <asp:Label ID="lblSedeSoft" runat="server" 
                 Text="Sede" 
                 CssClass="control-label required" />
@@ -25,14 +25,10 @@
                 CssClass="form-control custom-input" 
                 AutoPostBack="True" 
                 OnSelectedIndexChanged="ddlSedeSoft_SelectedIndexChanged" />
-            <asp:RequiredFieldValidator ID="rfv_ddlSedeSoft" runat="server" 
-                ControlToValidate="ddlSedeSoft" 
-                CssClass="alert alert-danger form-control" 
-                ValidationGroup="formulario" 
-                ErrorMessage="Seleccione una opción" />
         </div>
+
+        <!--ddl para mostrar y seleccionar FACULTADES -->
         <div class="col-md-6">
-            <!--ddl para mostrar y seleccionar FACULTADES -->
             <asp:Label ID="lblFacultadSoft" runat="server" 
                 Text="Facultades" 
                 CssClass="control-label required" />
@@ -40,16 +36,13 @@
                 CssClass="form-control custom-input"  
                 AutoPostBack="True" 
                 OnSelectedIndexChanged="ddlFacultadSoft_SelectedIndexChanged" />
-            <asp:RequiredFieldValidator ID="rfv_ddlFacultadSoft" runat="server" 
-                ControlToValidate="ddlFacultadSoft" 
-                CssClass="alert alert-danger form-control" 
-                ValidationGroup="formulario" 
-                ErrorMessage="Seleccione una opción" />
         </div>
-        <br />
+    </div>
+    <br />
+    <div class=" row">        
+        <!--Tabla donde se muestran los registros-->
         <div class="col-md-12">
             <div class="table-responsive">
-                <!--Tabla donde se muestran los registros-->
                 <asp:GridView ID="gvSoftware" runat="server" 
                     AutoGenerateColumns="False" 
                     AllowPaging="True" 
@@ -65,6 +58,7 @@
                             <ItemTemplate>
                                 <div class="content">
                                     <div class="content-img">
+
                                         <!--Ruta de la imagen envia desde el codigo para mostrar la imagen -->
                                         <asp:Image ID="imgSoftware" runat="server" 
                                             ImageUrl='<%# "ImageHandlerSoftware.ashx?image=" + System.IO.Path.GetFileName(Eval("strImagen_sof").ToString()) %>' />
@@ -83,6 +77,7 @@
                         <asp:TemplateField ShowHeader="False" HeaderText="Accion">
                             <ItemTemplate>
                                 <div style="display:flex;">
+
                                     <!--Boton que refleja formulario para actualizar el laboratorio-->
                                     <asp:Button ID="btnSelect" runat="server" 
                                         Text="Editar" 
@@ -90,10 +85,10 @@
                                         CssClass="btn btn-warning" 
                                         CommandArgument ='<%# Eval("strCod_sof") %>' /> &nbsp; &nbsp;
                                 
-                                    <!--Boton para eliminar el laboratorio-->
+                                    <!--Boton para eliminar el laboratorio, Valida la respuesta de js(true o false) -->
                                     <asp:Button ID="btnDelete" runat="server" 
                                         Text="Eliminar" 
-                                        CssClass="btn btn-danger" 
+                                        CssClass="btn btn-danger"
                                         OnClientClick="return showAlertDelete(this);"      
                                         CommandName="Eliminar" 
                                         CommandArgument ='<%# Eval("strCod_sof") %>' />
@@ -105,9 +100,11 @@
             </div>
         </div>
     </div>
-    <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
-    
 
+    <!-- Muestra mensaje debueltos por la base de datos -->
+    <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>    
+
+    <!-- Formulario para agregar nuevo software -->
     <!-- Ventana Modal -->
     <div class="modal fade" id="form_registrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog  modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
@@ -117,7 +114,7 @@
                     <h4 class="modal-title" id="modalNuevoSoftware">Nuevo Software</h4>
                 </div>
                 <div class="modal-body">
-                    <div id="SedeFacultad" runat="server" class="row">
+                    <div class="row">
                         <div class="col-md-6">
                             <asp:UpdatePanel ID="upSede" runat="server" UpdateMode="Conditional">
                                 <ContentTemplate>
@@ -498,23 +495,33 @@
             </div>
         </div>
     </div>
-
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
+    <script src="../../Scripts/reservalab/reservas_utilidades.js"></script>
     <script>
         function validarArchivo() {
+            // Obtener el tamaño de la imagen
             var input1 = $('#<%= fulImg1.ClientID %>')[0].files.length > 0
                 ? $('#<%= fulImg1.ClientID %>')[0]
                 : $('#<%= fulImg1Act.ClientID %>')[0];
-         
-            var maxMB = 4; // Límite permitido (ajustable)
-            if (input1.files.length > 0 ) {
+
+            // Límite permitido (ajustable)
+            var maxMB = 4;
+
+            //Compribar si existe archivos seleccionados
+            if (input1.files.length > 0) {
                 var file1 = input1.files[0];
-                var sizeMB1 = file1.size / (1024 * 1024);               
-               if (sizeMB1 > maxMB) {
-                    showAlertImageBig("La imagen 1 excede el tamaño máximo permitido de " + maxMB + " MB.", "error");
-                    return false; // evita que se envíe el formulario
-               }
+                var sizeMB1 = file1.size / (1024 * 1024);
+
+                //Comprueba si el tamaño de imagen es optima
+                if (sizeMB1 > maxMB) {
+                    let mensaje = "La imagen 1 excede el tamaño máximo permitido de " + maxMB + " MB.";
+                    let icon = "error";
+
+                    mostrarMensage(mensaje, icon);
+                    // evita que se envíe el formulario
+                    return false; 
+                }
             }
 
             // Detectar qué formulario está visible o activo
@@ -533,68 +540,8 @@
                     }
                 }
             }
-            return true; // Todo válido
-        }
-
-        //Notificacion imagen muy grande
-        function showAlertImageBig(title, icon) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
-            });
-            Toast.fire({
-                icon: icon,
-                title: title
-            });
-        }
-
-        function showAlertAndReload(title, icon) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
-            });
-
-            Toast.fire({
-                icon: icon,
-                title: title
-            }).then(() => {
-                window.location.href = window.location.href;
-            });
-        }
-
-        function showAlertDelete(btn) {
-            event.preventDefault(); // Detiene el postback
-
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: "¡No podrás revertir esta acción!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, eliminar",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    __doPostBack(btn.name, '');
-                }
-            });
-
-            return false; // Siempre evitar el postback automático
+            // Todo válido
+            return true; 
         }
     </script>
 </asp:Content>

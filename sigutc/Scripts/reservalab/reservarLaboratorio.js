@@ -206,6 +206,10 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+function guardar() {
+    alert("");
+}
+
 $(document).ready(function () {
     $("#selectAsignatura").on('change', function () {
         var asignaturaId = this.value; // Capturar el valor seleccionado
@@ -324,6 +328,7 @@ $(document).ready(function () {
         }
     });
 
+    //Nueva reservacio
     $("#btnNuevaReserv").click(function() {
         let fechaSelect = new Date($('#fecha').text() + "T00:00:00");
 
@@ -355,48 +360,86 @@ $(document).ready(function () {
         validarReservacion(fechaHoy);
     });
 
-    $("#btnEnviar").click(function() {
-        let reservacion = [];
+    //Guardar reservacion
+    $('#btnEnviar').click(function () {
+        let isValid = true;
 
-        reservacion[0] = $('#selectAsignatura').val();
-        reservacion[1] = $('#selectUnidad').val();
-        reservacion[2] = $('#selectTema').val();
-        reservacion[3] = $('#txtDescripcion').val();
-        reservacion[4] = $('#txtMaterial').val();
-        reservacion[5] = $('#txtFecha').val() + ' ' + $('#selectHoraInicio').val();
-        reservacion[6] = $('#txtFecha').val() + ' ' + $('#selectHoraFin').val();
-        reservacion[7] = $('#txtNumeroAsistentes').val();
-        reservacion[8] = '';
-        reservacion[9] = '#a4e4af';
-        reservacion[10] = $('#selectTipoMotivo').val();
+        // Validar si está visible el bloque principal
+        if ($('#det_reservacion').is(':visible')) {
 
-        $.ajax({
-            type: "POST",
-            // Página y método del backend que procesará la solicitud
-            url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarReserva",
-            // Enviar la fecha como parámetro
-            data: JSON.stringify({ reservacion: reservacion }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                var data = JSON.parse(response.d);
-                var mensaje = data.msg;
-                var icon = data.resultado == true ? 'success' : 'error';
-                var codReser = data.strCod_reser;
-
-                guardarSoftware(codReser, function(data){
-                    console.log(data[0].msg)
-                });
-
-                $('#form_registrar').modal('hide');
-
-                mostrarMensageCRUD(mensaje, icon);
-            },
-            error: function (xhr, status, error) {
-                console.log("Status: " + xhr.status);
-                console.log("Response: " + xhr.responseText);                
+            // Validar tipo/motivo
+            if ($('#selectTipoMotivo').val() === "") {
+                isValid = false;
+                $('#selectTipoMotivo').addClass('is-invalid');
+            } else {
+                $('#selectTipoMotivo').removeClass('is-invalid');
             }
-        });
+
+            // Validar unidad
+            if ($('#selectUnidad').val() === "") {
+                isValid = false;
+                $('#selectUnidad').addClass('is-invalid');
+            } else {
+                $('#selectUnidad').removeClass('is-invalid');
+            }
+
+            // Validar tema (si está visible)
+            if ($('#content_ddlTema').is(':visible') && $('#selectTema').val() === "") {
+                isValid = false;
+                $('#selectTema').addClass('is-invalid');
+            } else {
+                $('#selectTema').removeClass('is-invalid');
+            }
+
+            if ($('#content_txtTema').is(':visible') && $('#txtTema').val().trim() === "") {
+                isValid = false;
+                $('#txtTema').addClass('is-invalid');
+            } else {
+                $('#txtTema').removeClass('is-invalid');
+            }
+
+            // Validar descripción
+            if ($('#txtDescripcion').val().trim() === "") {
+                isValid = false;
+                $('#txtDescripcion').addClass('is-invalid');
+            } else {
+                $('#txtDescripcion').removeClass('is-invalid');
+            }
+
+            // Validar materiales
+            if ($('#txtMaterial').val().trim() === "") {
+                isValid = false;
+                $('#txtMaterial').addClass('is-invalid');
+            } else {
+                $('#txtMaterial').removeClass('is-invalid');
+            }
+
+            // Validar software si está habilitado
+            if ($('#switchSoftware').is(':checked')) {
+                if ($('#countries').val() == null || $('#countries').val().length === 0) {
+                    isValid = false;
+                    $('#countries').addClass('is-invalid');
+                } else {
+                    $('#countries').removeClass('is-invalid');
+                }
+
+                if (!$('#switchEncontrado').is(':checked')) {
+                    if ($('#txtSoftware').val().trim() === "") {
+                        isValid = false;
+                        $('#txtSoftware').addClass('is-invalid');
+                    } else {
+                        $('#txtSoftware').removeClass('is-invalid');
+                    }
+                }
+            }
+        }
+
+        if (!isValid) {
+            alert("Por favor, complete todos los campos obligatorios.");
+            return;
+        }
+
+        guardarDatos();
     });
 
     // Detalle
@@ -545,6 +588,50 @@ $(document).ready(function () {
         });*/
     });
 });
+
+function guardarDatos() {
+    let reservacion = [];
+
+    reservacion[0] = $('#selectAsignatura').val();
+    reservacion[1] = $('#selectUnidad').val();
+    reservacion[2] = $('#selectTema').val();
+    reservacion[3] = $('#txtDescripcion').val();
+    reservacion[4] = $('#txtMaterial').val();
+    reservacion[5] = $('#txtFecha').val() + ' ' + $('#selectHoraInicio').val();
+    reservacion[6] = $('#txtFecha').val() + ' ' + $('#selectHoraFin').val();
+    reservacion[7] = $('#txtNumeroAsistentes').val();
+    reservacion[8] = '';
+    reservacion[9] = '#a4e4af';
+    reservacion[10] = $('#selectTipoMotivo').val();
+
+    $.ajax({
+        type: "POST",
+        // Página y método del backend que procesará la solicitud
+        url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarReserva",
+        // Enviar la fecha como parámetro
+        data: JSON.stringify({ reservacion: reservacion }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            var data = JSON.parse(response.d);
+            var mensaje = data.msg;
+            var icon = data.resultado == true ? 'success' : 'error';
+            var codReser = data.strCod_reser;
+
+            guardarSoftware(codReser, function (data) {
+                console.log(data[0].msg)
+            });
+
+            $('#form_registrar').modal('hide');
+
+            mostrarMensageCRUD(mensaje, icon);
+        },
+        error: function (xhr, status, error) {
+            console.log("Status: " + xhr.status);
+            console.log("Response: " + xhr.responseText);
+        }
+    });
+}
 
 function validarReservacion(fechaHoy) {
     // Construye correctamente las fechas de inicio y fin como objetos Date

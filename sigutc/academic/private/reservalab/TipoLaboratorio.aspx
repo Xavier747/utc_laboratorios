@@ -15,7 +15,8 @@
         </div>  
     </div>  
     <br />
-    <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
+
+    <!-- Tabla de datos TIPO DE LABORATORIO -->
     <div class="table-responsive">
         <asp:GridView ID="gvTipoLaboratorio" runat="server" 
             AutoGenerateColumns="False" 
@@ -28,14 +29,14 @@
                 <asp:TemplateField ShowHeader="False" HeaderText="Accion">
                     <ItemTemplate>
                         <div style="display:flex;">
-                            <!--Boton que refleja formulario para actualizar el laboratorio-->
+                            <!-- Boton que refleja formulario para actualizar el laboratorio -->
                             <asp:Button ID="btnSelect" runat="server" 
                                 Text="Editar" 
                                 CssClass="btn btn-warning" 
                                 CommandName="Select"  
                                 CommandArgument ='<%# Eval("strCod_tipoLab") %>' />&nbsp;&nbsp;
-                            <!--Boton para eliminar el laboratorio-->
-                            <asp:Button ID="btnDelete" runat="server" 
+                            <!-- Boton para eliminar el laboratorio Valida la respuesta de js(true o false) -->
+                            <asp:Button ID="btnDelete" runat="server"
                                 Text="Eliminar" 
                                 CssClass="btn btn-danger" 
                                 OnClientClick="return showAlertDelete(this);"
@@ -47,7 +48,11 @@
             </Columns>
         </asp:GridView>
     </div>
-    <!--Formulario para agregar nuevo tipo laboratorio-->
+
+    <!--Muestra mensaje debueltos por la base de datos-->
+    <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
+
+    <!-- Formulario para agregar nuevo tipo laboratorio -->
     <!-- Ventana Modal -->
     <div class="modal fade" id="form_registrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog  modal-lg" role="document">
@@ -82,7 +87,8 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- Formulario para actulaizar tipo laboratorio -->
     <!-- Ventana Modal -->
     <div class="modal fade" id="form_actualizar_Tipo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
@@ -128,48 +134,4 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
-    <script>
-        function showAlertAndReload(title, icon) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
-            });
-
-            Toast.fire({
-                icon: icon,
-                title: title
-            }).then(() => {
-                window.location.href = window.location.href;
-            });
-        }
-
-        function showAlertDelete(btn) {
-            event.preventDefault(); // Detiene el postback
-
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: "¡No podrás revertir esta acción!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, eliminar",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    __doPostBack(btn.name, '');
-                }
-            });
-
-            return false; // Siempre evitar el postback automático
-        }
-    </script>
 </asp:Content>
-
