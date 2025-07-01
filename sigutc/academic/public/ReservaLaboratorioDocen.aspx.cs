@@ -16,29 +16,36 @@ using ClassLibraryTesis;
 
 public partial class academic_public_ReservaLaboratorioDocen : System.Web.UI.Page
 {
-    string cadenaConexion;
-    SqlConnection conexion;
-
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_RESPONSABLE responsable1 = new LAB_RESPONSABLE();
     Personal personal1 = new Personal();
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/public/Login.aspx");
+        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/public/Login.aspx");
 
         if (!IsPostBack)
         {
-            llenarFormulario();
+            SeguridadUTC sutc = new SeguridadUTC();
+
+            if (Request.QueryString["In"] != null)
+            {
+                lblCrono.Text = sutc.Desencripta(Request.Params["In"].ToString());
+
+                //Llamado a los metodos que se deben cargar con la pagina
+                llenarFormulario();
+            }
+            else
+            {
+                Response.Redirect("~/academic/private/reservalab/Laboratorios.aspx");
+            }
         }
     }
+
+
     private void llenarFormulario()
     {
-        if (Session["laboratorioId"] == null)
-        {
-            Response.Redirect("~/academic/private/reservalab/Laboratorios.aspx");
-        }
-        string codLab = Session["laboratorioId"].ToString();
+        string codLab = lblCrono.Text;
         var listLab = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
         titulo.InnerText = listLab[0].strNombre_lab;

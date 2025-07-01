@@ -22,7 +22,7 @@
             AutoGenerateColumns="False" 
             AllowPaging="True" PageSize="10" 
             OnPageIndexChanging="gvTipoLaboratorio_PageIndexChanging" 
-            CssClass="table table-striped table-bordered" 
+            CssClass="table table-bordered" 
             OnRowCommand="gvTipoLaboratorio_RowCommand">
             <Columns>
                 <asp:BoundField DataField="strNombre_tipoLab" HeaderText="Nombre"></asp:BoundField>
@@ -134,4 +134,5 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
+    <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_utilidades.js") %>' type="text/javascript"></script>
 </asp:Content>

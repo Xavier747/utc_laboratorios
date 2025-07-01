@@ -264,3 +264,75 @@ function consultarExclusivo(comodin, filtro1, filtro2, filtro3, filtro4, callbac
         }
     });
 }
+
+function eliminarReservacion(comodin, filtro1, filtro2, filtro3, filtro4, callback) {
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:10873/ws/WebServiceCalendar.asmx/EliminarSoftwareReserva",
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4 }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response1) {
+            var validacion = JSON.parse(response1.d);
+
+            // Validar el resultado devuelto por EliminarSoftwareReserva
+            if (validacion.resultado) {
+                // Si la validación es verdadera, ejecutar la segunda llamada
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:10873/ws/WebServiceCalendar.asmx/EliminarReserva",
+                    data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4 }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response2) {
+                        var data = JSON.parse(response2.d);
+
+                        callback(data); // Ejecutar el callback final
+                    },
+                    error: function (xhr) {
+                        console.log("Error en EliminarReserva:", xhr.responseText);
+                        callback([]);
+                    }
+                });
+            } else {
+                // Si validación es falsa, no se hace la segunda llamada
+                console.log("Validación fallida. No se eliminará la reserva.");
+                callback([]);
+            }
+        },
+        error: function (xhr) {
+            console.log("Error en EliminarSoftwareReserva:", xhr.responseText);
+            callback([]);
+        }
+    });
+}
+
+function guardarReservacion(reservacion) {
+    $.ajax({
+        type: "POST",
+        // Página y método del backend que procesará la solicitud
+        url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarReserva",
+        // Enviar la fecha como parámetro
+        data: JSON.stringify({ reservacion: reservacion }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            var data = JSON.parse(response.d);
+            var mensaje = data.msg;
+            var icon = data.resultado == true ? 'success' : 'error';
+            var codReser = data.strCod_reser;
+
+            guardarSoftware(codReser, function (data) {
+                console.log(data[0].msg)
+            });
+
+            $('#form_registrar').modal('hide');
+
+            mostrarMensageCRUD(mensaje, icon);
+        },
+        error: function (xhr, status, error) {
+            console.log("Status: " + xhr.status);
+            console.log("Response: " + xhr.responseText);
+        }
+    });
+}

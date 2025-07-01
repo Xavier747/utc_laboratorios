@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="GestionLaboratorios.aspx.cs" Inherits="academic_private_reservalab_GestionLaborarios" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
-    <link href="../../../Styles/Nuevo/assets/css/laboratorio-style.css" rel="stylesheet" />
+    <link href='<%= ResolveUrl("~/Styles/Nuevo/assets/css/laboratorio-style.css") %>' rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Listado de laboratorios
@@ -257,7 +257,7 @@
                                         CssClass="form-control custom-input" 
                                         AutoPostBack="True" 
                                         OnSelectedIndexChanged="ddlFacultad_SelectedIndexChanged" />
-                                    <asp:RequiredFieldValidator ID="rfv_DropDownListFacultades" runat="server" 
+                                    <asp:RequiredFieldValidator ID="rfv_ddlFacultad" runat="server" 
                                         ControlToValidate="ddlFacultad" 
                                         CssClass="alert alert-danger form-control" 
                                         ValidationGroup="formulario"
@@ -785,7 +785,7 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
-    <script src="../../Scripts/reservalab/reservas_utilidades.js"></script>
+    <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_utilidades.js") %>' type="text/javascript"></script>
     <script>
         function validarArchivo() {
             var input1 = $('#<%= fulImg1.ClientID %>')[0].files.length > 0

@@ -15,9 +15,6 @@ using System.Web.Configuration;
 
 public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Page
 {
-    string cadenaConexion;
-    SqlConnection conexion;
-
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     UB_FACULTADES facultad1 = new UB_FACULTADES();
     LAB_RESPONSABLE responsable1 = new LAB_RESPONSABLE();
@@ -25,10 +22,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        this.cadenaConexion = ConfigurationManager.ConnectionStrings["conexionBddProductos"].ConnectionString;
-        this.conexion = new SqlConnection(this.cadenaConexion);
-
-        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/public/Login.aspx");
+        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/public/Login.aspx");
 
         if (!IsPostBack)
         {
@@ -86,13 +80,13 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                                             FotoAcademico = pers.imagen_alu
                                         }).FirstOrDefault(),
                 ResponsableAdministrativo = (from resp in listResponsable
-                                             join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
-                                             where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Administrativo"
-                                             select new
-                                             {
-                                                 nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
-                                                 FotoAdministrativo = pers.imagen_alu
-                                             }).FirstOrDefault()
+                                        join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
+                                        where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Administrativo"
+                                        select new
+                                        {
+                                            nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                            FotoAdministrativo = pers.imagen_alu
+                                        }).FirstOrDefault()
             });
 
             listarLaboratorios.DataSource = data;
@@ -164,15 +158,17 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
 
     protected void listarLaboratorios_ItemCommand(object source, RepeaterCommandEventArgs e)
     {
+        string codLab = e.CommandArgument.ToString();
+
         if (e.CommandName == "Reservar")
         {
-            Session["laboratorioId"] = e.CommandArgument.ToString();
-            Response.Redirect("~/academic/public/ReservaLaboratorioDocen.aspx");
+            SeguridadUTC sutc = new SeguridadUTC();
+            Response.Redirect("~/academic/public/ReservaLaboratorioDocen.aspx?In= " + Server.UrlEncode(sutc.Encripta(codLab)));
         }
         else if (e.CommandName == "Informacion")
         {
-            Session["laboratorioId"] = e.CommandArgument.ToString();
-            Response.Redirect("InformacionLaboratorios.aspx");
+            SeguridadUTC sutc = new SeguridadUTC();
+            Response.Redirect("~/academic/private/reservalab/InformacionLaboratorios.aspx?In= " + Server.UrlEncode(sutc.Encripta(codLab)));
         }
     }
 }

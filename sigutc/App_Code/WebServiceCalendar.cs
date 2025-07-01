@@ -308,21 +308,20 @@ public class WebServiceCalendar : System.Web.Services.WebService
         List<TEMA> listTema = tema1.Load_TEMA("xPK", idTema, "", "", "");
 
         string tema = listTema.Count > 0 ? listTema[0].strDesc_tema : string.Empty;
-
-        return  tema ;
+        return  tema;
     }
 
-    public string EliminarSoftwareReserva(string codReserva)
+    [WebMethod]
+    public string EliminarSoftwareReserva(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        reserSoft1.DelLAB_RESERSOFTWARE("xCodReserva", codReserva, "", "", "");
-
+        reserSoft1.DelLAB_RESERSOFTWARE(comodin, filtro1, "", "", "");
         return JsonConvert.SerializeObject(reserSoft1);
     }
 
-    public string EliminarReserva(string codReserva)
+    [WebMethod]
+    public string EliminarReserva(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        reserva1.DeleteLAB_RESERVA("xPK", codReserva, "", "", "");
-
-        return JsonConvert.SerializeObject(reserSoft1);
+        reserva1.DeleteLAB_RESERVA(comodin, filtro1, "", "", "");
+        return JsonConvert.SerializeObject(reserva1);
     }
 }

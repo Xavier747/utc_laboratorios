@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="InformacionLaboratorios.aspx.cs" Inherits="academic_private_reservalab_InformacionLaboratorios" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
+    <link href='<%= ResolveUrl("~/Styles/Nuevo/assets/css/Laboratorio/grid-laboratorio.css") %>'  rel="stylesheet" />
     <style>
         .target{
             height: 380px !important;
@@ -27,6 +28,12 @@
             height: 100px;
             overflow:hidden;
         }
+
+        @media screen and (max-width: 768px){
+            .target{
+                height: auto !important;
+            }
+        }
     </style> 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
@@ -35,7 +42,9 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="container-fluid">
         <div class="section-heading text-center">
-            <h4 class="morado titulo-claro text-uppercase" id="nombre" runat="server"></h4>            
+            <h4 class="morado titulo-claro text-uppercase" id="nombre" runat="server"></h4>   
+            <asp:Label ID="lblCrono" runat="server" 
+                Visible="false"/>
         </div>
         <br />
         <div class="row">
@@ -92,8 +101,8 @@
             <div class="col-md-6">
                 <div class="card target">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
+                        <div class="row columna">
+                            <div class="col-md-6 fila">
                                 <div class="text-center">
                                     <b style="color: #312783;">RESPONSABLE ACADÉMICO</b>
                                 </div>
@@ -110,7 +119,7 @@
                                     <span id="lblRespAcadInf" runat="server"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6 bar-left">
+                            <div class="col-md-6 fila bar-left">
                                 <div class="text-center">
                                     <b style="color: #312783;">RESPONSABLE ADMINISTRATIVO</b>
                                 </div>

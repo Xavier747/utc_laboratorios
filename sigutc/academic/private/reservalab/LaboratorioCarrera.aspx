@@ -32,6 +32,10 @@
 
     <!-- Muestra mensajes de la base de datos -->
     <asp:Label ID="lblMsg" runat="server"></asp:Label>
+
+    <!-- Almacena el id del laboratorio -->
+    <asp:Label ID="lblCrono" runat="server" 
+        Visible="false" />
     
     <!-- Obtiene los codigod primarios de Sede y Facultad -->
     <asp:Label ID="lblFacultadId" runat="server" 
@@ -46,7 +50,7 @@
         <asp:GridView ID="gvCarreras" runat="server" 
             AutoGenerateColumns="False" 
             OnRowCommand="gvCarreras_RowCommand" 
-            CssClass="table table-cielo table-hover tbl-buscador dataTable no-footer">
+            CssClass="table table-bordered">
             <Columns>
                 <asp:BoundField DataField="strNombre_Car" 
                     HeaderText="Nombre" />

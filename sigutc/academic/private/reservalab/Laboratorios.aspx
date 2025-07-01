@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="Laboratorios.aspx.cs" Inherits="academic_private_reservalab_Laboratorios" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
-    <link href="../../../Styles/Nuevo/assets/css/Laboratorio/grid-laboratorio.css" rel="stylesheet" />
+    <link href='<%= ResolveUrl("~/Styles/Nuevo/assets/css/Laboratorio/grid-laboratorio.css") %>'  rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Listado de laboratorios
@@ -45,7 +45,7 @@
                                 Text="BUSCAR" 
                                 CssClass="form-control-bold" />
                             <asp:TextBox ID="txtSearch" runat="server" 
-                                CssClass="form-control txtSearch" 
+                                CssClass="form-control" 
                                 placeholder="Ingrese el nombre del laboratorio" 
                                 AutoPostBack="true" 
                                 OnTextChanged="txtSearch_TextChanged" />
@@ -58,7 +58,7 @@
                         <asp:Repeater ID="listarLaboratorios" runat="server" 
                             OnItemCommand="listarLaboratorios_ItemCommand">
                             <ItemTemplate>
-                                <div class="col-md-4 mb-4">
+                                <div class="col-12 col-md-6 col-lg-4">
                                     <div class="card">
                                         <div class="conten-img">
                                             <asp:Image ID="Image1" runat="server" 
@@ -67,26 +67,28 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-md-12" style="height: 6rem;">
                                                     <h6 class="card-title"><%# Eval("strNombre_lab") %></h6>
                                                 </div>
                                             </div>
                                             <div class="card-body__">
-                                                <div class="row">
-                                                    <div class="col-md-6">
+                                                <div class="row ">
+                                                    <div class="col-md-6 fila">
                                                         <div class="resp-image">
                                                             <asp:Image ID="imgRespAcad" runat="server" 
-                                                                ImageUrl='<%# "~/images/Usuario/" + Eval("ResponsableAcademico.FotoAcademico") %>' 
+                                                                ImageUrl='<%# Eval("ResponsableAcademico") != null
+                                                                    ? "ImageHandlerUsuario.ashx?image=" + System.IO.Path.GetFileName(Eval("ResponsableAcademico.FotoAcademico").ToString()) 
+                                                                    : "~/img/usuarios/default.png" %>' 
                                                                 AlternateText="Foto Responsable Académico" 
                                                                 CssClass="img-thumbnail" />
                                                         </div>
                                                         <h6>RESPONSABLE ACADÉMICO</h6>
                                                         <label class="lblNombre"><%# Eval("ResponsableAcademico.nombre") %></label>
                                                     </div>
-                                                    <div class="col-md-6" style="border-left:2px solid #312783">
+                                                    <div class="col-md-6 fila bar-left">
                                                         <div class="resp-image">
                                                             <asp:Image ID="imgRespAdmin" runat="server" 
-                                                                ImageUrl='<%# "~/images/Usuario/" + Eval("ResponsableAcademico.FotoAcademico") %>' 
+                                                                ImageUrl='<%# "ImageHandlerUsuario.ashx?image=" + System.IO.Path.GetFileName(Eval("ResponsableAdministrativo.FotoAdministrativo").ToString()) %>' 
                                                                 AlternateText="Foto Responsable Administrativo" 
                                                                 CssClass="img-thumbnail" />
                                                         </div>
@@ -120,10 +122,11 @@
                     </div>
                 </div>
             </ContentTemplate>
+                <Triggers>
+                    <asp:AsyncPostBackTrigger ControlID="txtSearch" EventName="TextChanged" />
+                </Triggers>
         </asp:UpdatePanel>   
-
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
 </asp:Content>
-

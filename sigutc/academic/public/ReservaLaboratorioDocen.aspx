@@ -7,10 +7,14 @@
     Reservar Laboratorio
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
-    <div class="container-fluid">
-        <h3 runat="server" id="titulo" class="text-center"></h3>
-        <br />
+    <div class="contenedor-general">
+        <div class="cabecera">
+            <h4 runat="server" id="titulo" class="text-center"></h4>
+        </div>
         <div id="calendar"></div>
+
+        <asp:Label ID="lblCrono" runat="server" 
+            style="display: none;"/>
     </div>
 
     <!--Formulario para una nueva reservacion-->
@@ -30,19 +34,22 @@
                         </button>
                     </div>
                     <br />
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Tema</th>
-                                <th>Horio</th>
-                                <th>Curso</th>
-                                <th>Estado</th>
-                                <th>Docente</th>
-                                <th>Accion</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbl_det_reservacion"></tbody>
-                    </table>    
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tema</th>
+                                    <th>Horio</th>
+                                    <th>Curso</th>
+                                    <th>Estado</th>
+                                    <th>Docente</th>
+                                    <th>Accion</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl_det_reservacion"></tbody>
+                        </table>
+                    </div>
                     <br />
                     <p id="txtMsgInfo" class="text-center alert alert-danger" style="display: none;"></p>
                 </div>
@@ -232,6 +239,12 @@
                                     </div>
                                 </div>
                             </fieldset>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label id="msg_registro" class="form-control alert alert-danger" style="display: none;"></label>
+                                </div>
+                            </div>
                         </div>                        
                     </div>
                     <div class="modal-footer">
@@ -446,7 +459,7 @@
                                 <input type="text" class="form-control" id="txtNumeroAsistentesAct" disabled/>
                             </div>
                             <div class="col-md-2">
-                        </div>
+                            </div>
                     </fieldset>
                     <div id="det_reservacionAct">
                         <fieldset>
@@ -545,12 +558,12 @@
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
     <script>
-        var codLab = '<%= Session["laboratorioId"] %>';
+        var codLabCli = '<%= lblCrono.ClientID %>';
         var cedula = '<%= Context.User.Identity.Name%>'
     </script>
-    <script src="../../Scripts/reservalab/reservas_utilidades.js"></script>
-    <script src="../../Scripts/reservalab/reservas_carga.js"></script>
-    <script src="../../Scripts/reservalab/reservas_crud.js"></script>
-    <script src="../../Scripts/reservalab/reservarLaboratorio.js"></script>
+    <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_utilidades.js") %>' type="text/javascript"></script>
+    <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_carga.js") %>' type="text/javascript"></script>
+    <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_crud.js") %>' type="text/javascript"></script>
+    <script src='<%= ResolveUrl("~/Scripts/reservalab/reservarLaboratorio.js") %>' type="text/javascript"></script>
 </asp:Content>
 

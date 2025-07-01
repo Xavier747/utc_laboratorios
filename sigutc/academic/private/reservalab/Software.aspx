@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="Software.aspx.cs" Inherits="academic_private_reservaLab_Software" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
-    <link href="../../../Styles/Nuevo/assets/css/laboratorio-style.css" rel="stylesheet" /> 
+    <link href='<%= ResolveUrl("~/Styles/Nuevo/assets/css/laboratorio-style.css") %>' rel="stylesheet" /> 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Listado de softwares
@@ -48,7 +48,7 @@
                     AllowPaging="True" 
                     PageSize="10" 
                     OnPageIndexChanging="gvSoftware_PageIndexChanging" 
-                    CssClass="table table-striped table-bordered" 
+                    CssClass="table table-bordered" 
                     OnRowCommand="gvSoftware_RowCommand">
                     <Columns>
                         <asp:BoundField DataField="strNombre_sof" HeaderText="Nombre"></asp:BoundField>
@@ -497,7 +497,7 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
-    <script src="../../Scripts/reservalab/reservas_utilidades.js"></script>
+    <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_utilidades.js") %>' type="text/javascript"></script>
     <script>
         function validarArchivo() {
             // Obtener el tamaño de la imagen
@@ -535,7 +535,6 @@
                     }
                 } else if (formularioActVisible) {
                     if (!Page_ClientValidate('formulario_Act')) {
-                        console.log("hola mundo");
                         return false;
                     }
                 }

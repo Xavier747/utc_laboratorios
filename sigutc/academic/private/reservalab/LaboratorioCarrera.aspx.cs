@@ -12,7 +12,7 @@ using System.Web.Configuration;
 using ClassLibraryTesis;
 
 public partial class academic_private_reservalab_LaboratorioCarrera : System.Web.UI.Page
-{
+{    
     //Llamado a las clases de la libreria de clase
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_EXCLUSIVO labExc1= new LAB_EXCLUSIVO();
@@ -20,20 +20,31 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/private/Login.aspx");
+        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/public/Login.aspx");
 
         if (!IsPostBack)
         {
-            //Llamado a los metodos que se deben cargar con la pagina
-            cargarLaboratorio();
-            cargarCarreras();
-            cargarCarrerasExclusivas();
+            SeguridadUTC sutc = new SeguridadUTC();
+
+            if (Request.QueryString["In"] != null)
+            {
+                lblCrono.Text = sutc.Desencripta(Request.Params["In"].ToString());
+
+                //Llamado a los metodos que se deben cargar con la pagina
+                cargarLaboratorio();
+                cargarCarreras();
+                cargarCarrerasExclusivas();
+            }
+            else
+            {
+                Response.Redirect("~/academic/private/reservalab/GestionLaboratorios.aspx");
+            }
         }
     }  
 
     public void cargarLaboratorio()
     {
-        string strCod_lab = Session["laboratorioId"]?.ToString();
+        string strCod_lab = lblCrono.Text;
 
         if (string.IsNullOrEmpty(strCod_lab))
         {
@@ -63,7 +74,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
     public void cargarCarreras()
     {
         string tipoConsulta = "xCodLaboratorio";
-        string codLab = Session["laboratorioId"].ToString();
+        string codLab = lblCrono.Text;
         string facultadId = lblFacultadId.Text;
         string sedeId = lblSedeId.Text;
 
@@ -92,7 +103,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
 
     private void cargarCarrerasExclusivas()
     {
-        var labId = Session["laboratorioId"]?.ToString();
+        var labId = lblCrono.Text;
         if (string.IsNullOrEmpty(labId)) return;
 
         string tipoConsulta = "xCarreraLab";
@@ -128,7 +139,7 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             Random rand = new Random();
             int num = rand.Next(0, 1000);
 
-            string strCod_lab = Session["laboratorioId"].ToString();
+            string strCod_lab = lblCrono.Text;
             var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCod_lab, "", "", "");
             
             // Llenar datos
@@ -189,12 +200,13 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         {
             string codCar = e.CommandArgument.ToString();
 
-            string strCod_labEx = consultarExclusivo(codCar);
-            string dtFecha_log = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string strUser_log = Context.User.Identity.Name;
+            labExc1.strCod_labEx = consultarExclusivo(codCar);
+            labExc1.bitEstado_labEx = false;
+            labExc1.dtFecha_log = DateTime.Now;
+            labExc1.strUser_log = Context.User.Identity.Name;
 
             //Eliminar registro
-            labExc1.DelLAB_EXCLUSIVO("xLabExclusivo", strCod_labEx, dtFecha_log, strUser_log,"" );
+            labExc1.UpdateLAB_EXCLUSIVO(labExc1);
 
             //Construccion del mensaje
             string title = labExc1.resultado ? labExc1.msg :

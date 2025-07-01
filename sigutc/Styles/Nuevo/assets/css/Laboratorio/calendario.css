@@ -1,4 +1,17 @@
-﻿.fc-daygrid-body tr:nth-child(6) {
+﻿.contenedor-general {   
+    margin: auto;
+    padding: 15px;
+}
+
+.cabecera {
+    text-align: center;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.fc-daygrid-body tr:nth-child(6) {
     display: none;
 }
 
@@ -99,4 +112,70 @@ input:checked + .slider:before {
     white-space: nowrap;
     text-overflow: ellipsis;
     padding: 0 2px;
+}
+
+.fc-toolbar-chunk {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los botones o texto se acomoden en varias líneas si no caben */
+}
+
+.fc .fc-dayHeader {
+    font-size: 12px; /* Ajusta el tamaño de fuente para pantallas pequeñas */
+    white-space: nowrap; /* Evita cortes de texto innecesarios */
+    text-align: center;
+}
+
+.fc {
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    #calendar{
+        margin-top: 30px;
+    }
+
+    .fc-toolbar.fc-header-toolbar {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .fc-toolbar-chunk {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .fc-toolbar-title {
+        font-size: 12px !important;
+        text-align: center;
+    }
+
+    .fc-button {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .fc .fc-daygrid-day-number {
+        font-size: 12px;
+    }
+
+    .fc-event {
+        font-size: 11px;
+        padding: 2px;
+    }
+
+    .fc-button-group {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .fc-toolbar-title {
+        font-size: 18px;
+    }
 }

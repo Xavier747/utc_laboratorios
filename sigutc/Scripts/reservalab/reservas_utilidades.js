@@ -70,11 +70,11 @@ function cerrar() {
 }
 
 //Muestea un mensaje por una fraccion de tiempo y desaparece
-function mostrarTooltipSimple(msg) {
-    $('#tooltipError').text(msg).fadeIn();
+function mostrarTooltipSimple(msg, lblMsg) {
+    lblMsg.text(msg).fadeIn();
 
     setTimeout(() => {
-        $('#tooltipError').fadeOut();
+        lblMsg.fadeOut();
     }, 4000);
 }
 

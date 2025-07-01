@@ -20,17 +20,29 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/private/Login.aspx");
+        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/public/Login.aspx");
 
         if (!IsPostBack)
         {
-            cargarTabla();
+            SeguridadUTC sutc = new SeguridadUTC();
+
+            if (Request.QueryString["In"] != null)
+            {
+                lblCrono.Text = sutc.Desencripta(Request.Params["In"].ToString());
+
+                //Llamado a los metodos que se deben cargar con la pagina
+                cargarTabla();
+            }
+            else
+            {
+                Response.Redirect("~/academic/private/reservalab/Laboratorios.aspx");
+            }            
         }
     }
 
     public void cargarTabla()
     {
-        string strCod_lab = Session["laboratorioId"].ToString();
+        string strCod_lab = lblCrono.Text;
 
         var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCod_lab, "", "", "");
 

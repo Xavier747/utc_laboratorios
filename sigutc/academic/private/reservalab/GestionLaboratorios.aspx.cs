@@ -89,8 +89,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         }
         if (e.CommandName == "Carrera")
         {
-            Session["laboratorioId"] = e.CommandArgument.ToString();
-            Response.Redirect("LaboratorioCarrera.aspx");
+            SeguridadUTC sutc = new SeguridadUTC();
+            Response.Redirect("~/academic/private/reservalab/LaboratorioCarrera.aspx?In= " + Server.UrlEncode(sutc.Encripta(codLab)));
         }
     }
 
@@ -144,7 +144,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         }
     }
 
-    //Consutar las hareas del conocimiento
+    //Consutar las areas del conocimiento
     /// <summary>
     /// Cambiar consulta
     /// </summary>

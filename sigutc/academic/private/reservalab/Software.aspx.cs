@@ -23,7 +23,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         //Comprobar si el usuario se autentifico a treves del login
-        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/private/Login.aspx");
+        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/public/Login.aspx");
 
         if (!IsPostBack)
         {

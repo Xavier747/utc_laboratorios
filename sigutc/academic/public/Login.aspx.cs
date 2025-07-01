@@ -23,6 +23,8 @@ public partial class academic_private_Login : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            FormsAuthentication.SetAuthCookie("", true);
+
             // Almacenar la URL de retorno en una variable de sesión en lugar de concatenarla
             string returnUrl = Request.QueryString["ReturnUrl"];
             if (!string.IsNullOrEmpty(returnUrl))
