@@ -42,18 +42,56 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
 
     public void cargarTabla()
     {
-        string strCod_lab = lblCrono.Text;
+        string strCodLab = lblCrono.Text;
 
-        var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCod_lab, "", "", "");
+        try
+        {
+            var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCodLab, "", "", "");
+            var listResponsable = responsable1.LoadLAB_RESPONSABLE("ALL", "", "", "", "");
+            var listPersonal = personal1.Load_PERSONAL("ALL", "", "", "", "");
+            var listTipo = tipo1.LoadLAB_TIPO("ALL", "", "", "", "");
 
-        nombre.InnerText = listLaboratorio[0].strNombre_lab;
-        txtUbicacion.InnerText = listLaboratorio[0].strUbicacion_lab;
+            var data = listLaboratorio.Select(lab => new
+            {
+                lab.strCod_lab,
+                lab.strNombre_lab,
+                lab.strFotografia1_lab,
+                lab.strFotografia2_lab,
+                lab.strUbicacion_lab,
+                ResponsableAcademico = (from resp in listResponsable
+                                        join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
+                                        where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Academico"
+                                        select new
+                                        {
+                                            nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                            FotoAcademico = pers.imagen_alu,
+                                            correo = pers.correo_alu
+                                        }).FirstOrDefault(),
+                ResponsableAdministrativo = (from resp in listResponsable
+                                             join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
+                                             where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Administrativo"
+                                             select new
+                                             {
+                                                 nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                                 FotoAdministrativo = pers.imagen_alu,
+                                                 correo = pers.correo_alu
+                                             }).FirstOrDefault(),
+                TipoLaboratorio = (from tipo in listTipo
+                                   join labo in listLaboratorio on tipo.strCod_tipoLab equals labo.strCod_tipoLab
+                                   where tipo.strCod_tipoLab == lab.strCod_tipoLab
+                                   select new
+                                   {
+                                       nombre = tipo.strNombre_tipoLab
+                                   }).FirstOrDefault(),
+            });
 
-        DataList1.DataSource = listLaboratorio;
-        DataList1.DataBind();
-
-        DataList2.DataSource = listLaboratorio;
-        DataList2.DataBind();
+            rptLaboratorio.DataSource = data;
+            rptLaboratorio.DataBind();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR: " + ex.Message);
+        }
     }
 
 }

@@ -5,202 +5,151 @@ var listSoftware = [];
 var codLab = $('#' + codLabCli).text();
 
 document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar');
+    // Múltiples rangos permitidos
+    consultarPeriodoAcademico('xGeneral', 'MUTC', 'NA', 'NA', '', function (data) {
+        // Guardar los rangos válidos
+        rangosPermitidos = data.map(r => ({
+            fechaInicio: r.dtFechaIni_per.split('T')[0],
+            fechaFin: r.dtFechaFin_per.split('T')[0]
+        }));
 
-    var ancho = window.innerWidth;
+        // Calcular min y max para el validRange general
+        const fechasInicio = rangosPermitidos.map(r => new Date(r.fechaInicio));
+        const fechasFin = rangosPermitidos.map(r => new Date(r.fechaFin));
 
-    // Definir altura según el ancho del dispositivo
-    var altura =
-        ancho <= 480 ? 'auto' :
-        ancho <= 1024 ? 650 :
-        1200; // para pantallas grandes
+        const min = new Date(Math.min.apply(null, fechasInicio));
+        const max = new Date(Math.max.apply(null, fechasFin));
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        buttonText: {
-            month: 'Mes',
-            week: 'Semana',
-            list: 'Lista'
-        },
-        locale: 'es',                // idioma español
-        height: altura,
-        headerToolbar: {
-            left: 'prev,next',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
-        },
-        validRange: function() {
-            // Múltiples rangos permitidos
-            const data = [
-                {
-                    fechaInicio : '2024-10-21',
-                    fechaFin : '2025-02-24',
-                },
-                {
-                    fechaInicio : '2025-04-07',
-                    fechaFin : '2025-08-22',
-                },
-            ];
+        const rangoValido = {
+            start: min.toISOString().split('T')[0],
+            end: max.toISOString().split('T')[0]
+        };
 
-            // Calcular el rango general (mínimo y máximo de todo)
-            const fechasInicio = data.map(r => new Date(r.fechaInicio));
-            const fechasFin = data.map(r => new Date(r.fechaFin));
+        var calendarEl = document.getElementById('calendar');
 
-            const min = new Date(Math.min.apply(null, fechasInicio));
-            const max = new Date(Math.max.apply(null, fechasFin));
+        var ancho = window.innerWidth;
 
-            return {
-                start: min.toISOString().split('T')[0],
-                end: max.toISOString().split('T')[0]
-            };
-        },
-        dayCellDidMount: function(info) {
-            const fecha = info.date.toISOString().split('T')[0];
-            const data = [
-                {
-                    fechaInicio : '2024-10-21',
-                    fechaFin : '2025-02-24',
-                },
-                {
-                    fechaInicio : '2025-04-07',
-                    fechaFin : '2025-08-22',
-                },
-            ];
+        // Definir altura según el ancho del dispositivo
+        var altura =
+            ancho <= 480 ? 'auto' :
+            ancho <= 1024 ? 650 :
+            1200; // para pantallas grandes
 
-            // Verificar si la fecha está dentro de algún tramo válido
-            const esValida = data.some(r => {
-                return fecha >= r.fechaInicio && fecha <= r.fechaFin;
-            });
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            buttonText: {
+                month: 'Mes',
+                week: 'Semana',
+                list: 'Lista'
+            },
+            locale: 'es',                // idioma español
+            height: altura,
+            headerToolbar: {
+                left: 'prev,next',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listWeek'
+            },
+            validRange: rangoValido,
+            dayCellDidMount: function(info) {
+                const fecha = info.date.toISOString().split('T')[0];
+                const dayOfWeek = info.date.getUTCDay(); // 0 = Domingo, 6 = Sábado
 
-            if (!esValida) {
-                info.el.classList.add('fc-day-disabled');
-            }
-        },
-        dateClick: function (info) {
-            var fechaCompleta = info.dateStr;
-            var fecha = fechaCompleta.substring(0, 10);
-            $('#txtFecha').val(fecha);
-            $('#fecha').text(fecha);
-
-            dia = obtenerDiaSemana(fecha);
-
-            consultarAsignatura('xDia', dia, cedula, '', '', function (data) {
-                const dropdown = $("#selectAsignatura");
-                cargarMaterias(data, dropdown);
-
-                selectMateria = $('#selectAsignatura option').first().val();
-
-                consultarHorario('xCodMat', selectMateria, dia, '', '', function(data){
-                    const dropdown = $("#selectHoraInicio");
-                    cargarHora(data, dropdown);
+                const esDiaValido = rangosPermitidos.some(r => {
+                    return fecha >= r.fechaInicio && fecha <= r.fechaFin;
                 });
 
-                consultarCiclo('xAsignatura', selectMateria, '', '', '', function(data){
-                    const txtCiclo = $("#txtCiclo");
-                    const txtParalelo = $("#txtParalelo");
-                    cargarCiclo(data, txtCiclo, txtParalelo);
-                });
+                if (!esDiaValido) {
+                    info.el.classList.add('fc-day-disabled');
+                }
+            },
+            dateClick: function (info) {
+                var fechaCompleta = info.dateStr;
+                var fecha = fechaCompleta.substring(0, 10);
+                $('#txtFecha').val(fecha);
+                $('#fecha').text(fecha);
 
-                consultarCarrera('xAsignatura', selectMateria, '', '', '', function(data){
-                    const txtCarrera = $("#txtCarrera");
-                    cargarCarrera(data, txtCarrera);
-                });
+                dia = obtenerDiaSemana(fecha);
+            },
+            events: function (fetchInfo, successCallback, failureCallback) {
+                consultarEventos('xCodLab', codLab, '', '', '',function(data) {
+                    const eventos = [];
 
-                consultarAlumno('xAsignatura', selectMateria, '', '', '', function(data){
-                    const txtNumeroAsistentes = $("#txtNumeroAsistentes");
-                    cargarNumeroEstudiante(data, txtNumeroAsistentes);
-                });
-            });
-        },
-        events: function (fetchInfo, successCallback, failureCallback) {
-            consultarEventos('xCodLab', codLab, '', '', '',function(data) {
-                const eventos = [];
-
-                // Iterar sobre los datos recibidos
-                $.each(data, function(i, item) {
-                    eventos.push({
-                        id: item.strCod_reser,
-                        title: item.strTema_reser,
-                        start: convertirFechaForFullCalendar(item.dtFechainicio_reser),
-                        end: convertirFechaForFullCalendar(item.dtFechaFin_reser),
-                        backgroundColor: item.strColor_reser,
+                    // Iterar sobre los datos recibidos
+                    $.each(data, function(i, item) {
+                        eventos.push({
+                            id: item.strCod_reser,
+                            title: item.strTema_reser,
+                            start: convertirFechaForFullCalendar(item.dtFechainicio_reser),
+                            end: convertirFechaForFullCalendar(item.dtFechaFin_reser),
+                            backgroundColor: item.strColor_reser,
+                        });
                     });
+
+                    // Enviar eventos a FullCalendar
+                    successCallback(eventos);
+                }, function(error) {
+                    // En caso de error
+                    console.error("Error consultando eventos", error);
+                    failureCallback(error);
                 });
-
-                // Enviar eventos a FullCalendar
-                successCallback(eventos);
-            }, function(error) {
-                // En caso de error
-                console.error("Error consultando eventos", error);
-                failureCallback(error);
-            });
-        },
-        eventDidMount: function(info) {
-            info.el.classList.add('evento-personalizado');
-        },
-        eventTimeFormat: {
-            hour: 'numeric',
-            hour12: true
-        },
-        eventClick: function(info){
-            eventId = info.event.id;
-            let fecha = info.event.start.toISOString().split('T')[0];
-            $('#fecha').text(fecha);
-
-            mostrarListado(fecha);
-            $('#form_listReserva').modal('show');
-        },
-        
-        selectable: true,
-        select: function (info) {
-            var now = new Date();
-            var dayOfWeek = info.start.getUTCDay();
-            let mensaje = '';
-            let icon = '';
-
-            now.setHours(0, 0, 0, 0);
-            if (info.start < now) {
-                mensaje = 'Las fechas pasadas no están disponibles para reservas.';
-                icon = 'warning';
-
-                mostrarMensage(mensaje, icon);
-                calendar.unselect();
-            }
-            else if(dayOfWeek === 0 || dayOfWeek === 6){
-                mensaje = 'No se permiten reservas los fines de semana. Por favor, selecciona un día laborable.';
-                icon = 'warning';
-
-                mostrarMensage(mensaje, icon);
-                calendar.unselect();
-            }
-            else {
-                var fecha = info.start.toISOString().split('T')[0];
+            },
+            eventDidMount: function(info) {
+                info.el.classList.add('evento-personalizado');
+            },
+            eventTimeFormat: {
+                hour: 'numeric',
+                hour12: true
+            },
+            eventClick: function(info){
+                eventId = info.event.id;
+                let fecha = info.event.start.toISOString().split('T')[0];
+                $('#fecha').text(fecha);
 
                 mostrarListado(fecha);
                 $('#form_listReserva').modal('show');
+            },
+        
+            selectable: true,
+            select: function (info) {
+                var now = new Date();
+                var dayOfWeek = info.start.getUTCDay();
+                let mensaje = '';
+                let icon = '';
+
+                now.setHours(0, 0, 0, 0);
+                if (info.start < now) {
+                    mensaje = 'Las fechas pasadas no están disponibles para reservas.';
+                    icon = 'warning';
+
+                    mostrarMensage(mensaje, icon);
+                    calendar.unselect();
+                }
+                else if(dayOfWeek === 0 || dayOfWeek === 6){
+                    mensaje = 'No se permiten reservas los fines de semana. Por favor, selecciona un día laborable.';
+                    icon = 'warning';
+
+                    mostrarMensage(mensaje, icon);
+                    calendar.unselect();
+                }
+                else {
+                    var fecha = info.start.toISOString().split('T')[0];
+
+                    mostrarListado(fecha);
+                    $('#form_listReserva').modal('show');
+                }
+            },
+            selectAllow: function (selectInfo) {
+                const start = selectInfo.startStr;
+                const end = selectInfo.endStr;
+
+                return rangosPermitidos.some(r => {
+                    return start >= r.fechaInicio && end <= r.fechaFin;
+                });
             }
-        },
-        selectAllow: function(selectInfo) {
-            const data = [
-                {
-                    fechaInicio: '2024-10-21',
-                    fechaFin: '2025-02-24',
-                },
-                {
-                    fechaInicio: '2025-04-07',
-                    fechaFin: '2025-08-22',
-                },
-            ];
 
-            const start = selectInfo.startStr;
-            const end = selectInfo.endStr;
+        });
 
-            return data.some(rango => {
-                return start >= rango.fechaInicio && end <= rango.fechaFin;
-            });
-        },
+        calendar.render();
     });
-
-    calendar.render();
 });
 
 $(document).ready(function () {
@@ -331,6 +280,33 @@ $(document).ready(function () {
             let fechaHoy = new Date();
             fechaHoy.setHours(0, 0, 0, 0);
 
+            consultarAsignatura('xDia', dia, cedula, '', '', function (data) {
+                const dropdown = $("#selectAsignatura");
+                cargarMaterias(data, dropdown);
+
+                selectMateria = $('#selectAsignatura option').first().val();
+
+                consultarHorario('xCodMat', selectMateria, dia, '', '', function (data) {
+                    const dropdown = $("#selectHoraInicio");
+                    cargarHora(data, dropdown);
+                });
+
+                consultarCiclo('xAsignatura', selectMateria, '', '', '', function (data) {
+                    const txtCiclo = $("#txtCiclo");
+                    const txtParalelo = $("#txtParalelo");
+                    cargarCiclo(data, txtCiclo, txtParalelo);
+                });
+
+                consultarCarrera('xAsignatura', selectMateria, '', '', '', function (data) {
+                    const txtCarrera = $("#txtCarrera");
+                    cargarCarrera(data, txtCarrera);
+                });
+
+                consultarAlumno('xAsignatura', selectMateria, '', '', '', function (data) {
+                    const txtNumeroAsistentes = $("#txtNumeroAsistentes");
+                    cargarNumeroEstudiante(data, txtNumeroAsistentes);
+                });
+            });
 
             if(fechaHoy > fechaSelect){
                 let mensaje = 'Solo puedes reservar apartir de la fecha actual!';
@@ -524,7 +500,7 @@ $(document).ready(function () {
             fechaRegistro.setHours(fechaRegistro.getHours() + 3);
 
             if(fechaHoy > fechaRegistro){
-                let mensage = "¡Has superado las tres horas límite para la reservación!"
+                let mensage = "¡Has superado las tres horas límite para editar la reservación!"
                 let lblMsg = $('#tooltipError');
 
                 mostrarTooltipSimple(mensage, lblMsg);
@@ -548,25 +524,47 @@ $(document).ready(function () {
         event.preventDefault();
 
         const idReserva = $(this).data('id');
-        eliminarReservacion('xCodReserva', idReserva, '', '', '', function (data) {
-            let mensaje = '';
-            let icon = '';
 
-            console.log(data);
+        consultarEventos('xPK', idReserva, '', '', '', function (data) {
+            let fechaHoy = new Date();
+            let fechaConvertida = convertirFechaForFullCalendar(reserva.dtFechaRegistro_reser);
+            let fechaRegistro = new Date(fechaConvertida);
 
-            if (data.resultado) {
-                mensaje = data.msg;
-                icon = 'success';
+            fechaRegistro.setHours(fechaRegistro.getHours() + 3);
+
+            if (fechaHoy > fechaRegistro) {
+                let mensage = "¡Has superado las tres horas límite para eliminar la reservación!"
+                let lblMsg = $('#tooltipError');
+
+                mostrarTooltipSimple(mensage, lblMsg);
             }
             else {
-                mensaje = data.msg;
-                icon = 'error';
+                $('#form_listReserva').modal('hide');
+
+                $('#form_listReserva').on('hidden.bs.modal', function () {
+                    eliminarReservacion('xCodReserva', idReserva, '', '', '', function (data) {
+                        let mensaje = '';
+                        let icon = '';
+
+                        if (data.resultado) {
+                            mensaje = data.msg;
+                            icon = 'success';
+                        }
+                        else {
+                            mensaje = data.msg;
+                            icon = 'error';
+                        }
+
+                        $('#form_listReserva').modal('hide');
+                        mostrarMensageCRUD(mensaje, icon)
+                    });                    
+                });
             }
-
-            $('#form_listReserva').modal('hide');
-            mostrarMensageCRUD(mensaje, icon)
+        }, function (error) {
+            // En caso de error
+            console.error("Error consultando eventos", error);
+            failureCallback(error);
         });
-
     });
 
     $("#btnActualizar").click(function() {

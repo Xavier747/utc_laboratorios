@@ -21,50 +21,39 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         validRange: function () {
             // Múltiples rangos permitidos
-            const data = [
-                {
-                    fechaInicio: '2024-10-21',
-                    fechaFin: '2025-02-24',
-                },
-                {
-                    fechaInicio: '2025-04-07',
-                    fechaFin: '2025-08-22',
-                },
-            ];
+            consultarPeriodoAcademico('ALL', '', '', '', '', function (data) {
+                // Calcular el rango general (mínimo y máximo de todo)
 
-            // Calcular el rango general (mínimo y máximo de todo)
-            const fechasInicio = data.map(r => new Date(r.fechaInicio));
-            const fechasFin = data.map(r => new Date(r.fechaFin));
+                const fechasInicio = data.map(r => new Date(r.fechaInicio));
+                const fechasFin = data.map(r => new Date(r.fechaFin));
 
-            const min = new Date(Math.min.apply(null, fechasInicio));
-            const max = new Date(Math.max.apply(null, fechasFin));
+                const min = new Date(Math.min.apply(null, fechasInicio));
+                const max = new Date(Math.max.apply(null, fechasFin));
 
-            return {
-                start: min.toISOString().split('T')[0],
-                end: max.toISOString().split('T')[0]
-            };
+                return {
+                    start: min.toISOString().split('T')[0],
+                    end: max.toISOString().split('T')[0]
+                };
+            });
         },
         dayCellDidMount: function (info) {
             const fecha = info.date.toISOString().split('T')[0];
-            const data = [
-                {
-                    fechaInicio: '2024-10-21',
-                    fechaFin: '2025-02-24',
-                },
-                {
-                    fechaInicio: '2025-04-07',
-                    fechaFin: '2025-08-22',
-                },
-            ];
 
-            // Verificar si la fecha está dentro de algún tramo válido
-            const esValida = data.some(r => {
-                return fecha >= r.fechaInicio && fecha <= r.fechaFin;
+            // Múltiples rangos permitidos
+            consultarPeriodoAcademico('ALL', '', '', '', '', function (data) {
+                // Calcular el rango general (mínimo y máximo de todo)
+                const fechasInicio = data.map(r => new Date(r.fechaInicio));
+                const fechasFin = data.map(r => new Date(r.fechaFin));
+
+                // Verificar si la fecha está dentro de algún tramo válido
+                const esValida = data.some(r => {
+                    return fecha >= r.fechaInicio && fecha <= r.fechaFin;
+                });
+
+                if (!esValida) {
+                    info.el.classList.add('fc-day-disabled');
+                }
             });
-
-            if (!esValida) {
-                info.el.classList.add('fc-day-disabled');
-            }
         },
         dayHeaderContent: function (arg) {
             switch (arg.date.getUTCDay()) {
@@ -182,22 +171,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         },
         selectAllow: function (selectInfo) {
-            const data = [
-                {
-                    fechaInicio: '2024-10-21',
-                    fechaFin: '2025-02-24',
-                },
-                {
-                    fechaInicio: '2025-04-07',
-                    fechaFin: '2025-08-22',
-                },
-            ];
+            // Múltiples rangos permitidos
+            consultarPeriodoAcademico('ALL', '', '', '', '', function (data) {
+                const start = selectInfo.startStr;
+                const end = selectInfo.endStr;
 
-            const start = selectInfo.startStr;
-            const end = selectInfo.endStr;
-
-            return data.some(rango => {
-                return start >= rango.fechaInicio && end <= rango.fechaFin;
+                return data.some(r => {
+                    return start >= r.fechaInicio && end <= r.fechaFin;
+                });
             });
         },
     });

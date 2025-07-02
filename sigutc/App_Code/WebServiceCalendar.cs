@@ -30,6 +30,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
     LAB_RESERVA reserva1 = new LAB_RESERVA();
     LAB_RESERSOFTWARE reserSoft1 = new LAB_RESERSOFTWARE();
     LAB_EXCLUSIVO labEx1 = new LAB_EXCLUSIVO();
+    SIG_PERIODOS periodo1 = new SIG_PERIODOS();
 
 
     public WebServiceCalendar()
@@ -323,5 +324,25 @@ public class WebServiceCalendar : System.Web.Services.WebService
     {
         reserva1.DeleteLAB_RESERVA(comodin, filtro1, "", "", "");
         return JsonConvert.SerializeObject(reserva1);
+    }
+
+    [WebMethod]
+    public string ObtenerPeriodoAcademico(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
+    {
+        List<SIG_PERIODOS> listPerido = periodo1.LoadSIG_PERIODOS(comodin, filtro1, filtro2, filtro3, filtro4);
+
+        var resultado = listPerido.Select(periodoAcad => new
+        {
+            strCod_per = periodoAcad.strCod_per,
+            intNum_per = periodoAcad.intNum_per,
+            intNumSemanas_per = periodoAcad.intNumSemanas_per,
+            strCod_Sede = periodoAcad.strCod_Sede,
+            strCod_Fac = periodoAcad.strCod_Fac,
+            strCod_Car = periodoAcad.strCod_Car,
+            dtFechaIni_per = periodoAcad.dtFechaIni_per,
+            dtFechaFin_per = periodoAcad.dtFechaFin_per
+        });
+
+        return JsonConvert.SerializeObject(resultado);
     }
 }
