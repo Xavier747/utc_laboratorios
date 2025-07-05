@@ -220,28 +220,6 @@ function guardarSoftware(codReser, callback) {
             });
         });
     }
-    else {
-        let codSoft = $('#txtSoftware').val();
-
-        $.ajax({
-            type: "POST",
-            // Página y método del backend que procesará la solicitud
-            url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarSofReserva",
-            // Enviar la fecha como parámetro
-            data: JSON.stringify({ codSoft: codSoft, codReser: codReser }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                var data = JSON.parse(response.d);
-                callback(data);
-            },
-            error: function (xhr, status, error) {
-                console.log("Status: " + xhr.status);
-                console.log("Response: " + xhr.responseText);
-                callback([]);
-            }
-        });
-    }
 }
 
 function consultarExclusivo(comodin, filtro1, filtro2, filtro3, filtro4, callback) {
@@ -307,6 +285,25 @@ function eliminarReservacion(comodin, filtro1, filtro2, filtro3, filtro4, callba
     });
 }
 
+function eliminarSoftReservacion(comodin, filtro1, filtro2, filtro3, filtro4, callback) {
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:10873/ws/WebServiceCalendar.asmx/EliminarSoftwareReserva",
+        data: JSON.stringify({ comodin: comodin, filtro1: filtro1, filtro2: filtro2, filtro3: filtro3, filtro4: filtro4 }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response1) {
+            var data = JSON.parse(response1.d);
+
+            callback(data);
+        },
+        error: function (xhr) {
+            console.log("Error en EliminarSoftwareReserva:", xhr.responseText);
+            callback([]);
+        }
+    });
+}
+
 function guardarReservacion(reservacion) {
     $.ajax({
         type: "POST",
@@ -354,6 +351,31 @@ function consultarPeriodoAcademico(comodin, filtro1, filtro2, filtro3, filtro4, 
             console.log("Status: " + xhr.status);
             console.log("Response: " + xhr.responseText);
             callback([]);
+        }
+    });
+}
+
+function actualizarReservacion(reservacion) {
+    $.ajax({
+        type: "POST",
+        // Página y método del backend que procesará la solicitud
+        url: "http://localhost:10873/ws/WebServiceCalendar.asmx/ActulizarReservacion",
+        // Enviar la fecha como parámetro
+        data: JSON.stringify({ reservacion: reservacion }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            var data = JSON.parse(response.d);
+            var mensaje = data.msg;
+            var icon = data.resultado == true ? 'success' : 'error';
+
+            $('#form_actualizar').modal('hide');
+
+            mostrarMensageCRUD(mensaje, icon);
+        },
+        error: function (xhr, status, error) {
+            console.log("Status: " + xhr.status);
+            console.log("Response: " + xhr.responseText);
         }
     });
 }

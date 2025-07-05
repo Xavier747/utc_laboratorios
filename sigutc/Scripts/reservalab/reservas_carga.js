@@ -55,7 +55,7 @@ function cargarHoraFin(op, data, dropdown) {
             dropdown.append(opcion);
         });
     }
-        //Carga el codigo deacuerdo al item y/o hora de inicio seleccionado
+    //Carga el codigo deacuerdo al item y/o hora de inicio seleccionado
     else if (op === 2) {
         const hora = $("#selectHoraInicio").val();
 

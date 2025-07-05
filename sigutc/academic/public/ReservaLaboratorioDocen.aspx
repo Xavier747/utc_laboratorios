@@ -23,7 +23,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Nueva reservacion</h4>
+                    <h4 class="modal-title" id="myModalLabel">Listado de reservación</h4>
                 </div>
                 <div class="modal-body">
                     <h4 id="fecha" class="text-center"></h4>
@@ -65,7 +65,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cerrar()"><span aria-hidden="true">×</span></button>
                     <h4 class="modal-title" id="myModalLabel">Nueva reservacion</h4>
                 </div>
                 <div id="form_insert">
@@ -173,21 +173,6 @@
                                                     <div id="list-software">
                                                         <label>SOFTWARE:</label>
                                                         <select id="countries" multiple name="softwares[]"></select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label>¿ENCONTRÓ EL SOFTWARE?:</label>
-                                                    <br />
-                                                    <label class="switch">
-                                                        <input type="checkbox" id="switchEncontrado" checked/>
-                                                        <span class="slider round"></span>
-                                                    </label>
-                                                    <label id="lblSoftwareVal">SI</label>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div id="content_nombre" style="display:none;">
-                                                        <label>NOMBRE DEL SOFTWARE:</label>
-                                                        <input type="text" id="txtSoftware" class="form-control"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -372,13 +357,13 @@
                     </fieldset> 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">CANCELAR</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerrar()">CERRAR</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!--Formulario detalle-->
+    <!--Formulario Actualizar-->
     <div class="modal fade" id="form_actualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -387,6 +372,7 @@
                         <span aria-hidden="true" onclick="cerrar()">×</span>
                     </button>
                     <h4 class="modal-title" id="myModalLabel">Actualizar de reservacion</h4>
+                    <label id="lblCodReserva" style="display: none;"></label>
                 </div>
                 <div class="modal-body">
                     <fieldset>
@@ -458,7 +444,9 @@
                                 <asp:Label ID="lblAsistentesAct" runat="server" Text="TOTAL DE ASISTENTES:"></asp:Label>
                                 <input type="text" class="form-control" id="txtNumeroAsistentesAct" disabled/>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
+                                <asp:Label ID="Label6" runat="server" Text="SOFTWARE:"></asp:Label>
+                                <select id="ddlSoftwareAct" class="form-control"></select>
                             </div>
                     </fieldset>
                     <div id="det_reservacionAct">
@@ -475,27 +463,12 @@
                                     <label id="lblSoftwareValidateAct">NO</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <div id="content-softwareAct" style="display:none; width: 100%;">
+                                    <div id="content-softwareAct" style="width: 100%; display:none; ">
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div id="list-softwareAct">
                                                     <label>SOFTWARE:</label>
-                                                    <select id="countries" multiple name="softwares[]"></select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>¿ENCONTRÓ EL SOFTWARE?:</label>
-                                                <br />
-                                                <label class="switch">
-                                                    <input type="checkbox" id="switchEncontradoAct" checked/>
-                                                    <span class="slider round"></span>
-                                                </label>
-                                                <label id="lblSoftwareValAct">SI</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div id="content_nombreAct" style="display:none;">
-                                                    <label>NOMBRE DEL SOFTWARE:</label>
-                                                    <input type="text" id="txtSoftwareAct" class="form-control"/>
+                                                    <select id="softwareSelect" multiple name="softwares[]"></select>
                                                 </div>
                                             </div>
                                         </div>
@@ -523,13 +496,13 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div id="content_ddlTema" style="display:none;">
+                                    <div id="content_ddlTemaAct" style="display:none;">
                                         <asp:Label ID="lblTemaAct" runat="server" Text="TEMA:"></asp:Label>
                                         <select id="selectTemaAct" class="form-control"></select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div id="content_txtTema" style="display:none;">
+                                    <div id="content_txtTemaAct" style="display:none;">
                                         <label>TEMA:</label>
                                         <input type="text" id="txtTemaAct" class="form-control"/>
                                     </div>
@@ -546,11 +519,17 @@
                                 </div>
                             </div>
                         </fieldset>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label id="msg_actualizar" class="form-control alert alert-danger" style="display: none;"></label>
+                            </div>
+                        </div>
                     </div>
                 </div>               
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerrar()">CANCELAR</button>
                     <button type="button" id="btnActualizar" class="btn btn-success">ACTUALIZAR</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">CANCELAR</button>
                 </div>
             </div>
         </div>

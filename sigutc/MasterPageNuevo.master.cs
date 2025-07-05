@@ -1707,9 +1707,10 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
             if (dr.Read())
             {
                 string rol = dr["strNombre_rol"].ToString();
+                Session["ROL"] = rol;
 
                 // Puedes evaluar si el rol es "DOCENTE"
-                if (rol == "DOCENTE")
+                if (rol == "DOCENTE" || rol == "ESTUDIANTE")
                 {
                     validacion = true;
                 }

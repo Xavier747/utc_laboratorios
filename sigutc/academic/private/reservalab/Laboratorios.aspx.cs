@@ -33,8 +33,17 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
 
     public void cargarFacultad()
     {
+        var listFacultad = new List<UB_FACULTADES>();
         string cedula = Context.User.Identity.Name;
-        var listFacultad = facultad1.LoadUB_FACULTADES("xIdPersonal", cedula, "", "", "");
+
+        if (Session["ROL"].ToString() == "DOCENTE")
+        {
+            listFacultad = facultad1.LoadUB_FACULTADES("xDocente", cedula, "", "", "");
+        }
+        else
+        {
+            listFacultad = facultad1.LoadUB_FACULTADES("xAlumno", cedula, "", "", "");
+        }
 
         if (listFacultad.Count > 0)
         {

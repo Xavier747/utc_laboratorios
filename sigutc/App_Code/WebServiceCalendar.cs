@@ -166,12 +166,12 @@ public class WebServiceCalendar : System.Web.Services.WebService
     [WebMethod(EnableSession = true)]
     public string GuardarReserva(List<string> reservacion)
     {
-        reserva1.strCod_reser = Session["laboratorioId"].ToString() + "_" + reservacion[5];
-        reserva1.strCod_lab = Session["laboratorioId"].ToString();
+        reserva1.strCod_reser = reservacion[11] + "_" + reservacion[5];
+        reserva1.strCod_lab = reservacion[11].ToString();
         reserva1.strCod_Mate = reservacion[0];
         reserva1.cedula_alu = reservacion[8] != "" ? reservacion[8] : Context.User.Identity.Name;
-        reserva1.strCod_unidTem = reservacion[1];
-        reserva1.strTema_reser = reservacion[2] ?? reservacion[1];
+        reserva1.strCod_unidTem = reservacion[1] ?? "";
+        reserva1.strTema_reser = reservacion[2];
         reserva1.strTipo_reser = reservacion[10];
         reserva1.strDescripcion_reser = reservacion[3];
         reserva1.strMateriales_reser = reservacion[4];
@@ -181,7 +181,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
         reserva1.strColor_reser = reservacion[9];
         reserva1.dtFechaRegistro_reser = DateTime.Now;
         reserva1.bitEstado_reser = true;
-        reserva1.dtFecha_log = DateTime.Today;
+        reserva1.dtFecha_log = DateTime.Now;
         reserva1.strUser_log = Context.User.Identity.Name;
         reserva1.strObs1_reser = string.Empty;
         reserva1.strObs2_reser = string.Empty;
@@ -268,14 +268,6 @@ public class WebServiceCalendar : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string ObtenerSoftwareReserva(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
-    {
-        List<LAB_RESERSOFTWARE> listSoftReserva = reserSoft1.LoadLAB_RESERSOFTWARE(comodin, filtro1, filtro2, filtro3, filtro4);
-
-        return "";
-    }
-
-    [WebMethod]
     public string ObtenerExclusivo(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
         List<LAB_EXCLUSIVO> listExclusivo = labEx1.LoadLAB_EXCLUSIVO(comodin, filtro1, filtro2, filtro3, filtro4);
@@ -308,7 +300,19 @@ public class WebServiceCalendar : System.Web.Services.WebService
     {
         List<TEMA> listTema = tema1.Load_TEMA("xPK", idTema, "", "", "");
 
-        string tema = listTema.Count > 0 ? listTema[0].strDesc_tema : string.Empty;
+        string tema = "";
+
+        if (listTema.Count > 0)
+        {
+            tema = listTema[0].strDesc_tema;
+        }
+        else
+        {
+            List<UNIDAD_TEMA> listUnidad = unidad1.Load_UNIDAD_TEMA("xPK", idTema, "", "", "");
+
+            tema = listUnidad.Count > 0 ? listUnidad[0].strdesc_unidtem : idTema;
+        }
+
         return  tema;
     }
 
@@ -344,5 +348,25 @@ public class WebServiceCalendar : System.Web.Services.WebService
         });
 
         return JsonConvert.SerializeObject(resultado);
+    }
+
+    [WebMethod]
+    public string ActulizarReservacion(List<string> reservacion)
+    {
+        reserva1.strCod_reser = reservacion[0];
+        reserva1.strCod_unidTem = reservacion[1];
+        reserva1.strTema_reser = reservacion[2];
+        reserva1.strTipo_reser = reservacion[3];
+        reserva1.strDescripcion_reser = reservacion[4];
+        reserva1.strMateriales_reser = reservacion[5];
+        reserva1.strColor_reser = reservacion[6];
+        reserva1.bitEstado_reser = true;
+        reserva1.cedula_alu = Context.User.Identity.Name;
+        reserva1.dtFecha_log = DateTime.Now;
+        reserva1.strUser_log = Context.User.Identity.Name;
+
+        reserva1.UpdateLAB_RESERVA(reserva1);
+
+        return JsonConvert.SerializeObject(reserva1);
     }
 }
