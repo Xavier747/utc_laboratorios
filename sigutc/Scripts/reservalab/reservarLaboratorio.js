@@ -274,6 +274,36 @@ $(document).ready(function () {
         }
     });
 
+    $("#switchEncontrado").on("change", function () {
+        if ($(this).is(":checked")) {
+            // Mostrar contenedor
+            $('#list-software').css('display', 'block');
+            $('#content_nombre').css('display', 'none');
+            $('#lblSoftwareVal').text('SI');
+
+        } else {
+            // Ocultar contenedor
+            $('#list-software').css('display', 'none');
+            $('#content_nombre').css('display', 'block');
+            $('#lblSoftwareVal').text('NO');
+        }
+    });
+
+    $("#switchEncontradoAct").on("change", function () {
+        if ($(this).is(":checked")) {
+            // Mostrar contenedor
+            $('#list-softwareAct').css('display', 'block');
+            $('#content_nombreAct').css('display', 'none');
+            $('#lblSoftwareValAct').text('SI');
+
+        } else {
+            // Ocultar contenedor
+            $('#list-softwareAct').css('display', 'none');
+            $('#content_nombreAct').css('display', 'block');
+            $('#lblSoftwareValAct').text('NO');
+        }
+    });
+
     $("#selectTipoMotivo").on("change", function () {
         if ($("#selectTipoMotivo").val() === "evento ocasional") {
             // Mostrar contenedor
@@ -420,11 +450,21 @@ $(document).ready(function () {
             if ($('#switchSoftware').is(':checked')) {
                 var valorSelect = $('#countries').val();
 
-                if (valorSelect == null || valorSelect.length === 0) {
-                    isValid = false;
-                    $('#countries').addClass('is-invalid');
-                } else {
-                    $('#countries').removeClass('is-invalid');
+                if (!$('#switchEncontrado').is(':checked')) {
+                    if ($('#txtMaterial').val().trim() === "") {
+                        isValid = false;
+                        $('#txtSoftware').addClass('is-invalid');
+                    } else {
+                        $('#txtSoftware').removeClass('is-invalid');
+                    }
+                }
+                else{
+                    if (valorSelect == null || valorSelect.length === 0) {
+                        isValid = false;
+                        $('#countries').addClass('is-invalid');
+                    } else {
+                        $('#countries').removeClass('is-invalid');
+                    }
                 }
             }
 
@@ -636,13 +676,28 @@ $(document).ready(function () {
                 mostrarTooltipSimple(mensage, lblMsg);
             }
             else {
+                var software = $('#txtSoftwareAct');
+
                 if (listSoftware.length > 0) {
                     eliminarSoftReservacion('xCodReserva', idReserva, '', '', '', function (data) {
                         console.log(data.msg);
                     });
 
-                    guardarSoftware(idReserva, function (data) {
-                        console.log(data[0].msg)
+                    listSoftware.forEach(item => {
+                        let codSoft = item.value;
+
+                        guardarSoftware(codSoft, idReserva, function (data) {
+                            console.log(data.msg)
+                        });
+                    });
+                }
+                else if (software.val() !== '' && software.is(':visible')) {
+                    eliminarSoftReservacion('xCodReserva', idReserva, '', '', '', function (data) {
+                        console.log(data.msg);
+                    });
+
+                    guardarSoftware(software.val(), idReserva, function (data) {
+                        console.log(data.msg)
                     });
                 }
 
@@ -662,15 +717,12 @@ function guardarDatos() {
     let tipo = $('#selectTipoMotivo').val()
 
     reservacion[0] = $('#selectAsignatura').val();
-    reservacion[1] = unidad.is(':visible') ? unidad.val() : '';
+    reservacion[1] = unidad.is(':visible') ? unidad.val() : '';        
+    reservacion[2] = $('#selectTema').is(':visible') && tipo !== 'evento ocasional' ? $('#selectTema').val() : unidad.val();
 
-    if ($('#selectTema').is(':visible') && tipo !== 'evento ocasional') {
-        reservacion[2] = $('#selectTema').val();
+    if ($('#txtTema').is(':visible')) {
+        reservacion[2] = $('#txtTema').val();
     }
-    else {
-        reservacion[2] = unidad.val();
-    }
-        
 
     reservacion[3] = $('#txtDescripcion').val();
     reservacion[4] = $('#txtMaterial').val();

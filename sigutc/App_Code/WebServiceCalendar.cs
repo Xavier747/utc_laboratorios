@@ -152,13 +152,28 @@ public class WebServiceCalendar : System.Web.Services.WebService
     [WebMethod]
     public string ObtenerSoftware(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
+        object resultado = null; // ← Declaración sin inicializar
+
         List<LAB_SOFTWARE> listSoftware = software1.LoadLAB_SOFTWARE(comodin, filtro1, filtro2, filtro3, filtro4);
 
-        var resultado = listSoftware.Select(software => new
+        if (listSoftware.Count > 0)
         {
-            strCod_sof = software.strCod_sof,
-            strNombre_sof = software.strNombre_sof,
-        });
+            resultado = listSoftware.Select(software => new
+            {
+                strCod_sof = software.strCod_sof,
+                strNombre_sof = software.strNombre_sof,
+            });
+        }
+        else
+        {
+            List<LAB_RESERSOFTWARE> listReserSoftware = reserSoft1.LoadLAB_RESERSOFTWARE(comodin, filtro1, filtro2, filtro3, filtro4);
+
+            resultado = listReserSoftware.Select(software => new
+            {
+                strCod_sof = software.strCod_sof,
+                strNombre_sof = software.strNombre_resof,
+            });
+        }
 
         return JsonConvert.SerializeObject(resultado);
     }
@@ -203,14 +218,14 @@ public class WebServiceCalendar : System.Web.Services.WebService
         if (codSoft != "")
         {
             var listSoftware = software1.LoadLAB_SOFTWARE("xPK", codSoft, "", "", "");
-            string codResof = codReser + "_" + listSoftware[0].strCod_sof ?? codReser + "_" + codSoft;
+            string codResof = listSoftware.Count > 0 ? codReser + "_" + listSoftware[0].strCod_sof : codReser + "_" + codSoft;
 
             reserSoft1.strCod_resof = codResof;
-            reserSoft1.strCod_sof = listSoftware[0].strCod_sof ?? string.Empty;
-            reserSoft1.strCod_Sede = listSoftware[0].strCod_Sede ?? string.Empty;
-            reserSoft1.strCod_Fac = listSoftware[0].strCod_Fac ?? string.Empty;
+            reserSoft1.strCod_sof = listSoftware.Count > 0 ? listSoftware[0].strCod_sof : string.Empty;
+            reserSoft1.strCod_Sede = listSoftware.Count > 0 ? listSoftware[0].strCod_Sede : string.Empty;
+            reserSoft1.strCod_Fac = listSoftware.Count > 0 ? listSoftware[0].strCod_Fac : string.Empty;
             reserSoft1.strCod_reser = codReser;
-            reserSoft1.strNombre_resof = listSoftware[0].strCod_sof ?? codSoft;
+            reserSoft1.strNombre_resof = listSoftware.Count > 0 ? string.Empty : codSoft;
             reserSoft1.dtRegistro_resof = DateTime.Now;
             reserSoft1.dtFecha_log = DateTime.Now;
             reserSoft1.strUser_log = Context.User.Identity.Name;

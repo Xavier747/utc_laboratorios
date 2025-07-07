@@ -195,31 +195,25 @@ function consultarEventos(comodin, filtro1, filtro2, filtro3, filtro4, callback)
     });
 }
 
-function guardarSoftware(codReser, callback) {
-    if (listSoftware.length > 0) {
-        listSoftware.forEach(item => {
-            let codSoft = item.value;
-
-            $.ajax({
-                type: "POST",
-                // Página y método del backend que procesará la solicitud
-                url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarSofReserva",
-                // Enviar la fecha como parámetro
-                data: JSON.stringify({ codSoft: codSoft, codReser: codReser }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    var data = JSON.parse(response.d);
-                    callback(data);
-                },
-                error: function (xhr, status, error) {
-                    console.log("Status: " + xhr.status);
-                    console.log("Response: " + xhr.responseText);
-                    callback([]);
-                }
-            });
-        });
-    }
+function guardarSoftware(codSoft, codReser, callback) {
+    $.ajax({
+        type: "POST",
+        // Página y método del backend que procesará la solicitud
+        url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarSofReserva",
+        // Enviar la fecha como parámetro
+        data: JSON.stringify({ codSoft: codSoft, codReser: codReser }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            var data = JSON.parse(response.d);
+            callback(data);
+        },
+        error: function (xhr, status, error) {
+            console.log("Status: " + xhr.status);
+            console.log("Response: " + xhr.responseText);
+            callback([]);
+        }
+    });
 }
 
 function consultarExclusivo(comodin, filtro1, filtro2, filtro3, filtro4, callback) {
@@ -318,14 +312,27 @@ function guardarReservacion(reservacion) {
             var mensaje = data.msg;
             var icon = data.resultado == true ? 'success' : 'error';
             var codReser = data.strCod_reser;
+            var software = $('#txtSoftware');
 
-            guardarSoftware(codReser, function (data) {
-                console.log(data[0].msg)
-            });
 
-            $('#form_registrar').modal('hide');
+            if (listSoftware.length > 0) {
+                listSoftware.forEach(item => {
+                    let codSoft = item.value;
 
-            mostrarMensageCRUD(mensaje, icon);
+                    guardarSoftware(codSoft, codReser, function (data) {
+                        console.log(data.msg)
+                    });
+                });
+            }
+            else if (software.val() !== '' && software.is(':visible')) {
+                guardarSoftware(software.val(), codReser, function (data) {
+                    console.log(data.msg)
+                });
+            }
+
+            //$('#form_registrar').modal('hide');
+
+            //mostrarMensageCRUD(mensaje, icon);
         },
         error: function (xhr, status, error) {
             console.log("Status: " + xhr.status);
