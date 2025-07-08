@@ -549,7 +549,7 @@ $(document).ready(function () {
                     $('#txtCarreraAct').val(data[0].strnombre_car);
                 });
 
-                $('#selectTipoMotivoAct').val(reserva.strTipo_reser);
+                $('#selectTipoMotivoAct').val(reserva.strProposito_reser);
 
                 if (reserva.strTipo_reser === 'evento ocasional') {
                     $('#content_txtTemaAct').css('display', 'block');
@@ -733,6 +733,7 @@ function guardarDatos() {
     reservacion[9] = '#a4e4af';
     reservacion[10] = tipo;
     reservacion[11] = codLab;
+    reservacion[12] = false;
 
     guardarReservacion(reservacion);
 }
@@ -911,7 +912,7 @@ function mostrarDetalle(idReserva){
         $('#txtTemaDet').val(data[0].strTema_reser);
         $('#txtDescDet').val(data[0].strDescripcion_reser);
         $('#txtMaterialDet').val(data[0].strMateriales_reser);
-        $('#txtTipoMotivoDet').val(data[0].strTipo_reser.toUpperCase());
+        $('#txtTipoMotivoDet').val(data[0].strProposito_reser.toUpperCase());
 
         consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
             var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;

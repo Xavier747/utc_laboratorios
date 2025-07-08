@@ -124,7 +124,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     public void cargarTipo()
     {
         //Cosulta de registros
-        var tipo = tipoLaboratorio1.LoadLAB_TIPO("ALL", "", "", "", "");
+        var tipo = tipoLaboratorio1.LoadLAB_TIPO("xEstado", "", "", "", "");
 
         //Comparacion y asignacion a un componente los valores
         if (tipo.Count > 0)
@@ -304,9 +304,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         laboratorio2.strCod_lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab;
         laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
         laboratorio2.strCod_Sede = ddlSede.SelectedValue;
-        laboratorio2.strNombre_lab = txtNombre.Text.ToUpper();
+        laboratorio2.strNombre_lab = txtNombre.Text.Trim().ToUpper();
+        laboratorio2.strDescripcion_lab = txtDescripcion.Text.Trim();
         laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
-        laboratorio2.strUbicacion_lab = txtUbicacion.Text;
+        laboratorio2.strUbicacion_lab = txtUbicacion.Text.Trim();
         laboratorio2.strCod_tipoLab = ddlTipo.SelectedValue;
         laboratorio2.strCod_areac = ddlCampoAmplio.Text;
         laboratorio2.dtFechaRegistro_lab = DateTime.Now;
@@ -525,6 +526,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         // Llenar los campos del formulario de acuerdo a las propiedades del objeto laboratorio1
         lblCodeLabAct.Text = listLaboratoiros[0].strCod_lab;
         txtNombreAct.Text = listLaboratoiros[0].strNombre_lab;
+        txtDescripcionAct.Text = listLaboratoiros[0].strDescripcion_lab;
         txtNumeroEquiposAct.Text = listLaboratoiros[0].intNumeroEquipos_lab.ToString();
         ddlTipoAct.SelectedValue = listLaboratoiros[0].strCod_tipoLab;
         txtUbicacionAct.Text = listLaboratoiros[0].strUbicacion_lab;
@@ -567,9 +569,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         laboratorio2.strCod_lab = lblCodeLabAct.Text;
         laboratorio2.strCod_tipoLab = ddlTipoAct.SelectedValue;
         laboratorio2.strCod_areac = ddlCampoAmplioAct.SelectedValue;
-        laboratorio2.strNombre_lab = txtNombreAct.Text;
+        laboratorio2.strNombre_lab = txtNombreAct.Text.ToUpper().Trim();
+        laboratorio2.strDescripcion_lab = txtDescripcionAct.Text.Trim();
         laboratorio2.intNumeroEquipos_lab = Convert.ToInt32(txtNumeroEquiposAct.Text);
-        laboratorio2.strUbicacion_lab = txtUbicacionAct.Text;
+        laboratorio2.strUbicacion_lab = txtUbicacionAct.Text.Trim();
         laboratorio2.bitEstado_lab = ddlEstadoAct.SelectedValue == "1";
         laboratorio2.dtFecha_log = DateTime.Now;
         laboratorio2.strUser_log = Context.User.Identity.Name;

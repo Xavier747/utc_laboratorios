@@ -14,7 +14,7 @@
             AllowPaging="True" 
             PageSize="10" 
             OnPageIndexChanging="gvLaboratorios_PageIndexChanging" 
-            CssClass="table table-striped table-bordered" 
+            CssClass="table table-bordered" 
             OnRowCommand="gvLaboratorios_RowCommand">
             <Columns>
                 <asp:BoundField DataField="strNombre_lab" HeaderText="Nombre" />
@@ -37,15 +37,13 @@
                         </div>
                     </ItemTemplate>
                 </asp:TemplateField>
-                
-                
                 <asp:TemplateField ShowHeader="False" HeaderText="Accion">
                     <ItemTemplate><!--Boton para eliminar el laboratorio-->
                         <asp:Button ID="btnVerReservaciones" runat="server" 
                             CommandName="VerReservaciones" 
-                            CssClass="btn btn-info" 
+                            CssClass="btn btn-success" 
                             CommandArgument ='<%# Eval("strCod_lab") %>' 
-                            Text="VerReservaciones" />
+                            Text="Ver reservaciones" />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>

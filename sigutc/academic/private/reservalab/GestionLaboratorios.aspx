@@ -305,6 +305,23 @@
                             </asp:UpdatePanel>
                         </div>
                         <div class="col-md-6">
+                            <asp:Label ID="lblDescripcion" runat="server" 
+                                Text="Descripción" 
+                                CssClass="control-label required" />
+                            <asp:TextBox ID="txtDescripcion" runat="server" 
+                                CssClass="form-control custom-input text-multiple" 
+                                placeholder="Descripción" 
+                                TextMode="MultiLine" 
+                                Rows="3" />
+                            <asp:RequiredFieldValidator ID="rfv_txtDescripcion" runat="server" 
+                                ControlToValidate="txtDescripcion" 
+                                CssClass="alert alert-danger form-control" 
+                                ValidationGroup="formulario" 
+                                ErrorMessage="Campo requerido" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             <asp:Label ID="lblUbicacion" runat="server" 
                                 Text="Ubicación" 
                                 CssClass="control-label required" />
@@ -500,7 +517,22 @@
                     </div>
                     <br />
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
+                            <asp:Label ID="lblDescripcionAct" runat="server" 
+                                Text="Descripción" 
+                                CssClass="control-label required"></asp:Label>
+                            <asp:TextBox ID="txtDescripcionAct" runat="server" 
+                                CssClass="form-control custom-input text-multiple" 
+                                placeholder="Descripción" 
+                                TextMode="MultiLine" 
+                                Rows="3" />
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+                                ControlToValidate="txtUbicacionAct" 
+                                CssClass="alert alert-danger form-control" 
+                                ValidationGroup="formularioActualizar" 
+                                ErrorMessage="Campo requerido" />
+                        </div>
+                        <div class="col-md-6">
                             <asp:Label ID="lblUbicacionAct" runat="server" 
                                 Text="Ubicación" 
                                 CssClass="control-label required"></asp:Label>

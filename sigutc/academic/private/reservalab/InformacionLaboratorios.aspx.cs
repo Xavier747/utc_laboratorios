@@ -17,6 +17,7 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_TIPO tipo1 = new LAB_TIPO();
     Personal personal1 = new Personal();
+    LAB_SOFTWARE software1 = new LAB_SOFTWARE();
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -32,6 +33,7 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
 
                 //Llamado a los metodos que se deben cargar con la pagina
                 cargarTabla();
+                cargarSoftware();
             }
             else
             {
@@ -58,6 +60,7 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
                 lab.strFotografia1_lab,
                 lab.strFotografia2_lab,
                 lab.strUbicacion_lab,
+                lab.strDescripcion_lab,
                 ResponsableAcademico = (from resp in listResponsable
                                         join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
                                         where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Academico"
@@ -87,6 +90,25 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
 
             rptLaboratorio.DataSource = data;
             rptLaboratorio.DataBind();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR: " + ex.Message);
+        }
+    }
+
+    public void cargarSoftware()
+    {
+        string strCodLab = lblCrono.Text;
+
+        try
+        {
+            var listSoftware = software1.LoadLAB_SOFTWARE("xLaboratorio", strCodLab, "", "", "");
+
+            content_software.Visible = listSoftware.Count > 0 ? true : false;
+
+            rptSoftware.DataSource = listSoftware;
+            rptSoftware.DataBind();
         }
         catch (Exception ex)
         {

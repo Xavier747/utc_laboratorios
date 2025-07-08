@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     selectMateria = $('#selectAsignatura option').first().val();
 
-                    consultarHorario('xCodMat', selectMateria, dia, '', '', function (data) {
+                    /*consultarHorario('xCodMat', selectMateria, dia, '', '', function (data) {
                         const dropdown = $("#selectHoraInicio");
                         cargarHora(data, dropdown);
                     });
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     consultarAlumno('xAsignatura', selectMateria, '', '', '', function (data) {
                         const txtNumeroAsistentes = $("#txtNumeroAsistentes");
                         cargarNumeroEstudiante(data, txtNumeroAsistentes);
-                    });
+                    });*/
                 });
             },
             events: function (fetchInfo, successCallback, failureCallback) {
@@ -181,7 +181,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 $(document).ready(function () {
-    $("#selectAsignatura").on('change', function () {
+    $("#switchReserva").on("change", function () {
+        if ($(this).is(":checked")) {
+            // Mostrar contenedor
+            $('#reservaInterna').css('display', 'none');
+            $('#reservaExterna').css('display', 'block');
+
+        } else {
+            // Ocultar contenedor           
+            $('#reservaInterna').css('display', 'block');
+            $('#reservaExterna').css('display', 'none');
+        }
+    });
+
+
+    /*$("#selectAsignatura").on('change', function () {
         var asignaturaId = this.value; // Capturar el valor seleccionado
         consultarHorario('xCodMat', asignaturaId, dia, '', '', function (data) {
             const dropdown = $("#selectHoraInicio");
@@ -230,7 +244,7 @@ $(document).ready(function () {
 
         selectHoraFin = $('#selectHoraFin');
         cargarHoraFin(op, '', selectHoraFin)
-    });
+    });*/
 
     $("#switchSoftware").on("change", function () {
         var selectSoftware = $('#countries');
@@ -283,7 +297,7 @@ $(document).ready(function () {
         }
     });
 
-    $("#selectTipoMotivo").on("change", function () {
+    /*$("#selectTipoMotivo").on("change", function () {
         if ($("#selectTipoMotivo").val() === "evento ocasional") {
             // Mostrar contenedor
             $('#content_txtTema').css('display', 'block');
@@ -296,7 +310,7 @@ $(document).ready(function () {
             $('#content_unidad').css('display', 'block');
             $('#content_ddlTema').css('display', 'none');
         }
-    });
+    });*/
 
     $("#btnNuevaReserv").click(function () {
         let fechaSelect = new Date($('#fecha').text() + "T00:00:00");

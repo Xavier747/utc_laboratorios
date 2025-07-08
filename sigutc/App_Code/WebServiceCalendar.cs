@@ -187,7 +187,8 @@ public class WebServiceCalendar : System.Web.Services.WebService
         reserva1.cedula_alu = reservacion[8] != "" ? reservacion[8] : Context.User.Identity.Name;
         reserva1.strCod_unidTem = reservacion[1] ?? "";
         reserva1.strTema_reser = reservacion[2];
-        reserva1.strTipo_reser = reservacion[10];
+        reserva1.strProposito_reser = reservacion[10];
+        reserva1.bitTipo_reser = bool.Parse(reservacion[12]);
         reserva1.strDescripcion_reser = reservacion[3];
         reserva1.strMateriales_reser = reservacion[4];
         reserva1.dtFechainicio_reser = DateTime.Parse(reservacion[5]);
@@ -258,7 +259,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
             strCod_unidTem = reservacion.strCod_unidTem,
             strCod_tema = reservacion.strTema_reser ?? "",
             strTema_reser = ObtenerNombreTema(reservacion.strTema_reser) != "" ? ObtenerNombreTema(reservacion.strTema_reser) : reservacion.strTema_reser,
-            strTipo_reser = reservacion.strTipo_reser,
+            strProposito_reser = reservacion.strProposito_reser,
             strDescripcion_reser = reservacion.strDescripcion_reser,
             strMateriales_reser = reservacion.strMateriales_reser,
             dtFechainicio_reser = reservacion.dtFechainicio_reser,
@@ -371,7 +372,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
         reserva1.strCod_reser = reservacion[0];
         reserva1.strCod_unidTem = reservacion[1];
         reserva1.strTema_reser = reservacion[2];
-        reserva1.strTipo_reser = reservacion[3];
+        //reserva1.strTipo_reser = reservacion[3];
         reserva1.strDescripcion_reser = reservacion[4];
         reserva1.strMateriales_reser = reservacion[5];
         reserva1.strColor_reser = reservacion[6];

@@ -310,7 +310,7 @@ function guardarReservacion(reservacion) {
         success: function (response) {
             var data = JSON.parse(response.d);
             var mensaje = data.msg;
-            var icon = data.resultado == true ? 'success' : 'error';
+            var icon = data.resultado ? 'success' : 'error';
             var codReser = data.strCod_reser;
             var software = $('#txtSoftware');
 
@@ -330,9 +330,9 @@ function guardarReservacion(reservacion) {
                 });
             }
 
-            //$('#form_registrar').modal('hide');
+            $('#form_registrar').modal('hide');
 
-            //mostrarMensageCRUD(mensaje, icon);
+            mostrarMensageCRUD(mensaje, icon);
         },
         error: function (xhr, status, error) {
             console.log("Status: " + xhr.status);

@@ -2,71 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
     <link href='<%= ResolveUrl("~/Styles/Nuevo/assets/css/Laboratorio/grid-laboratorio.css") %>'  rel="stylesheet" />
-    <style>
-        .target{
-            height: 380px !important;
-        }
-
-        .img {
-            height: 350px;
-            width: 100%;
-            object-fit: cover;
-            object-position: center;
-            display: block;
-        }
-
-        .img-responsable {
-            object-fit: cover;
-            height: 100%;
-        }
-
-        .resp-image {
-            margin: auto;
-            border-radius: 50%;
-            border: 3px solid #007BFF;
-            width: 100px;
-            height: 100px;
-            overflow:hidden;
-        }
-
-        .verde {
-            font-size: 13px;
-            margin: 5px 0;
-            padding: 0 10px;
-            background-color: #A4E4AE;
-            border-radius: 100px;
-            color: #3A647E;
-        }
-
-        .dlLab {
-            max-width: 100%;             /* o max-width: 100% si está dentro de otro contenedor */
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            box-sizing: border-box;
-        }   
-                 
-        .correo{
-            margin-top: 10px;
-            display: block;
-        }
-
-        .correo .icon{
-            font-size: 16px;
-            margin-right: 10px;
-        }
-
-
-        @media screen and (max-width: 768px){
-            .target{
-                height: auto !important;
-            }       
-             
-            span{
-                font-size: 11px;
-            }
-        }
-    </style> 
+    <link href='<%= ResolveUrl("~/Styles/Nuevo/assets/css/Laboratorio/informacionLaboratorio.css") %>'  rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Detalle del laboratorio
@@ -105,6 +41,12 @@
                                         </div>
                                     </div>
                                     <br />
+                                    <div>
+                                        <b><i class="glyphicon glyphicon-map-marker"></i> Descripción: </b> 
+                                    </div>
+                                    <br />
+                    
+                                    <p><%# Eval("strDescripcion_lab") %></p>
                                     <div class="text-center">
                                         <b><i class="glyphicon glyphicon-map-marker"></i> Ubicación: </b> 
                                     </div>
@@ -183,8 +125,45 @@
                 </div>
             </ItemTemplate>
         </asp:Repeater>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="content_software" runat="server" class="card" style="padding: 20px;">
+                    <h5 style="margin-bottom: 20px;">Softwares</h5>
+                    <div class="row">
+                        <asp:Repeater ID="rptSoftware" runat="server">
+                            <ItemTemplate>
+                                    <div class="col-md-1" data-toggle="popover" data-trigger="hover" data-placement="top" title='<%# Eval("strNombre_sof") %>' data-content='<%# Eval("strDescripcion_sof") %>'>
+                                        <div class="content-img-soft">
+                                            <asp:Image ID="imgLaboratorio2" runat="server" 
+                                                AlternateText="Imagen del laboratorio" 
+                                                ImageUrl='<%# "ImageHandlerSoftware.ashx?image=" + System.IO.Path.GetFileName(Eval("strImagen_sof").ToString()) %>' 
+                                                class="img-soft"/>
+                                        </div>
+                                        <div class="text-center">
+                                            <b style="color: #312783;"><%# Eval("strNombre_sof") %></b>
+                                        </div>
+                                    </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover({    
+                container: 'body',
+                trigger: 'hover',
+                placement: 'auto',
+                viewport: {
+                    selector: 'body',
+                    padding: 5
+                }
+            });
+        });
+    </script>
 </asp:Content>
 
