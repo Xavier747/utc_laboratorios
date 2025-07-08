@@ -276,11 +276,11 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <asp:Label ID="lblCorreoDet" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
-                                <input type="text" id="txtCorreoDet" class="form-control" disabled />
+                                <input type="text" id="txtCorreoDet" class="form-control" disabled="disabled" />
                             </div>
                             <div class="col-md-6">
                                 <asp:Label ID="lblNombresDet" runat="server" Text="NOMBRES:"></asp:Label>
-                                <input type="text" id="txtNombresDet" class="form-control" disabled />
+                                <input type="text" id="txtNombresDet" class="form-control" disabled="disabled" />
                             </div>
                         </div>
                     </fieldset>
@@ -290,37 +290,37 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <asp:Label ID="lblFechaDet" runat="server" Text="FECHA:"></asp:Label>
-                                <input type="text" class="form-control" id="txtFechaDet" disabled/>
+                                <input type="text" class="form-control" id="txtFechaDet" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="Label1" runat="server" Text="ASIGNATURA:"></asp:Label>
-                                <input type="text" class="form-control" id="txtAsigDet" disabled/>
+                                <input type="text" class="form-control" id="txtAsigDet" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="lblHoraInicioDet" runat="server" Text="HORA DE INICIO:"></asp:Label>
-                                <input type="text" class="form-control" id="txtHoraInicioDet" disabled/>
+                                <input type="text" class="form-control" id="txtHoraInicioDet" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="lblHoraFinDet" runat="server" Text="HORA DE FINALIZACION:"></asp:Label>
-                                <input type="text" class="form-control" id="txtHoraFinDet" disabled/>
+                                <input type="text" class="form-control" id="txtHoraFinDet" disabled="disabled" />
                             </div>                            
                         </div>
                         <div class="row">
                             <div class="col-md-2">
                                 <asp:Label ID="Label" runat="server" Text="CICLO:"></asp:Label>
-                                <input type="text" class="form-control" id="txtCicloDet" disabled/>
+                                <input type="text" class="form-control" id="txtCicloDet" disabled="disabled" />
                             </div>
                             <div class="col-md-2">
                                 <asp:Label ID="Label3" runat="server" Text="PARALELO:"></asp:Label>
-                                <input type="text" class="form-control" id="txtParaleloDet" disabled/>
+                                <input type="text" class="form-control" id="txtParaleloDet" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="Label4" runat="server" Text="CARRERA:"></asp:Label>
-                                <input type="text" class="form-control" id="txtCarreraDet" disabled/>
+                                <input type="text" class="form-control" id="txtCarreraDet" disabled="disabled" />
                             </div>
                             <div class="col-md-2">
                                 <asp:Label ID="Label5" runat="server" Text="TOTAL DE ASISTENTES:"></asp:Label>
-                                <input type="text" class="form-control" id="txtAsistentes" disabled/>
+                                <input type="text" class="form-control" id="txtAsistentes" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="Label2" runat="server" Text="SOFTWARE:"></asp:Label>
@@ -334,25 +334,25 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <asp:Label ID="lblTipoMotivoDet" runat="server" Text="PROPÓSITO DE RESERVA:"></asp:Label>
-                                <input type="text" class="form-control" id="txtTipoMotivoDet" disabled/>
+                                <input type="text" class="form-control" id="txtTipoMotivoDet" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="lblUnidadDet" runat="server" Text="UNIDAD:" class="form-label"></asp:Label>
-                                <input type="text" id="txtUnidadDet" class="form-control" disabled />
+                                <input type="text" id="txtUnidadDet" class="form-control" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="lblTemaDet" runat="server" Text="TEMA:" class="form-label"></asp:Label>
-                                <input type="text" id="txtTemaDet" class="form-control" disabled />
+                                <input type="text" id="txtTemaDet" class="form-control" disabled="disabled" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <asp:Label ID="lblDescripcioDet" runat="server" Text="DESCRIPCION / COMENTARIO" class="form-label"></asp:Label>
-                                <textarea class="form-control" id="txtDescDet" disabled></textarea>
+                                <textarea class="form-control" id="txtDescDet" disabled="disabled" ></textarea>
                             </div>
                             <div class="col-md-6">
                                 <asp:Label ID="lblMaterialesDet" runat="server" Text="MATERIALES / EQUIPOS:" class="form-label"></asp:Label>
-                                <textarea class="form-control" id="txtMaterialDet" disabled></textarea>
+                                <textarea class="form-control" id="txtMaterialDet" disabled="disabled" ></textarea>
                             </div>
                         </div>
                     </fieldset> 
@@ -399,11 +399,11 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <asp:Label ID="lblEmailAct" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
-                                <input type="text" class="form-control" id="txtEmailAct" disabled/>
+                                <input type="text" class="form-control" id="txtEmailAct" disabled="disabled" />
                             </div>
                             <div class="col-md-6">
                                 <asp:Label ID="lblNombreAct" runat="server" Text="NOMBRES:"></asp:Label>
-                                <input type="text" class="form-control" id="txtNombreAct" disabled/>
+                                <input type="text" class="form-control" id="txtNombreAct" disabled="disabled" />
                             </div>
                         </div>
                     </fieldset>
@@ -413,37 +413,37 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <asp:Label ID="lblFechaAct" runat="server" Text="FECHA:"></asp:Label>
-                                <input type="text" id="txtFechaAct" class="form-control" disabled/>
+                                <input type="text" id="txtFechaAct" class="form-control" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="lblAsignaturaAct" runat="server" Text="ASIGNATURA:"></asp:Label>
-                                <input type="text" id="txtAsignaturaAct" class="form-control" disabled/>
+                                <input type="text" id="txtAsignaturaAct" class="form-control" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="lblHoraInicioAct" runat="server" Text="HORA DE INICIO:"></asp:Label>
-                                <input type="text" id="txtHoraInicioAct" class="form-control" disabled/>
+                                <input type="text" id="txtHoraInicioAct" class="form-control" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="lblHoraFinAct" runat="server" Text="HORA DE FINALIZACION:"></asp:Label>
-                                <input type="text" id="txtHoraFinAct" class="form-control" disabled/>
+                                <input type="text" id="txtHoraFinAct" class="form-control" disabled="disabled" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-2">
                                 <asp:Label ID="lblCicloAct" runat="server" Text="CICLO:"></asp:Label>
-                                <input type="text" class="form-control" id="txtCicloAct" disabled/>
+                                <input type="text" class="form-control" id="txtCicloAct" disabled="disabled" />
                             </div>
                             <div class="col-md-2">
                                 <asp:Label ID="lblParaleloAct" runat="server" Text="PARALELO:"></asp:Label>
-                                <input type="text" class="form-control" id="txtParaleloAct" disabled/>
+                                <input type="text" class="form-control" id="txtParaleloAct" disabled="disabled" />
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="lblCarreraAct" runat="server" Text="CARRERA:"></asp:Label>
-                                <input type="text" class="form-control" id="txtCarreraAct" disabled/>
+                                <input type="text" class="form-control" id="txtCarreraAct" disabled="disabled" />
                             </div>
                             <div class="col-md-2">
                                 <asp:Label ID="lblAsistentesAct" runat="server" Text="TOTAL DE ASISTENTES:"></asp:Label>
-                                <input type="text" class="form-control" id="txtNumeroAsistentesAct" disabled/>
+                                <input type="text" class="form-control" id="txtNumeroAsistentesAct" disabled="disabled"/>
                             </div>
                             <div class="col-md-3">
                                 <asp:Label ID="Label6" runat="server" Text="SOFTWARE:"></asp:Label>
@@ -474,7 +474,7 @@
                                                 <label>¿ENCONTRÓ EL SOFTWARE?:</label>
                                                 <br />
                                                 <label class="switch">
-                                                    <input type="checkbox" id="switchEncontradoAct" checked/>
+                                                    <input type="checkbox" id="switchEncontradoAct" checked="checked" />
                                                     <span class="slider round"></span>
                                                 </label>
                                                 <label id="lblSoftwareValAct">SI</label>

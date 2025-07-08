@@ -69,13 +69,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 dia = obtenerDiaSemana(fecha);
 
-                consultarAsignatura('xDia', dia, cedula, '', '', function (data) {
+                /*consultarAsignatura('xDia', dia, cedula, '', '', function (data) {
                     const dropdown = $("#selectAsignatura");
                     cargarMaterias(data, dropdown);
 
                     selectMateria = $('#selectAsignatura option').first().val();
 
-                    /*consultarHorario('xCodMat', selectMateria, dia, '', '', function (data) {
+                    consultarHorario('xCodMat', selectMateria, dia, '', '', function (data) {
                         const dropdown = $("#selectHoraInicio");
                         cargarHora(data, dropdown);
                     });
@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     consultarAlumno('xAsignatura', selectMateria, '', '', '', function (data) {
                         const txtNumeroAsistentes = $("#txtNumeroAsistentes");
                         cargarNumeroEstudiante(data, txtNumeroAsistentes);
-                    });*/
-                });
+                    });
+                });*/
             },
             events: function (fetchInfo, successCallback, failureCallback) {
                 consultarEventos('xCodLab', codLab, '', '', '', function (data) {

@@ -607,16 +607,16 @@ $(document).ready(function () {
 
         const idReserva = $(this).data('id');
 
-        consultarEventos('xPK', idReserva, '', '', '', function (reserva) {
+        consultarEventos('xPK', idReserva, '', '', '', function (data) {
+            var reserva = data[0];
             let fechaHoy = new Date();
-            let fechaConvertida = reserva.dtFechaRegistro_reser;
-            let fechaRegistro = new Date(fechaConvertida);
+            let fechaRegistro = new Date(reserva.dtFechaRegistro_reser);
 
             fechaRegistro.setHours(fechaRegistro.getHours() + 3);
 
             if (fechaHoy > fechaRegistro) {
                 let mensage = "¡Has superado las tres horas límite para eliminar la reservación!"
-                let lblMsg = $('#tooltipError');
+                let lblMsg = $('#txtMsgInfo');
 
                 mostrarTooltipSimple(mensage, lblMsg);
             }
