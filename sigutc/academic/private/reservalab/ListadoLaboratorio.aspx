@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPageNuevo.master" AutoEventWireup="true" CodeFile="ListadoLaboratorio.aspx.cs" Inherits="academic_private_reservalab_ListadoLaboratorio" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
-    <link href="../../../Styles/Nuevo/assets/css/laboratorio-style.css" rel="stylesheet" />
+    <link href='<%= ResolveUrl("~/Styles/Nuevo/assets/css/laboratorio-style.css") %>'rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Listado de laboratorios

@@ -78,9 +78,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                            laboratorio2.numerr == 2627 ? laboratorio2.msg :
                            "Error: " + laboratorio2.numerr + "!";
             string icon = laboratorio2.resultado ? "success" : "error";
+            string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
-            string script = $"mostrarMensageCRUD('{title}', '{icon}');";
-            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
+
         }
         if (e.CommandName == "Laboratoristas")
         {
@@ -406,9 +407,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                        laboratorio2.numerr == 2627 ? laboratorio2.msg :
                        "Error: " + laboratorio2.numerr + "!";
         string icon = laboratorio2.resultado ? "success" : "error";
+        string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
-        string script = $"mostrarMensageCRUD('{title}', '{icon}');";
-        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
     }
 
     //Crea una carpeta para almacenar localmente las imagenes
@@ -644,9 +645,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                        laboratorio2.numerr == 2627 ? laboratorio2.msg :
                        "Error: " + laboratorio2.numerr + "!";
         string icon = laboratorio2.resultado ? "success" : "error";
+        string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
-        string script = $"mostrarMensageCRUD('{title}', '{icon}');";
-        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
     }
 
     //Actulizar software de los laboratorios
@@ -892,9 +893,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                        laboratorio2.numerr == 2627 ? laboratorio2.msg :
                        "Error: " + laboratorio2.numerr + "!";
         string icon = responsable1.resultado ? "success" : "error";
+        string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
-        string script = $"mostrarMensageCRUD('{title}', '{icon}');";
-        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
     }
 
     public void guardarResponsable()
@@ -1034,8 +1035,8 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                        laboratorio2.numerr == 2627 ? laboratorio2.msg :
                        "Error: " + laboratorio2.numerr + "!";
         string icon = responsable1.resultado ? "success" : "error";
+        string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
-        string script = $"mostrarMensageCRUD('{title}', '{icon}');";
-        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
     }
 }

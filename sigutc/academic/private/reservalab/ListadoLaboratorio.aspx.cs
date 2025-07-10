@@ -13,9 +13,6 @@ using System.Web.Configuration;
 
 public partial class academic_private_reservalab_ListadoLaboratorio : System.Web.UI.Page
 {
-    //Definicion de las variable de coneccion con la base de datos
-    SqlConnection conexion = new SqlConnection(WebConfigurationManager.AppSettings["conexionBddProductos"]);
-
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_RESPONSABLE responsable1 = new LAB_RESPONSABLE();
     LAB_SOFTWARE software1 = new LAB_SOFTWARE();
@@ -54,8 +51,10 @@ public partial class academic_private_reservalab_ListadoLaboratorio : System.Web
     {
         if (e.CommandName == "VerReservaciones")
         {
-            Session["laboratorioId"] = e.CommandArgument.ToString();
-            Response.Redirect("~/academic/public/ReservaLaboratorioResp.aspx");
+            string codLab = e.CommandArgument.ToString();
+
+            SeguridadUTC sutc = new SeguridadUTC();
+            Response.Redirect("~/academic/public/ReservaLaboratorioResp.aspx?In= " + Server.UrlEncode(sutc.Encripta(codLab)));
         }
     }
     public void cargarTabla()

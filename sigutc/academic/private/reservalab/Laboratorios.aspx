@@ -14,6 +14,10 @@
                     <asp:Label ID="lblCodFacultad" runat="server" 
                         Visible="false" 
                         Text='' />
+                    <asp:Label ID="lblCodSede" runat="server" 
+                        Visible="false" 
+                        Text='' />
+                    <asp:DropDownList ID="ddlFacultad" runat="server" CssClass="form-control"></asp:DropDownList>
                     <asp:Repeater ID="rptFacultades" runat="server" 
                         OnItemCommand="rptFacultades_ItemCommand">
                         <ItemTemplate>

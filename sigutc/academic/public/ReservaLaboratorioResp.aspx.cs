@@ -16,29 +16,39 @@ using ClassLibraryTesis;
 
 public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.UI.Page
 {
-    string cadenaConexion;
-    SqlConnection conexion;
-
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     LAB_RESPONSABLE responsable1 = new LAB_RESPONSABLE();
     Personal personal1 = new Personal();
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Context.User.Identity.Name == null) Response.Redirect("~/academic/public/Login.aspx");
+        if (Context.User.Identity.Name == "") Response.Redirect("~/academic/public/Login.aspx");
 
         if (!IsPostBack)
         {
-            llenarFormulario();
+            SeguridadUTC sutc = new SeguridadUTC();
+
+            if (Request.QueryString["In"] != null)
+            {
+                lblCrono.Text = sutc.Desencripta(Request.Params["In"].ToString());
+
+                string[] partes = lblCrono.Text.Split('_');
+
+                lblSede.Text = partes[0];
+                lblFacultad.Text = partes[1];
+
+                //Llamado a los metodos que se deben cargar con la pagina
+                llenarFormulario();
+            }
+            else
+            {
+                Response.Redirect("~/academic/private/reservalab/ListadoLaboratorio.aspx");
+            }
         }
     }
     private void llenarFormulario()
     {
-        if (Session["laboratorioId"] == null)
-        {
-            Response.Redirect("~/academic/private/reservalab/ListadoLaboratorio.aspx");
-        }
-        string codLab = Session["laboratorioId"].ToString();
+        string codLab = lblCrono.Text;
         var listLab = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
         titulo.InnerText = listLab[0].strNombre_lab;
@@ -65,34 +75,6 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
                 txtRespAdminDet.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
                 txtNombreRespAddAct.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
             }
-        }
-        llenarDocenteSolicitante();
-    }
-
-    public void llenarDocenteSolicitante()
-    {
-        string codLab = Session["laboratorioId"].ToString();
-        var listLab = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
-
-        string codSede = listLab[0].strCod_Sede;
-        string codFacultad = listLab[0].strCod_Fac;
-
-        var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
-
-        if (docente.Count > 0)
-        {
-            var listaConcatenada = docente
-                .Select(labResp => new {
-                    CEDULA_ALU = labResp.cedula_alu,
-                    NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu // Aquí concatenas lo que necesites
-                }).ToList();
-
-            ddlDocentes.DataSource = listaConcatenada;
-            ddlDocentes.DataTextField = "NOMBRE_COMPLETO";
-            ddlDocentes.DataValueField = "CEDULA_ALU";
-            ddlDocentes.DataBind();
-
-            txtEmail.Text = docente[0].correo_alu;
         }
     }
 }

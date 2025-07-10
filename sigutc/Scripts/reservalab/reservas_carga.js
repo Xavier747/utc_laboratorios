@@ -1,4 +1,21 @@
-﻿function cargarCiclo(data, input1, input2) {
+﻿function cargarDocente(data, dropdown, txtCorreo) {
+    // Limpiar opciones anteriores
+    dropdown.empty();
+    txtCorreo.val();
+
+    // Crear opción por cada elemento de la lista
+    data.forEach(item => {
+        const opcion = document.createElement("option");
+        opcion.value = item.cedula_alu;          // valor que se enviará
+        opcion.textContent = item.apellido_alu + ' ' + item.apellidom_alu + ' ' + item.nombre_alu; // lo que se muestra al usuario
+        dropdown.append(opcion);
+    });
+
+    txtCorreo.val(data[0].correo_alu);
+}
+
+
+function cargarCiclo(data, input1, input2) {
     input1.empty();
     input2.empty();
 

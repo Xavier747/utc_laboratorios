@@ -44,7 +44,6 @@ public class WebServiceCalendar : System.Web.Services.WebService
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
     public string ObtenerAsignaturas(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        string cedula = Context.User.Identity.Name;
         List<MATERIAS> listMaterias = materia1.Load_MATERIAS(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listMaterias.Select(mat => new {
@@ -372,7 +371,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
         reserva1.strCod_reser = reservacion[0];
         reserva1.strCod_unidTem = reservacion[1];
         reserva1.strTema_reser = reservacion[2];
-        //reserva1.strTipo_reser = reservacion[3];
+        reserva1.strProposito_reser = reservacion[3];
         reserva1.strDescripcion_reser = reservacion[4];
         reserva1.strMateriales_reser = reservacion[5];
         reserva1.strColor_reser = reservacion[6];

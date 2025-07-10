@@ -37,7 +37,7 @@ public partial class academic_public_ReservaLaboratorioDocen : System.Web.UI.Pag
             }
             else
             {
-                Response.Redirect("~/academic/private/reservalab/Laboratorios.aspx");
+                Response.Redirect("~/academic/private/reservalab/ListadoLaboratorio.aspx");
             }
         }
     }

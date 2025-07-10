@@ -11,10 +11,17 @@
         <div class="cabecera">
             <h4 runat="server" id="titulo" class="text-center"></h4>
         </div>
-        <div id="calendar"></div>
+        <div id="calendarLab"></div>
 
         <asp:Label ID="lblCrono" runat="server"
             style="display: none;"/>
+
+        <asp:Label ID="lblSede" runat="server"
+            style="display: none;"/>
+
+        <asp:Label ID="lblFacultad" runat="server"
+            style="display: none;"/>
+
     </div>
 
     <!--Formulario para una nueva reservacion-->
@@ -62,7 +69,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cerrar()"><span aria-hidden="true">×</span></button>
                     <h4 class="modal-title" id="myModalLabel">Nueva reservacion</h4>
                 </div>
                 <div class="modal-body">
@@ -104,11 +111,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <asp:Label ID="lblNombres" runat="server" Text="NOMBRES:"></asp:Label>
-                                    <asp:DropDownList ID="ddlDocentes" runat="server" CssClass="form-control"></asp:DropDownList>
+                                    <select id="selectDocentes" class="form-control"></select>
                                 </div>
                                 <div class="col-md-6">
                                     <asp:Label ID="lblEmail" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
-                                    <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" Enabled="false"></asp:TextBox>
+                                    <input id="txtEmail" class="form-control" disabled="disabled"/>
                                 </div>
                             </div>
                         </fieldset>
@@ -118,7 +125,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <asp:Label ID="lblFecha" runat="server" Text="FECHA:"></asp:Label>
-                                    <asp:TextBox ID="txtFecha" runat="server" CssClass="form-control" Enabled="false"/>
+                                    <input id="txtFecha" class="form-control" disabled="disabled"/>
                                 </div>
                                 <div class="col-md-3">
                                     <asp:Label ID="lblAsignatura" runat="server" Text="ASIGNATURA:"></asp:Label>
@@ -153,8 +160,12 @@
                                 </div>
                                 <div class="col-md-2">
                                     <br />
-                                    <button type="button" class="btn btn-primary" onclick="validarReservacion()">Verificar</button>  
-                                    <span id="tooltipErrorInt" class="alert alert-danger form-control" style="display:none;">Esta hora ya está ocupada</span>          
+                                    <button type="button" id="btnValidar" class="btn btn-primary">Verificar</button>  
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <span id="tooltipErrorInt" class="alert alert-danger form-control" style="display:none;">Esta hora ya está ocupada</span>
                                 </div>
                             </div>
                         </fieldset>
@@ -171,14 +182,11 @@
                                         </label>
                                         <label id="lblSoftwareValidateInt">NO</label>
                                     </div>
-                                    <div class="col-md-9">
-                                        <div id="content-softwareInt" style="display:none; width: 100%;">
+                                    <div id="content-softwareInt" class="col-md-9" style="display:none; width: 100%;">
                                             <div class="row">
-                                                <div class="col-md-4">
-                                                    <div id="list-softwareInt">
-                                                        <label>SOFTWARE:</label>
-                                                        <select id="ddlSoftware" multiple name="softwares[]"></select>
-                                                    </div>
+                                                <div id="list-softwareInt" class="col-md-4">
+                                                    <label>SOFTWARE:</label>
+                                                    <select id="ddlSoftwareInt" multiple name="softwares[]"></select>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label>¿ENCONTRÓ EL SOFTWARE?:</label>
@@ -189,14 +197,11 @@
                                                     </label>
                                                     <label id="lblSoftwareValInt">SI</label>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <div id="content_nombreInt" style="display:none;">
-                                                        <label>NOMBRE DEL SOFTWARE:</label>
-                                                        <input type="text" id="txtSoftwareInt" class="form-control"/>
-                                                    </div>
+                                                <div id="content_nombreInt" class="col-md-4" style="display:none;">
+                                                    <label>NOMBRE DEL SOFTWARE:</label>
+                                                    <input type="text" id="txtSoftwareInt" class="form-control"/>
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <br />
@@ -213,23 +218,19 @@
                                             <option value="evento ocasional">EVENTO OCASIONAL</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div id="content_unidadInt">
+                                    <div id="content_unidadInt" class="col-md-3">
+                                        <div>
                                             <asp:Label ID="lblUnidadInt" runat="server" Text="UNIDAD:"></asp:Label>
                                             <select id="selectUnidadInt" class="form-control"></select>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div id="content_ddlTemaInt" style="display:none;">
-                                            <asp:Label ID="lblTemaInt" runat="server" Text="TEMA:"></asp:Label>
-                                            <select id="selectTemaInt" class="form-control"></select>
-                                        </div>
+                                    <div id="content_ddlTemaInt" style="display:none;" class="col-md-3">
+                                        <asp:Label ID="lblTemaInt" runat="server" Text="TEMA:"></asp:Label>
+                                        <select id="selectTemaInt" class="form-control"></select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div id="content_txtTemaInt" style="display:none;">
-                                            <label>TEMA:</label>
-                                            <input type="text" id="txtTemaInt" class="form-control"/>
-                                        </div>
+                                    <div id="content_txtTemaInt" style="display:none;" class="col-md-3">
+                                        <label>TEMA:</label>
+                                        <input type="text" id="txtTemaInt" class="form-control"/>
                                     </div>
                                 </div>
                                 <br />
@@ -246,9 +247,9 @@
                             </fieldset>
                         </div>                        
                     </div>
-                    <div id="reservaExterna">
+                    <div id="reservaExterna" style="display: none;">
                         <fieldset>
-                            <legend>DATOS DEL SOLICITANTE hola</legend>
+                            <legend>DATOS DEL SOLICITANTE</legend>
                             <div class="row">
                                 <div class="col-md-6">
                                     <asp:Label ID="Label6" runat="server" Text="NOMBRES:"></asp:Label>
@@ -298,7 +299,7 @@
                                                     <label>¿ENCONTRÓ EL SOFTWARE?:</label>
                                                     <br />
                                                     <label class="switch">
-                                                        <input type="checkbox" id="switchEncontrado" checked/>
+                                                        <input type="checkbox" id="switchEncontrado" checked="checked"/>
                                                         <span class="slider round"></span>
                                                     </label>
                                                     <label id="lblSoftwareVal">SI</label>
@@ -327,7 +328,7 @@
                                             <option value="evento ocasional">EVENTO OCASIONAL</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
+<%--                                    <div class="col-md-3">
                                         <div id="content_unidad">
                                             <asp:Label ID="Label17" runat="server" Text="UNIDAD:"></asp:Label>
                                             <select id="selectUnidad" class="form-control"></select>
@@ -344,7 +345,7 @@
                                             <label>TEMA:</label>
                                             <input type="text" id="txtTema" class="form-control"/>
                                         </div>
-                                    </div>
+                                    </div>--%>
                                 </div>
                                 <br />
                                 <div class="row">
@@ -409,12 +410,12 @@
                         <legend>DATOS DEL SOLICITANTE</legend>
                         <div class="row">
                             <div class="col-md-6">
-                                <asp:Label ID="lblCorreoDet" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
-                                <input type="text" id="txtCorreoDet" class="form-control" disabled="disabled" />
-                            </div>
-                            <div class="col-md-6">
                                 <asp:Label ID="lblNombresDet" runat="server" Text="NOMBRES:"></asp:Label>
                                 <input type="text" id="txtNombresDet" class="form-control" disabled="disabled" />
+                            </div>
+                            <div class="col-md-6">
+                                <asp:Label ID="lblCorreoDet" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
+                                <input type="text" id="txtCorreoDet" class="form-control" disabled="disabled" />
                             </div>
                         </div>
                     </fieldset>
@@ -492,7 +493,7 @@
                     </fieldset> 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">CANCELAR</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerrar()">CANCELAR</button>
                 </div>
             </div>
         </div>
@@ -678,9 +679,10 @@
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
     <script>
-        var codLab = '<%= lblCrono.ClientID %>';
+        var codLabCli = '<%= lblCrono.Text %>';
+        var codSedeCli = '<%= lblSede.Text %>';
+        var codFacultadCli = '<%= lblFacultad.Text %>';
         var cedula = '<%= Context.User.Identity.Name%>'
-        var txtFecha = '<%= txtFecha.ClientID %>'
     </script>
     <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_utilidades.js") %>'></script>
     <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_carga.js") %>'></script>

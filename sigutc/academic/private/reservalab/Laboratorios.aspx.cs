@@ -18,7 +18,10 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
     LAB_LABORATORIOS laboratorio2 = new LAB_LABORATORIOS();
     UB_FACULTADES facultad1 = new UB_FACULTADES();
     LAB_RESPONSABLE responsable1 = new LAB_RESPONSABLE();
-    Personal personal1 = new Personal(); 
+    Personal personal1 = new Personal();
+    AC_DISTRIBUTIVO distributivo1 = new AC_DISTRIBUTIVO();
+    CURSO curso1 = new CURSO();
+    SIG_PERIODOS periodoAcademico = new SIG_PERIODOS();
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -33,24 +36,48 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
 
     public void cargarFacultad()
     {
-        var listFacultad = new List<UB_FACULTADES>();
         string cedula = Context.User.Identity.Name;
 
-        if (Session["ROL"].ToString() == "DOCENTE")
-        {
-            listFacultad = facultad1.LoadUB_FACULTADES("xDocente", cedula, "", "", "");
-        }
-        else
-        {
-            listFacultad = facultad1.LoadUB_FACULTADES("xAlumno", cedula, "", "", "");
-        }
+        var listDistributivo = distributivo1.LoadAC_DISTRIBUTIVO("xCEDULA", cedula, "", "", "");
+        var listCurso = curso1.Load_CURSO("ALL", "", "", "", "");
+        var listPeriodo = periodoAcademico.LoadSIG_PERIODOS("ALL", "", "", "", "");
 
-        if (listFacultad.Count > 0)
-        {
-            lblCodFacultad.Text = listFacultad[0].strcod_fac;
-            rptFacultades.DataSource = listFacultad;
-            rptFacultades.DataBind();
-        }
+        var listaFacultad = (
+            from d in listDistributivo
+            join c in listCurso on d.strCod_curso equals c.strcod_curso
+            join p in listPeriodo on c.strcod_per equals p.strCod_per
+            select new
+            {
+                strCod_Fac = p.strCod_Fac,
+                strCod_Sede = p.strCod_Sede
+            }
+        )
+        .Distinct()
+        .ToList();
+
+        var listaFinal = listaFacultad
+            .Select(item =>
+            {
+                // Obtener la facultad por su clave
+                var facultad = facultad1.LoadUB_FACULTADES("xSedeFacultad", item.strCod_Sede, item.strCod_Fac, "", "").FirstOrDefault(); // en caso de que retorne lista
+
+                // Devuelve datos anónimos si existe
+                return facultad != null ? new
+                {
+                    strCod_Fac = item.strCod_Fac,
+                    strCod_Sede = item.strCod_Sede,
+                    strNombre_Fac = facultad.strnombre_fac
+                } : null;
+            })
+            .Where(f => f != null) // eliminar nulos si alguna búsqueda falló
+            .ToList();
+
+
+        lblCodSede.Text = listaFinal[0].strCod_Sede;
+        lblCodFacultad.Text = listaFinal[0].strCod_Fac;
+
+        ddlFacultad.DataSource = listaFinal;
+        rptFacultades.DataBind();
     }
 
     protected void rptFacultades_ItemCommand(object source, RepeaterCommandEventArgs e)
@@ -58,8 +85,6 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
         if (e.CommandName == "CargarLaboratorios")
         {
             lblCodFacultad.Text = Convert.ToString(e.CommandArgument);
-
-            ViewState["FacultadSeleccionada"] = Convert.ToString(e.CommandArgument);
 
             txtSearch.Text = "";
             cargarTabla();
@@ -71,7 +96,9 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
         try
         {
             string codFac = lblCodFacultad.Text;
-            var listLaboratorios = laboratorio2.LoadLAB_LABORATORIOS("xFacultad", codFac, "", "", "");
+            string codSede = lblCodSede.Text;
+
+            var listLaboratorios = laboratorio2.LoadLAB_LABORATORIOS("xSedeFacultad", codSede, codFac, "", "");
             var listResponsable = responsable1.LoadLAB_RESPONSABLE("ALL", "", "", "", "");
             var listPersonal = personal1.Load_PERSONAL("ALL", "", "", "", "");
 
@@ -85,7 +112,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                                         where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Academico"
                                         select new
                                         {
-                                            nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                            nombre = string.Concat(pers.apellido_alu, " ", pers.apellidom_alu, " ", pers.nombre_alu),
                                             FotoAcademico = pers.imagen_alu
                                         }).FirstOrDefault(),
                 ResponsableAdministrativo = (from resp in listResponsable
@@ -93,7 +120,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                                         where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Administrativo"
                                         select new
                                         {
-                                            nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                            nombre = string.Concat(pers.apellido_alu, " ", pers.apellidom_alu, " ", pers.nombre_alu),
                                             FotoAdministrativo = pers.imagen_alu
                                         }).FirstOrDefault()
             });
@@ -137,7 +164,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                                             where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Academico"
                                             select new
                                             {
-                                                nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                                nombre = string.Concat(pers.apellido_alu, " ", pers.apellidom_alu, " ", pers.nombre_alu),
                                                 FotoAcademico = pers.imagen_alu
                                             }).FirstOrDefault(),
                     ResponsableAdministrativo = (from resp in listResponsable
@@ -145,7 +172,7 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                                                  where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Administrativo"
                                                  select new
                                                  {
-                                                     nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                                     nombre = string.Concat(pers.apellido_alu, " ", pers.apellidom_alu, " ", pers.nombre_alu),
                                                      FotoAdministrativo = pers.imagen_alu
                                                  }).FirstOrDefault()
                 });

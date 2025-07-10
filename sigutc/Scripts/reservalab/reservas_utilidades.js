@@ -107,3 +107,16 @@ function convertirHora(fechaCompleta){
     const horaFinal = `${horas}:${minutos}`;
     return horaFinal;
 }
+
+function llenarHorasFin(horaInicio, finSelect) {
+    const hora = parseInt(horaInicio.split(':')[0]); // Extrae la hora (ej: 7)
+    finSelect.empty();
+
+    for (let h = hora; h <= 21; h++) {
+        const horaFin = h.toString().padStart(2, '0') + ':59';
+        finSelect.append($('<option>', {
+            value: horaFin,
+            text: horaFin
+        }));
+    }
+}
