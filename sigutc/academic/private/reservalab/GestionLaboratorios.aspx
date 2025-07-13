@@ -160,9 +160,9 @@
                             <asp:RangeValidator ID="rv_txtNumeroEquipos" runat="server" 
                                 ControlToValidate="txtNumeroEquipos" 
                                 MinimumValue="1" 
-                                MaximumValue="100" 
+                                MaximumValue="200" 
                                 Type="Integer" 
-                                ErrorMessage="El número debe estar entre 1 y 100" 
+                                ErrorMessage="El número debe estar entre 1 y 200" 
                                 CssClass="alert alert-danger form-control" 
                                 ValidationGroup="formulario" />
                         </div>
@@ -273,30 +273,31 @@
                         <div class="col-md-6">
                             <asp:UpdatePanel ID="upRepeaterSoftware" runat="server" UpdateMode="Conditional">
                                 <ContentTemplate>
+                                    <asp:Label ID="lblSoftware" runat="server" 
+                                        Text="Software" 
+                                        CssClass="control-label" />
+                                    <!-- Listado de software -->
                                     <div id="listSoftware" runat="server" visible="false">
-                                        <asp:Label ID="lblSoftware" runat="server" 
-                                            Text="Software" 
-                                            CssClass="control-label" />
-
-                                        <!-- Listado de software -->
-                                        <div class="softwareContainer">
-                                            <asp:Repeater ID="rptSoftware" runat="server">
-                                                <ItemTemplate>
-                                                    <div class="form-control item">
-                                                        <div class="row" style="max-width: 100%;">
-                                                            <div class="col-md-1">
-                                                                <asp:CheckBox ID="chkSoftware" runat="server" 
-                                                                    ToolTip='<%# Eval("strCod_sof") %>' />
-                                                            </div>
-                                                            <div class="col-md-10">
-                                                                <label><%# Eval("strNombre_sof") %></label>
-                                                            </div>
+                                        <asp:Repeater ID="rptSoftware" runat="server">
+                                            <ItemTemplate>
+                                                <div class="form-control item">
+                                                    <div class="row" style="max-width: 100%;">
+                                                        <div class="col-md-1">
+                                                            <asp:CheckBox ID="chkSoftware" runat="server" 
+                                                                ToolTip='<%# Eval("strCod_sof") %>' />
+                                                        </div>
+                                                        <div class="col-md-10">
+                                                            <label><%# Eval("strNombre_sof") %></label>
                                                         </div>
                                                     </div>
-                                                </ItemTemplate>
-                                            </asp:Repeater>
-                                        </div>
+                                                </div>
+                                            </ItemTemplate>
+                                        </asp:Repeater>
                                     </div>
+                                    <asp:Label ID="lblMsgSoft" runat="server" 
+                                        CssClass="alert alert-danger form-control" 
+                                        Visible="false" 
+                                        Text="Este laboratorio no tiene software asignado"/>
                                 </ContentTemplate>
                                 <Triggers>
                                     <asp:AsyncPostBackTrigger ControlID="ddlSede" EventName="SelectedIndexChanged" />
@@ -305,23 +306,6 @@
                             </asp:UpdatePanel>
                         </div>
                         <div class="col-md-6">
-                            <asp:Label ID="lblDescripcion" runat="server" 
-                                Text="Descripción" 
-                                CssClass="control-label required" />
-                            <asp:TextBox ID="txtDescripcion" runat="server" 
-                                CssClass="form-control custom-input text-multiple" 
-                                placeholder="Descripción" 
-                                TextMode="MultiLine" 
-                                Rows="3" />
-                            <asp:RequiredFieldValidator ID="rfv_txtDescripcion" runat="server" 
-                                ControlToValidate="txtDescripcion" 
-                                CssClass="alert alert-danger form-control" 
-                                ValidationGroup="formulario" 
-                                ErrorMessage="Campo requerido" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
                             <asp:Label ID="lblUbicacion" runat="server" 
                                 Text="Ubicación" 
                                 CssClass="control-label required" />
@@ -332,6 +316,23 @@
                                 Rows="3" />
                             <asp:RequiredFieldValidator ID="rfv_txtUbicacion" runat="server" 
                                 ControlToValidate="txtUbicacion" 
+                                CssClass="alert alert-danger form-control" 
+                                ValidationGroup="formulario" 
+                                ErrorMessage="Campo requerido" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <asp:Label ID="lblDescripcion" runat="server" 
+                                Text="Descripción" 
+                                CssClass="control-label required" />
+                            <asp:TextBox ID="txtDescripcion" runat="server" 
+                                CssClass="form-control custom-input text-multiple" 
+                                placeholder="Descripción" 
+                                TextMode="MultiLine" 
+                                Rows="3" />
+                            <asp:RequiredFieldValidator ID="rfv_txtDescripcion" runat="server" 
+                                ControlToValidate="txtDescripcion" 
                                 CssClass="alert alert-danger form-control" 
                                 ValidationGroup="formulario" 
                                 ErrorMessage="Campo requerido" />
@@ -360,7 +361,7 @@
         <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cerrar()">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                     <h4 class="modal-title" id="modalActLaboratorio">Actualizar Laboratorio</h4>
@@ -398,9 +399,9 @@
                             <asp:RangeValidator ID="rv_txtNumeroEquiposAct" runat="server" 
                                 ControlToValidate="txtNumeroEquiposAct" 
                                 MinimumValue="1" 
-                                MaximumValue="100" 
+                                MaximumValue="200" 
                                 Type="Integer" 
-                                ErrorMessage="El número debe estar entre 1 y 100" 
+                                ErrorMessage="El número debe estar entre 1 y 200" 
                                 CssClass="alert alert-danger form-control" 
                                 ValidationGroup="formularioActualizar" />
                         </div>
@@ -481,30 +482,32 @@
                     <br />
                     <div class="row">
                         <div class="col-md-6">
-                            <div id="listSoftwareAct" runat="server">
-                                <asp:Label ID="lblSoftwareAct" runat="server" 
-                                    Text="Software" 
-                                    CssClass="control-label" />
+                            <asp:Label ID="lblSoftwareAct" runat="server" 
+                                Text="Software" 
+                                CssClass="control-label" />
 
+                            <div id="listSoftwareAct" runat="server">
                                 <!-- Listado de software -->
-                                <div class="softwareContainer">
-                                    <asp:Repeater ID="rptSoftwareAct" runat="server" >
-                                        <ItemTemplate>
-                                            <div class="form-control item">
-                                                <div class="row" style="max-width: 100%;" >
-                                                    <div class="col-md-1">
-                                                        <asp:CheckBox ID="chkSoftwareAct" runat="server" 
-                                                            ToolTip='<%# Eval("strCod_sof") %>' />
-                                                    </div>
-                                                    <div class="col-md-10">
-                                                        <label for="chkSoftwareAct"><%# Eval("strNombre_sof") %></label>
-                                                    </div>
-                                                </div> 
-                                            </div>
-                                        </ItemTemplate>
-                                    </asp:Repeater>
-                                </div>
+                                <asp:Repeater ID="rptSoftwareAct" runat="server" >
+                                    <ItemTemplate>
+                                        <div class="form-control item">
+                                            <div class="row" style="max-width: 100%;" >
+                                                <div class="col-md-1">
+                                                    <asp:CheckBox ID="chkSoftwareAct" runat="server" 
+                                                        ToolTip='<%# Eval("strCod_sof") %>' />
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <label for="chkSoftwareAct"><%# Eval("strNombre_sof") %></label>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:Repeater>
                             </div>
+                            <asp:Label ID="lblMsgSoftAct" runat="server" 
+                                CssClass="alert alert-danger form-control" 
+                                Visible="false" 
+                                Text="Este laboratorio no tiene software asignado"/>
                         </div>
                         <div class="col-md-6">
                             <asp:Label ID="lblEstadoAct" runat="server" 
@@ -550,7 +553,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerrar()">Cerrar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                     <asp:Button ID="btn_Actualizar" runat="server" 
                         Text="Actualizar" 
                         CausesValidation="true" 

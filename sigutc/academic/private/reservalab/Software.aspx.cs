@@ -63,36 +63,43 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         //Realiza una consulta a la base de datos
         var listSede = sede.LoadUB_SEDES("ALL", "", "", "", "");
 
-        //Comprueba si devolvieron registros
-        if (listSede.Count != 0)
+        try
         {
-            //ddlSede de listar Software
-            ddlSede.DataSource = listSede;
-            ddlSede.DataTextField = "strNombre_Sede";
-            ddlSede.DataValueField = "strCod_Sede";
-            ddlSede.DataBind();
+            //Comprueba si devolvieron registros
+            if (listSede.Count != 0)
+            {
+                //ddlSede de listar Software
+                ddlSede.DataSource = listSede;
+                ddlSede.DataTextField = "strNombre_Sede";
+                ddlSede.DataValueField = "strCod_Sede";
+                ddlSede.DataBind();
 
-            lblMsg.Text = sede.msg;
-        }
-        else
-        {
-            lblMsg.Text = sede.msg;
-        }
+                lblMsg.Text = sede.msg;
+            }
+            else
+            {
+                lblMsg.Text = sede.msg;
+            }
 
-        //Comprueba si devolvieron registros
-        if (listSede.Count != 0)
-        {
-            //ddlSede de listar Software
-            ddlSedeSoft.DataSource = listSede;
-            ddlSedeSoft.DataTextField = "strNombre_Sede";
-            ddlSedeSoft.DataValueField = "strCod_Sede";
-            ddlSedeSoft.DataBind();
+            //Comprueba si devolvieron registros
+            if (listSede.Count != 0)
+            {
+                //ddlSede de listar Software
+                ddlSedeSoft.DataSource = listSede;
+                ddlSedeSoft.DataTextField = "strNombre_Sede";
+                ddlSedeSoft.DataValueField = "strCod_Sede";
+                ddlSedeSoft.DataBind();
 
-            lblMsg.Text = sede.msg;
+                lblMsg.Text = sede.msg;
+            }
+            else
+            {
+                lblMsg.Text = sede.msg;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            lblMsg.Text = sede.msg;
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
@@ -104,19 +111,26 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         //Realizamos una consulta a la base de datos por las facultaqdes
         var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
 
-        if (listFacultad.Count != 0)
+        try
         {
-            ddlFacultadSoft.DataSource = listFacultad;
-            ddlFacultadSoft.DataTextField = "strNombre_fac";
-            ddlFacultadSoft.DataValueField = "strCod_fac";
-            ddlFacultadSoft.DataBind();
+            if (listFacultad.Count != 0)
+            {
+                ddlFacultadSoft.DataSource = listFacultad;
+                ddlFacultadSoft.DataTextField = "strNombre_fac";
+                ddlFacultadSoft.DataValueField = "strCod_fac";
+                ddlFacultadSoft.DataBind();
 
-            //muestra mensajes devuelto en la consulta
-            lblMsg.Text = software1.msg;
+                //muestra mensajes devuelto en la consulta
+                lblMsg.Text = software1.msg;
+            }
+            else
+            {
+                lblMsg.Text = software1.msg;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            lblMsg.Text = software1.msg;
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
@@ -128,19 +142,26 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
         //Realizamos una consulta a la base de datos por las facultaqdes
         var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
 
-        if (listFacultad.Count != 0)
+        try
         {
-            ddlFacultad.DataSource = listFacultad;
-            ddlFacultad.DataTextField = "strNombre_fac";
-            ddlFacultad.DataValueField = "strCod_fac";
-            ddlFacultad.DataBind();
+            if (listFacultad.Count != 0)
+            {
+                ddlFacultad.DataSource = listFacultad;
+                ddlFacultad.DataTextField = "strNombre_fac";
+                ddlFacultad.DataValueField = "strCod_fac";
+                ddlFacultad.DataBind();
 
-            //muestra mensajes devuelto en la consulta
-            lblMsg.Text = software1.msg;
+                //muestra mensajes devuelto en la consulta
+                lblMsg.Text = software1.msg;
+            }
+            else
+            {
+                lblMsg.Text = software1.msg;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            lblMsg.Text = software1.msg;
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
@@ -151,15 +172,22 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
         var listSoftware = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
 
-        if (listSoftware.Count != 0)
+        try
         {
-            gvSoftware.DataSource = listSoftware;
-            gvSoftware.DataBind();
-            lblMsg.Text = software1.msg;
+            if (listSoftware.Count != 0)
+            {
+                gvSoftware.DataSource = listSoftware;
+                gvSoftware.DataBind();
+                lblMsg.Text = software1.msg;
+            }
+            else
+            {
+                lblMsg.Text = software1.msg;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            lblMsg.Text = software1.msg;
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
@@ -168,22 +196,29 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     {
         var registroSoftware = software1.LoadLAB_SOFTWARE("xPK", codSoft, "", "", "");
 
-        //Asignar registro al formulario de actualizar software
-        lblIdSoftAct.Text = registroSoftware[0].strCod_sof;
-        txtNombreAct.Text = registroSoftware[0].strNombre_sof;
-        txtCantidadAct.Text = registroSoftware[0].intCantidad_sof.ToString();
-        ddlTipoAct.SelectedValue = registroSoftware[0].strTipoLicencia_sof;
+        try
+        {
+            //Asignar registro al formulario de actualizar software
+            lblIdSoftAct.Text = registroSoftware[0].strCod_sof;
+            txtNombreAct.Text = registroSoftware[0].strNombre_sof;
+            txtCantidadAct.Text = registroSoftware[0].intCantidad_sof.ToString();
+            ddlTipoAct.SelectedValue = registroSoftware[0].strTipoLicencia_sof;
 
-        content_NombreLicenciaAct.Visible = ddlTipoAct.SelectedValue == "Propietario" ? true : false;
+            content_NombreLicenciaAct.Visible = ddlTipoAct.SelectedValue == "Propietario" ? true : false;
 
-        txtNombreLicenciaAct.Text = registroSoftware[0].strNombreLicencia_sof;
-        txtCostoAct.Text = registroSoftware[0].decCostoUnitario_sof.ToString();
-        ddlEstadoAct.SelectedValue = registroSoftware[0].bitEstado_sof.ToString();
-        txtLinkAct.Text = registroSoftware[0].strUrl_sof;
-        txtDescripcionAct.Text = registroSoftware[0].strDescripcion_sof;
+            txtNombreLicenciaAct.Text = registroSoftware[0].strNombreLicencia_sof;
+            txtCostoAct.Text = registroSoftware[0].decCostoUnitario_sof.ToString();
+            ddlEstadoAct.SelectedValue = registroSoftware[0].bitEstado_sof.ToString();
+            txtLinkAct.Text = registroSoftware[0].strUrl_sof;
+            txtDescripcionAct.Text = registroSoftware[0].strDescripcion_sof;
 
-        //Asignar la ruta de la imagen a un elemento label 
-        lblImg1NameAct.Text = registroSoftware[0].strImagen_sof;
+            //Asignar la ruta de la imagen a un elemento label 
+            lblImg1NameAct.Text = registroSoftware[0].strImagen_sof;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
     }
 
     //Llenar elementos DropDownList para definir los tipos de software

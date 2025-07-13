@@ -1645,14 +1645,6 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
 
         List<Menu_Master> listSubMenu = new List<Menu_Master>();
 
-        // Ítems del laboratorista (directos)
-        Menu_Master lab_tipo = new Menu_Master();
-        lab_tipo.Id = "1";
-        lab_tipo.Nombre = "Tipo de Laboratorio";
-        lab_tipo.Usuario = "laboratorio";
-        lab_tipo.Url = "/academic/private/reservalab/TipoLaboratorio.aspx";
-        lab_tipo.SubMenu_Master = null;
-
         Menu_Master lab_labs = new Menu_Master();
         lab_labs.Id = "2";
         lab_labs.Nombre = "Laboratorios";
@@ -1674,7 +1666,6 @@ public partial class MasterPageNuevo : System.Web.UI.MasterPage
         lab_software.Url = "/academic/private/reservalab/Software.aspx";
         lab_software.SubMenu_Master = null;
 
-        listSubMenu.Add(lab_tipo);
         listSubMenu.Add(lab_labs);
         listSubMenu.Add(lab_reservas);
         listSubMenu.Add(lab_software);

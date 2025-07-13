@@ -46,27 +46,28 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
     {
         string strCod_lab = lblCrono.Text;
 
-        if (string.IsNullOrEmpty(strCod_lab))
-        {
-            lblMsg.Text = "No se encontró el ID del laboratorio en la sesión.";
-            return;
-        }
-
         //Consultar registro
         var labList = laboratorio2.LoadLAB_LABORATORIOS("xPK", strCod_lab, "", "", "");
 
-        //Cargar datos mostrar en el formulario
-        if (labList != null && labList.Count > 0)
+        try
         {
-            var lab = labList[0];
+            //Cargar datos mostrar en el formulario
+            if (labList != null && labList.Count > 0)
+            {
+                var lab = labList[0];
 
-            lblFacultadId.Text = lab.strCod_Fac;
-            lblSedeId.Text = lab.strCod_Sede;
-            nombreLboratorio.InnerText = lab.strNombre_lab?.ToUpper();
+                lblFacultadId.Text = lab.strCod_Fac;
+                lblSedeId.Text = lab.strCod_Sede;
+                nombreLboratorio.InnerText = lab.strNombre_lab?.ToUpper();
+            }
+            else
+            {
+                lblMsg.Text = laboratorio2.msg;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            lblMsg.Text = laboratorio2.msg;
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
@@ -81,22 +82,29 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         // Llamada a tu clase de acceso a datos, como haces con sede.LoadUB_SEDES
         var listCarreras = car.LoadUB_CARRERAS(tipoConsulta, facultadId, sedeId, codLab, "");
 
-        //Llenar el lista desplegable
-        if (listCarreras.Count != 0)
+        try
         {
-            ddlCarreras.Items.Clear();
+            //Llenar el lista desplegable
+            if (listCarreras.Count != 0)
+            {
+                ddlCarreras.Items.Clear();
 
-            //Carga registros a un GridView
-            ddlCarreras.DataSource = listCarreras;
-            ddlCarreras.DataTextField = "strnombre_car";
-            ddlCarreras.DataValueField = "strCod_Car"; 
-            ddlCarreras.DataBind();
+                //Carga registros a un GridView
+                ddlCarreras.DataSource = listCarreras;
+                ddlCarreras.DataTextField = "strnombre_car";
+                ddlCarreras.DataValueField = "strCod_Car"; 
+                ddlCarreras.DataBind();
 
-            lblMsg.Text = car.msg;
+                lblMsg.Text = car.msg;
+            }
+            else
+            {
+                lblMsg.Text = car.msg;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            lblMsg.Text = car.msg;
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
@@ -109,28 +117,28 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
         string tipoConsulta = "xCarreraLab";
         var listCarreras = car.LoadUB_CARRERAS(tipoConsulta, labId, "", "", "");
 
-        if (tipoConsulta.Any())
+        try
         {
-            gvCarreras.DataSource = listCarreras;
-            gvCarreras.DataBind();
+            if (tipoConsulta.Any())
+            {
+                gvCarreras.DataSource = listCarreras;
+                gvCarreras.DataBind();
+            }
+            else
+            {
+                gvCarreras.DataSource = null;
+                gvCarreras.DataBind();
+                lblMsg.Text = car.msg;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            gvCarreras.DataSource = null;
-            gvCarreras.DataBind();
-            lblMsg.Text = car.msg;
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
     protected void btnGuardar_Click(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(ddlCarreras.SelectedValue))
-        {
-            string alerta = $"mostrarMensage('Debe seleccionar una carrera.', 'warning');";
-            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", alerta, true);
-            return;
-        }
-
         string strCod_Car = ddlCarreras.SelectedValue;
         int validar = validarCarreraUnico(strCod_Car);
 

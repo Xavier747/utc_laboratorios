@@ -18,7 +18,6 @@ public partial class academic_private_reservalab_ListadoLaboratorio : System.Web
     LAB_SOFTWARE software1 = new LAB_SOFTWARE();
     LAB_LABSOFTWARE softLab = new LAB_LABSOFTWARE();
     LAB_EXCLUSIVO labExc = new LAB_EXCLUSIVO();
-    LAB_TIPO tipoLaboratorio1 = new LAB_TIPO();
     UB_FACULTADES facultad = new UB_FACULTADES();
     UB_SEDES sede = new UB_SEDES();
 
@@ -64,10 +63,18 @@ public partial class academic_private_reservalab_ListadoLaboratorio : System.Web
         string cedula = Context.User.Identity.Name;
 
         var tablaDatos = laboratorio2.LoadLAB_LABORATORIOS(tipoConsulta, cedula, "", "", "");
-        if (tablaDatos != null && tablaDatos.Count > 0)
+
+        try
         {
-            gvLaboratorios.DataSource = tablaDatos;
-            gvLaboratorios.DataBind();
+            if (tablaDatos != null && tablaDatos.Count > 0)
+            {
+                gvLaboratorios.DataSource = tablaDatos;
+                gvLaboratorios.DataBind();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
         }
     }
 

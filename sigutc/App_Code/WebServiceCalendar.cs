@@ -259,6 +259,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
             strCod_tema = reservacion.strTema_reser ?? "",
             strTema_reser = ObtenerNombreTema(reservacion.strTema_reser) != "" ? ObtenerNombreTema(reservacion.strTema_reser) : reservacion.strTema_reser,
             strProposito_reser = reservacion.strProposito_reser,
+            bitTipo_reser = reservacion.bitTipo_reser,
             strDescripcion_reser = reservacion.strDescripcion_reser,
             strMateriales_reser = reservacion.strMateriales_reser,
             dtFechainicio_reser = reservacion.dtFechainicio_reser,

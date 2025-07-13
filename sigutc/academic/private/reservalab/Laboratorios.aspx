@@ -87,17 +87,19 @@
                                                                 CssClass="img-thumbnail" />
                                                         </div>
                                                         <h6>RESPONSABLE ACADÉMICO</h6>
-                                                        <label class="lblNombre"><%# Eval("ResponsableAcademico.nombre") %></label>
+                                                        <label class="lblNombre"><%# Eval("ResponsableAcademico.nombre") ?? "" %></label>
                                                     </div>
                                                     <div class="col-md-6 fila bar-left">
                                                         <div class="resp-image">
                                                             <asp:Image ID="imgRespAdmin" runat="server" 
-                                                                ImageUrl='<%# "ImageHandlerUsuario.ashx?image=" + System.IO.Path.GetFileName(Eval("ResponsableAdministrativo.FotoAdministrativo").ToString()) %>' 
+                                                                ImageUrl='<%# Eval("ResponsableAdministrativo") != null
+                                                                    ? "ImageHandlerUsuario.ashx?image="+ System.IO.Path.GetFileName(Eval("ResponsableAdministrativo.FotoAdministrativo").ToString())
+                                                                     : "~/img/usuarios/default.png"%>' 
                                                                 AlternateText="Foto Responsable Administrativo" 
                                                                 CssClass="img-thumbnail" />
                                                         </div>
                                                         <h6>RESPONSABLE ADMINISTRATIVO</h6>
-                                                        <label class="lblNombre"><%# Eval("ResponsableAdministrativo.nombre") %></label>
+                                                        <label class="lblNombre"><%# Eval("ResponsableAdministrativo.nombre") ?? "" %></label>
                                                         <br /><br />
                                                     </div>
                                                 </div>

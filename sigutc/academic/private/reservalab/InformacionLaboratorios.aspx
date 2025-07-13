@@ -31,7 +31,7 @@
                                     <div class="row">
                                         <div class="col-md-7">
                                             <label class="verde">
-                                                <b id="tipoLaboratorio"><%# Eval("TipoLaboratorio.nombre") %></b>
+                                                <b id="tipoLaboratorio"><%# Eval("strTipo_lab") %></b>
                                             </label>
                                         </div>
                                         <div class="col-md-5">

@@ -21,7 +21,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     LAB_SOFTWARE software1 = new LAB_SOFTWARE();
     LAB_LABSOFTWARE softLab = new LAB_LABSOFTWARE();
     LAB_EXCLUSIVO labExc = new LAB_EXCLUSIVO();
-    LAB_TIPO tipoLaboratorio1 = new LAB_TIPO();
     UB_FACULTADES facultad = new UB_FACULTADES();
     UB_SEDES sede = new UB_SEDES();
     Personal personal1 = new Personal();
@@ -111,38 +110,29 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             - Comparamos si la cosulta devuelve resultados
             - Caso de ser verdadero muestra los registos, caso contrario un mensage
         */
-        if (tablaDatos != null && tablaDatos.Count > 0)
+        try
         {
-            gvLaboratorios.DataSource = tablaDatos;
-            gvLaboratorios.DataBind();
-        }
-        else
-        {
+            if (tablaDatos != null && tablaDatos.Count > 0)
+            {
+                gvLaboratorios.DataSource = tablaDatos;
+                gvLaboratorios.DataBind();
+            }
+
             lblMsg.Text = laboratorio2.msg;
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
     public void cargarTipo()
     {
-        //Cosulta de registros
-        var tipo = tipoLaboratorio1.LoadLAB_TIPO("xEstado", "", "", "", "");
+        ddlTipo.Items.Add(new ListItem("DOCENCIA", "DOCENCIA"));
+        ddlTipo.Items.Add(new ListItem("DOCENCIA E INVESTIGACIÓN", "DOCENCIA E INVESTIGACIÓN"));
 
-        //Comparacion y asignacion a un componente los valores
-        if (tipo.Count > 0)
-        {
-            ddlTipo.DataSource = tipo;
-            ddlTipo.DataTextField = "strNombre_tipoLab";
-            ddlTipo.DataValueField = "strCod_tipoLab";
-            ddlTipo.DataBind();
-        }
-
-        if (tipo.Count > 0)
-        {
-            ddlTipoAct.DataSource = tipo;
-            ddlTipoAct.DataTextField = "strNombre_tipoLab";
-            ddlTipoAct.DataValueField = "strCod_tipoLab";
-            ddlTipoAct.DataBind();
-        }
+        ddlTipoAct.Items.Add(new ListItem("DOCENCIA", "DOCENCIA"));
+        ddlTipoAct.Items.Add(new ListItem("DOCENCIA E INVESTIGACIÓN", "DOCENCIA E INVESTIGACIÓN"));
     }
 
     //Consutar las areas del conocimiento
@@ -151,33 +141,40 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     /// </summary>
     public void cargarCampoAmplio()
     {
-        string tipoConsulta = "ALL";
-
-        SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetAREAC", conexion);
-        comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
-        comandoConsulta.Parameters.AddWithValue("@FILTRO1", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
-        comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
-        comandoConsulta.CommandType = CommandType.StoredProcedure;
         try
         {
-            this.conexion.Open();
-            SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
-            DataTable dt = new DataTable();
-            adaptadorAlbum.Fill(dt);
+            string tipoConsulta = "ALL";
 
-            foreach (DataRow row in dt.Rows)
+            SqlCommand comandoConsulta = new SqlCommand("SIGUTC_GetAREAC", conexion);
+            comandoConsulta.Parameters.AddWithValue("@Comodin", tipoConsulta);
+            comandoConsulta.Parameters.AddWithValue("@FILTRO1", "");
+            comandoConsulta.Parameters.AddWithValue("@FILTRO2", "");
+            comandoConsulta.Parameters.AddWithValue("@FILTRO3", "");
+            comandoConsulta.Parameters.AddWithValue("@FILTRO4", "");
+            comandoConsulta.CommandType = CommandType.StoredProcedure;
+            try
             {
-                ddlCampoAmplio.Items.Add(new ListItem(row["strNombre_areac"].ToString(), row["strCod_areac"].ToString()));
-                ddlCampoAmplioAct.Items.Add(new ListItem(row["strNombre_areac"].ToString(), row["strCod_areac"].ToString()));
+                this.conexion.Open();
+                SqlDataAdapter adaptadorAlbum = new SqlDataAdapter(comandoConsulta);
+                DataTable dt = new DataTable();
+                adaptadorAlbum.Fill(dt);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    ddlCampoAmplio.Items.Add(new ListItem(row["strNombre_areac"].ToString(), row["strCod_areac"].ToString()));
+                    ddlCampoAmplioAct.Items.Add(new ListItem(row["strNombre_areac"].ToString(), row["strCod_areac"].ToString()));
+                }
             }
+            catch (Exception ex)
+            {
+                Response.Write("TIENES UN ERROR: " + ex.Message);
+            }
+            conexion.Close();
         }
         catch (Exception ex)
         {
-            Response.Write("TIENES UN ERROR: " + ex.Message);
+            Console.WriteLine("Erro: ", ex);
         }
-        conexion.Close();
     }
 
     //Consultar software correspodiente a esa facultad y sede
@@ -190,11 +187,19 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string strCod_Sede = ddlSede.SelectedValue;
         var software = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
 
-        //Validacion: el componente se muestra siempre y cuando haya registros
-        listSoftware.Visible = software.Count > 0 ? true : false;
+        try
+        {
+            //Validacion: el componente se muestra siempre y cuando haya registros
+            listSoftware.Visible = software.Count > 0 ? true : false;
+            lblMsgSoft.Visible = software.Count == 0 ? true : false;
 
-        rptSoftware.DataSource = software;
-        rptSoftware.DataBind();
+            rptSoftware.DataSource = software;
+            rptSoftware.DataBind();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
     }
 
     //Consultar software correspodiente a esa facultad y sede
@@ -207,32 +212,48 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string strCod_Sede = ddlSedeAct.SelectedValue;
         var software = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
 
-        //Validacion: el componente se muestra siempre y cuando haya registros
-        listSoftwareAct.Visible = software.Count > 0 ? true : false;
+        try
+        {
+            //Validacion: el componente se muestra siempre y cuando haya registros
+            listSoftwareAct.Visible = software.Count > 0 ? true : false;
+            lblMsgSoftAct.Visible = software.Count == 0 ? true : false;
 
-        rptSoftwareAct.DataSource = software;
-        rptSoftwareAct.DataBind();
+            rptSoftwareAct.DataSource = software;
+            rptSoftwareAct.DataBind();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
     }
 
     //Consultar Sedes
     public void cargarSede()
     {
-        var listSede = sede.LoadUB_SEDES("ALL", "", "", "", "");
-
-        if (listSede.Count > 0)
+        try
         {
-            ddlSede.DataSource = listSede;
-            ddlSede.DataTextField = "strNombre_Sede";
-            ddlSede.DataValueField = "strCod_Sede";
-            ddlSede.DataBind();
+            var listSede = sede.LoadUB_SEDES("ALL", "", "", "", "");
+
+            if (listSede.Count > 0)
+            {
+                ddlSede.DataSource = listSede;
+                ddlSede.DataTextField = "strNombre_Sede";
+                ddlSede.DataValueField = "strCod_Sede";
+                ddlSede.DataBind();
+            }
+
+            if (listSede.Count > 0)
+            {
+                ddlSedeAct.DataSource = listSede;
+                ddlSedeAct.DataTextField = "strNombre_Sede";
+                ddlSedeAct.DataValueField = "strCod_Sede";
+                ddlSedeAct.DataBind();
+            }
+
         }
-
-        if (listSede.Count > 0)
+        catch (Exception ex)
         {
-            ddlSedeAct.DataSource = listSede;
-            ddlSedeAct.DataTextField = "strNombre_Sede";
-            ddlSedeAct.DataValueField = "strCod_Sede";
-            ddlSedeAct.DataBind();
+            Console.WriteLine("Error: ", ex);
         }
     }
 
@@ -244,18 +265,25 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string strCod_Sede = ddlSede.SelectedValue;
         var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
 
-        if (listFacultad.Count != 0)
+        try
         {
-            ddlFacultad.DataSource = listFacultad;
-            ddlFacultad.DataTextField = "strNombre_fac";
-            ddlFacultad.DataValueField = "strCod_fac";
-            ddlFacultad.DataBind();
+            if (listFacultad.Count != 0)
+            {
+                ddlFacultad.DataSource = listFacultad;
+                ddlFacultad.DataTextField = "strNombre_fac";
+                ddlFacultad.DataValueField = "strCod_fac";
+                ddlFacultad.DataBind();
 
-            lblMsg.Text = software1.msg;
+                lblMsg.Text = software1.msg;
+            }
+            else
+            {
+                lblMsg.Text = software1.msg;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            lblMsg.Text = software1.msg;
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
@@ -267,18 +295,25 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string strCod_Sede = ddlSedeAct.SelectedValue;
         var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
 
-        if (listFacultad.Count != 0)
+        try
         {
-            ddlFacultadAct.DataSource = listFacultad;
-            ddlFacultadAct.DataTextField = "strNombre_fac";
-            ddlFacultadAct.DataValueField = "strCod_fac";
-            ddlFacultadAct.DataBind();
+            if (listFacultad.Count != 0)
+            {
+                ddlFacultadAct.DataSource = listFacultad;
+                ddlFacultadAct.DataTextField = "strNombre_fac";
+                ddlFacultadAct.DataValueField = "strCod_fac";
+                ddlFacultadAct.DataBind();
 
-            lblMsg.Text = software1.msg;
+                lblMsg.Text = software1.msg;
+            }
+            else
+            {
+                lblMsg.Text = software1.msg;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            lblMsg.Text = software1.msg;
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
@@ -309,7 +344,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         laboratorio2.strDescripcion_lab = txtDescripcion.Text.Trim();
         laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
         laboratorio2.strUbicacion_lab = txtUbicacion.Text.Trim();
-        laboratorio2.strCod_tipoLab = ddlTipo.SelectedValue;
+        laboratorio2.strTipo_lab = ddlTipo.SelectedValue;
         laboratorio2.strCod_areac = ddlCampoAmplio.Text;
         laboratorio2.dtFechaRegistro_lab = DateTime.Now;
         laboratorio2.bitEstado_lab = true;
@@ -338,7 +373,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 int counter = 1;
                 while (File.Exists(path))
                 {
-                    newFilename = $"{filename}_{counter}{extension}";
+                    newFilename = string.Concat(filename + "_" + counter + extension);
                     path = Path.Combine(rutaCarpeta, newFilename);
                     counter++;
                 }
@@ -367,7 +402,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 int counter = 1;
                 while (File.Exists(path))
                 {
-                    newFilename = $"{filename}_{counter}{extension}";
+                    newFilename = string.Concat(filename + "_" + counter + extension);
                     path = Path.Combine(rutaCarpeta, newFilename);
                     counter++;
                 }
@@ -521,33 +556,40 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         // Carga los detalles del laboratorio según el ID seleccionado   
         var listLaboratoiros = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
-        // Inicializamos la lista de softwares actuales
-        softwaresActuales = new List<string>();
+        try
+        {
+            // Inicializamos la lista de softwares actuales
+            softwaresActuales = new List<string>();
 
-        // Llenar los campos del formulario de acuerdo a las propiedades del objeto laboratorio1
-        lblCodeLabAct.Text = listLaboratoiros[0].strCod_lab;
-        txtNombreAct.Text = listLaboratoiros[0].strNombre_lab;
-        txtDescripcionAct.Text = listLaboratoiros[0].strDescripcion_lab;
-        txtNumeroEquiposAct.Text = listLaboratoiros[0].intNumeroEquipos_lab.ToString();
-        ddlTipoAct.SelectedValue = listLaboratoiros[0].strCod_tipoLab;
-        txtUbicacionAct.Text = listLaboratoiros[0].strUbicacion_lab;
-        ddlCampoAmplioAct.SelectedValue = listLaboratoiros[0].strCod_areac;
-        lblImg1InfAct.Text = listLaboratoiros[0].strFotografia1_lab;
-        lblImg2InfAct.Text = listLaboratoiros[0].strFotografia2_lab;
-        ddlEstadoAct.SelectedValue = listLaboratoiros[0].bitEstado_lab == true ? "1" : "0";
-        ddlSedeAct.SelectedValue = listLaboratoiros[0].strCod_Sede;
+            // Llenar los campos del formulario de acuerdo a las propiedades del objeto laboratorio1
+            lblCodeLabAct.Text = listLaboratoiros[0].strCod_lab;
+            txtNombreAct.Text = listLaboratoiros[0].strNombre_lab;
+            txtDescripcionAct.Text = listLaboratoiros[0].strDescripcion_lab;
+            txtNumeroEquiposAct.Text = listLaboratoiros[0].intNumeroEquipos_lab.ToString();
+            ddlTipoAct.SelectedValue = listLaboratoiros[0].strTipo_lab;
+            txtUbicacionAct.Text = listLaboratoiros[0].strUbicacion_lab;
+            ddlCampoAmplioAct.SelectedValue = listLaboratoiros[0].strCod_areac;
+            lblImg1InfAct.Text = listLaboratoiros[0].strFotografia1_lab;
+            lblImg2InfAct.Text = listLaboratoiros[0].strFotografia2_lab;
+            ddlEstadoAct.SelectedValue = listLaboratoiros[0].bitEstado_lab == true ? "1" : "0";
+            ddlSedeAct.SelectedValue = listLaboratoiros[0].strCod_Sede;
 
-        //Consultar las facultades
-        cargarFacultadAct();
-        ddlFacultadAct.SelectedValue = listLaboratoiros[0].strCod_Fac;
+            //Consultar las facultades
+            cargarFacultadAct();
+            ddlFacultadAct.SelectedValue = listLaboratoiros[0].strCod_Fac;
 
-        cargarSoftwareAct();
+            cargarSoftwareAct();
 
-        string strCod_lab = lblCodeLabAct.Text;
-        var listaSoftLab = softLab.LoadLAB_LABSOFTWARE("xLaboratorioSoftware", strCod_lab, "", "", "");
-        softwaresActuales = listaSoftLab.Select(item => item.strCod_sof).ToList();
+            string strCod_lab = lblCodeLabAct.Text;
+            var listaSoftLab = softLab.LoadLAB_LABSOFTWARE("xLaboratorioSoftware", strCod_lab, "", "", "");
+            softwaresActuales = listaSoftLab.Select(item => item.strCod_sof).ToList();
 
-        isSelectSoftware();
+            isSelectSoftware();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
     }
 
     public void isSelectSoftware()
@@ -567,8 +609,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     //Actulizar Laboratorio
     protected void btn_Actualizar_Click(object sender, EventArgs e)
     {
+        string rutaCarpeta = crearDirectorio();
+
         laboratorio2.strCod_lab = lblCodeLabAct.Text;
-        laboratorio2.strCod_tipoLab = ddlTipoAct.SelectedValue;
+        laboratorio2.strTipo_lab = ddlTipoAct.SelectedValue;
         laboratorio2.strCod_areac = ddlCampoAmplioAct.SelectedValue;
         laboratorio2.strNombre_lab = txtNombreAct.Text.ToUpper().Trim();
         laboratorio2.strDescripcion_lab = txtDescripcionAct.Text.Trim();
@@ -582,18 +626,17 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         {
             try
             {
-                string folderPath = Server.MapPath("~/images/Laboratorio/");
                 string filename = Path.GetFileNameWithoutExtension(fulImg1Act.FileName);
                 string extension = Path.GetExtension(fulImg1Act.FileName);
                 string newFilename = filename + extension;
-                string path = Path.Combine(folderPath, newFilename);
+                string path = Path.Combine(rutaCarpeta, newFilename);
 
                 // Verificar si el archivo existe y agregar un sufijo numérico
                 int counter = 1;
                 while (File.Exists(path))
                 {
-                    newFilename = $"{filename}_{counter}{extension}";
-                    path = Path.Combine(folderPath, newFilename);
+                    newFilename = newFilename = string.Concat(filename + "_" + counter + extension);
+                    path = Path.Combine(rutaCarpeta, newFilename);
                     counter++;
                 }
 
@@ -610,18 +653,17 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         {
             try
             {
-                string folderPath = Server.MapPath("~/images/Laboratorio/");
                 string filename = Path.GetFileNameWithoutExtension(fulImg2Act.FileName);
                 string extension = Path.GetExtension(fulImg2Act.FileName);
                 string newFilename = filename + extension;
-                string path = Path.Combine(folderPath, newFilename);
+                string path = Path.Combine(rutaCarpeta, newFilename);
 
                 // Verificar si el archivo existe y agregar un sufijo numérico
                 int counter = 1;
                 while (File.Exists(path))
                 {
-                    newFilename = $"{filename}_{counter}{extension}";
-                    path = Path.Combine(folderPath, newFilename);
+                    newFilename = string.Concat(filename + "_" + counter + extension);
+                    path = Path.Combine(rutaCarpeta, newFilename);
                     counter++;
                 }
 
@@ -715,13 +757,15 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     //Informacion del laboratorio
     private void obtenerFacultadSede(string codLab)
     {
-        var listSede = sede.LoadUB_SEDES("xIdLaboratorio", codLab, "", "", "");
-        var listFacultad = facultad.LoadUB_FACULTADES("xIdLaboratorio", codLab, "", "", "");
         var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
-        if (listSede.Count > 0) txtSedeNombre.Text = listSede[0].strnombre_sede;
-        if (listFacultad.Count > 0) txtFacultadNombre.Text = listFacultad[0].strnombre_fac;
-        if (listLaboratorio.Count > 0) txtLaboratorioNombre.Text = listLaboratorio[0].strNombre_lab;
+        //Validacion de registros encontrados y asignacion a los componentes
+        if (listLaboratorio.Count > 0)
+        {
+            txtLaboratorioNombre.Text = listLaboratorio[0].strNombre_lab;
+            txtFacultadNombre.Text = listLaboratorio[0].strObs2_lab;
+            txtSedeNombre.Text = listLaboratorio[0].strObs1_lab;
+        }
     }
 
     protected void consultarResponsable(string codLab)
@@ -733,25 +777,32 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //Consulta de registro
         var responsable = responsable1.LoadLAB_RESPONSABLE("xLaboratorio", codLab, "", "", "");
 
-        //Llenado de registro
-        for(int i = 0; i < responsable.Count; i++)
+        try
         {
-            string cedula = responsable[i].strCod_res;
-            if (responsable[i].strTipo_respo == "Responsable Academico")
+            //Llenado de registro
+            for (int i = 0; i < responsable.Count; i++)
             {
-                var personal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
-                txtRespAcad.Text = personal[0].apellido_alu + " " + personal[0].apellidom_alu + " " + personal[0].nombre_alu;
-            } 
-            else if (responsable[i].strTipo_respo == "Responsable Administrativo")
-            {
-                var personal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
-                txtRespAdmin.Text = personal[0].apellido_alu + " " + personal[0].apellidom_alu + " " + personal[0].nombre_alu;
+                string cedula = responsable[i].strCod_res;
+                if (responsable[i].strTipo_respo == "Responsable Academico")
+                {
+                    var personal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
+                    txtRespAcad.Text = personal[0].apellido_alu + " " + personal[0].apellidom_alu + " " + personal[0].nombre_alu;
+                } 
+                else if (responsable[i].strTipo_respo == "Responsable Administrativo")
+                {
+                    var personal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
+                    txtRespAdmin.Text = personal[0].apellido_alu + " " + personal[0].apellidom_alu + " " + personal[0].nombre_alu;
+                }
             }
-        }
 
-        //Validacion para habilitar o desabilitar un boton
-        btnAsignarResponsable.Enabled = txtRespAdmin.Text != "" || txtRespAcad.Text != "" ? false : true;
-        btnActulizarResponsable.Enabled = txtRespAdmin.Text == "" & txtRespAcad.Text == "" ? false : true;
+            //Validacion para habilitar o desabilitar un boton
+            btnAsignarResponsable.Enabled = txtRespAdmin.Text != "" || txtRespAcad.Text != "" ? false : true;
+            btnActulizarResponsable.Enabled = txtRespAdmin.Text == "" & txtRespAcad.Text == "" ? false : true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
 
         ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#Lab_Detalle').modal('show');", true);
     }
@@ -760,23 +811,29 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     {
         //Definicion de variables
         string codLab = lblCodLab.Text;
-        var listSede = sede.LoadUB_SEDES("xIdLaboratorio", codLab, "", "", "");
-        var listFacultad = facultad.LoadUB_FACULTADES("xIdLaboratorio", codLab, "", "", "");
         var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
         var labExclusivo = labExc.LoadLAB_EXCLUSIVO("xLabExclusivo", codLab, "", "", "");
-        string tipoConsulta = labExclusivo.Count > 0 ? "xResponsable" : "xLaboratorista";
 
-        //Validacion de registros encontrados y asignacion a los componentes
-        if (listSede.Count > 0) txtSedeNuevo.Text = listSede[0].strnombre_sede;
-        if (listFacultad.Count > 0) txtFacNuevo.Text = listFacultad[0].strnombre_fac;
-        if (listLaboratorio.Count > 0) txtLabNuevo.Text = listLaboratorio[0].strNombre_lab;
+        try
+        {
+            //Validacion de registros encontrados y asignacion a los componentes
+            if (listLaboratorio.Count > 0){
+                txtLabNuevo.Text = listLaboratorio[0].strNombre_lab;
+                txtFacNuevo.Text = listLaboratorio[0].strObs2_lab;
+                txtSedeNuevo.Text = listLaboratorio[0].strObs1_lab;
+            } 
 
-        cargarResponsablesAgregar(tipoConsulta);
+            cargarResponsablesAgregar();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
 
         ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#Form_NuevoResponsable').modal('show');", true);
     }
 
-    public void cargarResponsablesAgregar(string tipoConsulta)
+    public void cargarResponsablesAgregar()
     {
         string codLab = lblCodLab.Text;
 
@@ -789,44 +846,49 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string codSede = laboratorio[0].strCod_Sede;
         string codFacultad = laboratorio[0].strCod_Fac;
 
-        var laboratorista = personal1.Load_PERSONAL(tipoConsulta, codFacultad, codSede, "", "");
+        var listPersonal = personal1.Load_PERSONAL("xResponsable", codFacultad, codSede, "", "");
 
-        if(laboratorista.Count > 0)
+        try
         {
-            var listaConcatenada = laboratorista
-                .Select(labResp => new {
-                    CEDULA_ALU = labResp.cedula_alu,
+            if (listPersonal.Count > 0)
+            {
+                var listaConcatenada = listPersonal
+                    .Select(labResp => new {
+                        CEDULA_ALU = labResp.cedula_alu,
 
-                    // Aquí concatenas lo que necesites
-                    NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu 
-                }).ToList();
+                        // Aquí concatenas lo que necesites
+                        NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu 
+                    }).ToList();
 
-            ddlRespAdminNuevo.DataSource = listaConcatenada;
-            ddlRespAdminNuevo.DataTextField = "NOMBRE_COMPLETO";
-            ddlRespAdminNuevo.DataValueField = "CEDULA_ALU";
-            ddlRespAdminNuevo.DataBind();
+                ddlRespAdminNuevo.DataSource = listaConcatenada;
+                ddlRespAdminNuevo.DataTextField = "NOMBRE_COMPLETO";
+                ddlRespAdminNuevo.DataValueField = "CEDULA_ALU";
+                ddlRespAdminNuevo.DataBind();
+            }
+
+            if (listPersonal.Count > 0)
+            {
+                var listaConcatenada = listPersonal
+                    .Select(labResp => new {
+                        CEDULA_ALU = labResp.cedula_alu,
+
+                        // Aquí concatenas lo que necesites
+                        NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu 
+                    }).ToList();
+
+                ddlRespAcadNuevo.DataSource = listaConcatenada;
+                ddlRespAcadNuevo.DataTextField = "NOMBRE_COMPLETO";
+                ddlRespAcadNuevo.DataValueField = "CEDULA_ALU";
+                ddlRespAcadNuevo.DataBind();
+            }
         }
-
-        var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
-
-        if (docente.Count > 0)
+        catch (Exception ex)
         {
-            var listaConcatenada = docente
-                .Select(labResp => new {
-                    CEDULA_ALU = labResp.cedula_alu,
-
-                    // Aquí concatenas lo que necesites
-                    NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu 
-                }).ToList();
-
-            ddlRespAcadNuevo.DataSource = listaConcatenada;
-            ddlRespAcadNuevo.DataTextField = "NOMBRE_COMPLETO";
-            ddlRespAcadNuevo.DataValueField = "CEDULA_ALU";
-            ddlRespAcadNuevo.DataBind();
+            Console.WriteLine("Erro: ", ex);
         }
     }
 
-    public void cargarResponsablesActualizar(string tipoConsulta)
+    public void cargarResponsablesActualizar()
     {
         string codLab = lblCodLab.Text;
 
@@ -837,41 +899,47 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string codSede = laboratorio[0].strCod_Sede;
         string codFacultad = laboratorio[0].strCod_Fac;
 
-        var laboratorista = personal1.Load_PERSONAL(tipoConsulta, codFacultad, codSede, "", "");
+        var listPersonal = personal1.Load_PERSONAL("xResponsable", codFacultad, codSede, "", "");
 
-        if (laboratorista.Count > 0)
+        try
         {
-            var listaConcatenada = laboratorista
-                .Select(labResp => new {
-                    CEDULA_ALU = labResp.cedula_alu,
+            if (listPersonal.Count > 0)
+            {
+                var listaConcatenada = listPersonal
+                    .Select(labResp => new {
+                        CEDULA_ALU = labResp.cedula_alu,
 
-                    // Aquí concatenas lo que necesites
-                    NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu 
-                }).ToList();
+                        // Aquí concatenas lo que necesites
+                        NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu 
+                    }).ToList();
 
-            ddlRespAdminActualizar.DataSource = listaConcatenada;
-            ddlRespAdminActualizar.DataTextField = "NOMBRE_COMPLETO";
-            ddlRespAdminActualizar.DataValueField = "CEDULA_ALU";
-            ddlRespAdminActualizar.DataBind();
-        }
+                ddlRespAdminActualizar.DataSource = listaConcatenada;
+                ddlRespAdminActualizar.DataTextField = "NOMBRE_COMPLETO";
+                ddlRespAdminActualizar.DataValueField = "CEDULA_ALU";
+                ddlRespAdminActualizar.DataBind();
+            }
 
-        var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
-
-        if (docente.Count > 0)
-        {
-            var listaConcatenada = docente
-                .Select(labResp => new {
-                    CEDULA_ALU = labResp.cedula_alu,
+            if (listPersonal.Count > 0)
+            {
+                var listaConcatenada = listPersonal
+                    .Select(labResp => new {
+                        CEDULA_ALU = labResp.cedula_alu,
                     
-                    // Aquí concatenas lo que necesites
-                    NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu
-                }).ToList();
+                        // Aquí concatenas lo que necesites
+                        NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu
+                    }).ToList();
 
-            ddlRespAcadActualizar.DataSource = listaConcatenada;
-            ddlRespAcadActualizar.DataTextField = "NOMBRE_COMPLETO";
-            ddlRespAcadActualizar.DataValueField = "CEDULA_ALU";
-            ddlRespAcadActualizar.DataBind();
+                ddlRespAcadActualizar.DataSource = listaConcatenada;
+                ddlRespAcadActualizar.DataTextField = "NOMBRE_COMPLETO";
+                ddlRespAcadActualizar.DataValueField = "CEDULA_ALU";
+                ddlRespAcadActualizar.DataBind();
+            }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
+
     }
 
     protected void btnGaurdar_Click(object sender, EventArgs e)
@@ -889,9 +957,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         }
 
         //Definicion de mensajes
-        string title = laboratorio2.resultado ? laboratorio2.msg :
-                       laboratorio2.numerr == 2627 ? laboratorio2.msg :
-                       "Error: " + laboratorio2.numerr + "!";
+        string title = responsable1.resultado ? responsable1.msg :
+                       responsable1.numerr == 2627 ? responsable1.msg :
+                       "Error: " + responsable1.numerr + "!";
         string icon = responsable1.resultado ? "success" : "error";
         string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
@@ -924,42 +992,36 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     {
         string codLab = lblCodLab.Text;
 
-        //Consulta de registros
-        var listSede = sede.LoadUB_SEDES("xIdLaboratorio", codLab, "", "", "");
-        var listFacultad = facultad.LoadUB_FACULTADES("xIdLaboratorio", codLab, "", "", "");
-        var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
-        var labExclusivo = labExc.LoadLAB_EXCLUSIVO("xLabExclusivo", codLab, "", "", "");
-
-        //Validacion t llenado de registros
-        if (listSede.Count > 0) txtSedeActualizar.Text = listSede[0].strnombre_sede;
-        if (listFacultad.Count > 0) txtFacActualizar.Text = listFacultad[0].strnombre_fac;
-        if (listLaboratorio.Count > 0) txtLabActualizar.Text = listLaboratorio[0].strNombre_lab;
-
-        //Definir el tipo de consulta
-        string tipoConsulta = labExclusivo.Count > 0 ? "xResponsable" : "xLaboratorista";
-
         //Llamar al metodo de consulta
-        cargarResponsablesActualizar(tipoConsulta);
+        cargarResponsablesActualizar();
 
         //Consultar registros
         var responsable = responsable1.LoadLAB_RESPONSABLE("xLaboratorio", codLab, "", "", "");
 
-        //Seleccion de un responsable seguns su rol
-        foreach (LAB_RESPONSABLE resp in responsable)
+        try
         {
-            if (resp.strTipo_respo == "Responsable Academico")
+            //Seleccion de un responsable seguns su rol
+            foreach (LAB_RESPONSABLE resp in responsable)
             {
-                lblCedulaRespAcad.Text = resp.strCod_res;
-                ddlRespAcadActualizar.SelectedValue = resp.strCod_res;
-                lblInfoRespAcad.Text = resp.strCod_respo;
+                if (resp.strTipo_respo == "Responsable Academico")
+                {
+                    lblCedulaRespAcad.Text = resp.strCod_res;
+                    ddlRespAcadActualizar.SelectedValue = resp.strCod_res;
+                    lblInfoRespAcad.Text = resp.strCod_respo;
 
+                }
+                if (resp.strTipo_respo == "Responsable Administrativo")
+                {
+                    lblCedulaRespAdmin.Text = resp.strCod_res;
+                    ddlRespAdminActualizar.SelectedValue = resp.strCod_res;
+                    lblInfoRespAdmin.Text = resp.strCod_respo;
+                }
             }
-            if (resp.strTipo_respo == "Responsable Administrativo")
-            {
-                lblCedulaRespAdmin.Text = resp.strCod_res;
-                ddlRespAdminActualizar.SelectedValue = resp.strCod_res;
-                lblInfoRespAdmin.Text = resp.strCod_respo;
-            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
         }
 
         //Muestra el formulario actualizar
@@ -986,7 +1048,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 responsable1.strUser_log = Context.User.Identity.Name;
 
                 responsable1.UpdateLAB_RESPONSABLE(responsable1);
+            }
 
+            for (int i = 0; i < 2; i++)
+            {
                 //Guardado del nuevo registro
                 responsable1.strCod_lab = lblCodLab.Text;
                 responsable1.strCod_res = i % 2 == 0 ? ddlRespAdminActualizar.SelectedValue : ddlRespAcadActualizar.SelectedValue;
@@ -1016,7 +1081,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //Cambio de responsable academico
         else if (lblCedulaRespAdmin.Text != ddlRespAdminActualizar.SelectedValue && lblCedulaRespAcad.Text == ddlRespAcadActualizar.SelectedValue)
         {
-            responsable1.strCod_respo = lblInfoRespAcad.Text;
+            responsable1.strCod_respo = lblInfoRespAdmin.Text;
             responsable1.bitEstado_respo = false;
             responsable1.dtFecha_log = DateTime.Now;
             responsable1.strUser_log = Context.User.Identity.Name;
@@ -1031,9 +1096,9 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         }
 
         //Mostrar mensajes
-        string title = laboratorio2.resultado ? laboratorio2.msg :
-                       laboratorio2.numerr == 2627 ? laboratorio2.msg :
-                       "Error: " + laboratorio2.numerr + "!";
+        string title = responsable1.resultado ? responsable1.msg :
+                       responsable1.numerr == 2627 ? responsable1.msg :
+                       "Error: " + responsable1.numerr + "!";
         string icon = responsable1.resultado ? "success" : "error";
         string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 

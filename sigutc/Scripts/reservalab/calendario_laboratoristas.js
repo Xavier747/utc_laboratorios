@@ -458,17 +458,30 @@ $(document).ready(function () {
 
         consultarEventos('xPK', idReserva, '', '', '', function (data) {
             var reserva = data[0];
-            var codAsignatura = data[0].strCod_Mate;
-            var cedula = data[0].cedula_alu;
-            var codUnidad = data[0].strCod_unidTem;
+            var codAsignatura = reserva.strCod_Mate;
+            var cedula = reserva.cedula_alu;
+            var codUnidad = reserva.strCod_unidTem;
+
+            if (reserva.bitTipo_reser) {
+                $('#switchReservaAct').prop('checked', true);
+
+                $('det_reservacionIntAct').css('display', 'none');
+                $('det_reservacionExtAct').css('display', 'block');
+            }
+            else {
+                $('#switchReservaAct').prop('checked', false);
+
+                $('det_reservacionIntAct').css('display', 'block');
+                $('det_reservacionExtAct').css('display', 'none');
+            }
 
 
-            $('#txtFechaAct').val(data[0].dtFechainicio_reser.split('T')[0]);
-            $('#txtHoraInicioAct').val(data[0].dtFechainicio_reser.split('T')[1]);
-            $('#txtHoraFinAct').val(data[0].dtFechaFin_reser.split('T')[1]);
-            $('#txtNumeroAsistentesAct').val(data[0].intTotalAsistente_reser);
-            $('#txtDescripcionAct').val(data[0].strDescripcion_reser);
-            $('#txtMaterialesAct').val(data[0].strMateriales_reser);
+            $('#txtFechaAct').val(reserva.dtFechainicio_reser.split('T')[0]);
+            $('#txtHoraInicioAct').val(reserva.dtFechainicio_reser.split('T')[1]);
+            $('#txtHoraFinAct').val(reserva.dtFechaFin_reser.split('T')[1]);
+            $('#txtNumeroAsistentesAct').val(reserva.intTotalAsistente_reser);
+            $('#txtDescripcionAct').val(reserva.strDescripcion_reser);
+            $('#txtMaterialesAct').val(dreserva.strMateriales_reser);
 
             consultarAlumno('xCEDULA', cedula, '', '', '', function (data) {
                 var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
