@@ -53,13 +53,6 @@
                                     <br />
                     
                                     <p id="txtUbicacion" runat="server" class="text-center"><%# Eval("strUbicacion_lab") %></p>
-                                    <div class="container-fluid text-center">
-                                        <br />
-                                        <br />
-                                        <a href="ReservaLaboratorio.aspx" class="btn btn-outline-primary">
-                                            &nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i>&nbsp;Reservar&nbsp;Laboratorio&nbsp;&nbsp;&nbsp;
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                         </div>

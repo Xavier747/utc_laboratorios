@@ -17,23 +17,10 @@
                     <asp:Label ID="lblCodSede" runat="server" 
                         Visible="false" 
                         Text='' />
-                    <asp:DropDownList ID="ddlFacultad" runat="server" CssClass="form-control"></asp:DropDownList>
-                    <asp:Repeater ID="rptFacultades" runat="server" 
-                        OnItemCommand="rptFacultades_ItemCommand">
-                        <ItemTemplate>
-                            <li role="presentation" onclick="setActive(this);">
-                                <asp:LinkButton ID="btnFacultad" runat="server" 
-                                    CommandName="CargarLaboratorios" 
-                                    CommandArgument='<%# Eval("strCod_Fac") %>' 
-                                    Text='<%# Eval("strNombre_Fac") %>' />
-                            </li>
-                        </ItemTemplate>
-                    </asp:Repeater>
+                    <asp:DropDownList ID="ddlFacultad" runat="server" 
+                        CssClass="form-control" />
                 </ul>    
             </ContentTemplate>
-            <Triggers>
-                <asp:AsyncPostBackTrigger ControlID="rptFacultades" EventName="ItemCommand" />
-            </Triggers>
         </asp:UpdatePanel>
     </nav>    
 
@@ -82,25 +69,28 @@
                                                             <asp:Image ID="imgRespAcad" runat="server" 
                                                                 ImageUrl='<%# Eval("ResponsableAcademico") != null
                                                                     ? "ImageHandlerUsuario.ashx?image=" + System.IO.Path.GetFileName(Eval("ResponsableAcademico.FotoAcademico").ToString()) 
-                                                                    : "~/img/usuarios/default.png" %>' 
+                                                                    : "" %>' 
                                                                 AlternateText="Foto Responsable Académico" 
                                                                 CssClass="img-thumbnail" />
                                                         </div>
                                                         <h6>RESPONSABLE ACADÉMICO</h6>
-                                                        <label class="lblNombre"><%# Eval("ResponsableAcademico.nombre") ?? "" %></label>
+                                                        <asp:Label ID="lblNombreAcademico" runat="server" 
+                                                            CssClass="lblNombre" 
+                                                            Text='<%# Eval("ResponsableAcademico.nombre") ?? "" %>' />
                                                     </div>
                                                     <div class="col-md-6 fila bar-left">
                                                         <div class="resp-image">
                                                             <asp:Image ID="imgRespAdmin" runat="server" 
                                                                 ImageUrl='<%# Eval("ResponsableAdministrativo") != null
                                                                     ? "ImageHandlerUsuario.ashx?image="+ System.IO.Path.GetFileName(Eval("ResponsableAdministrativo.FotoAdministrativo").ToString())
-                                                                     : "~/img/usuarios/default.png"%>' 
+                                                                     : ""%>' 
                                                                 AlternateText="Foto Responsable Administrativo" 
                                                                 CssClass="img-thumbnail" />
                                                         </div>
                                                         <h6>RESPONSABLE ADMINISTRATIVO</h6>
-                                                        <label class="lblNombre"><%# Eval("ResponsableAdministrativo.nombre") ?? "" %></label>
-                                                        <br /><br />
+                                                        <asp:Label ID="lblNombreAdministrativo" runat="server" 
+                                                            CssClass="lblNombre" 
+                                                            Text='<%# Eval("ResponsableAdministrativo.nombre") ?? "" %>' />
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -135,4 +125,6 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
+    <!-- Importa archivos js -->
+    <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_utilidades.js") %>'></script>
 </asp:Content>

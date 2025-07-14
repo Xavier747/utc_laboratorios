@@ -785,13 +785,11 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 string cedula = responsable[i].strCod_res;
                 if (responsable[i].strTipo_respo == "Responsable Academico")
                 {
-                    var personal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
-                    txtRespAcad.Text = personal[0].apellido_alu + " " + personal[0].apellidom_alu + " " + personal[0].nombre_alu;
+                    txtRespAcad.Text = responsable[i].strObs1_respo;
                 } 
                 else if (responsable[i].strTipo_respo == "Responsable Administrativo")
                 {
-                    var personal = personal1.Load_PERSONAL("xCEDULA", cedula, "", "", "");
-                    txtRespAdmin.Text = personal[0].apellido_alu + " " + personal[0].apellidom_alu + " " + personal[0].nombre_alu;
+                    txtRespAdmin.Text = responsable[i].strObs1_respo;
                 }
             }
 
@@ -1010,6 +1008,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                     lblInfoRespAcad.Text = resp.strCod_respo;
 
                 }
+
                 if (resp.strTipo_respo == "Responsable Administrativo")
                 {
                     lblCedulaRespAdmin.Text = resp.strCod_res;

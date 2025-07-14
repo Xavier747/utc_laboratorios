@@ -126,13 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     mostrarMensage(mensaje, icon);
                     calendar.unselect();
                 }
-                else if (dayOfWeek === 0 || dayOfWeek === 6) {
-                    mensaje = 'No se permiten reservas los fines de semana. Por favor, selecciona un día laborable.';
-                    icon = 'warning';
-
-                    mostrarMensage(mensaje, icon);
-                    calendar.unselect();
-                }
                 else {
                     var fecha = info.start.toISOString().split('T')[0];
 

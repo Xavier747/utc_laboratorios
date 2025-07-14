@@ -59,12 +59,12 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
     public void cargarSede()
     {
-        //Conectamos con la libreria de clases
-        //Realiza una consulta a la base de datos
-        var listSede = sede.LoadUB_SEDES("ALL", "", "", "", "");
-
         try
         {
+            //Conectamos con la libreria de clases
+            //Realiza una consulta a la base de datos
+            var listSede = sede.LoadUB_SEDES("ALL", "", "", "", "");
+
             //Comprueba si devolvieron registros
             if (listSede.Count != 0)
             {
@@ -105,14 +105,14 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
     public void cargarFacultadSoft()
     {
-        //almacenamos la clave primaria de Sede
-        string strCod_Sede = ddlSedeSoft.SelectedValue;
-
-        //Realizamos una consulta a la base de datos por las facultaqdes
-        var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
-
         try
         {
+            //almacenamos la clave primaria de Sede
+            string strCod_Sede = ddlSedeSoft.SelectedValue;
+
+            //Realizamos una consulta a la base de datos por las facultaqdes
+            var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
+
             if (listFacultad.Count != 0)
             {
                 ddlFacultadSoft.DataSource = listFacultad;
@@ -136,14 +136,14 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
     public void cargarFacultadNuevo()
     {
-        //almacenamos la clave primaria de Sede
-        string strCod_Sede = ddlSede.SelectedValue;
-
-        //Realizamos una consulta a la base de datos por las facultaqdes
-        var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
-
         try
         {
+            //almacenamos la clave primaria de Sede
+            string strCod_Sede = ddlSede.SelectedValue;
+
+            //Realizamos una consulta a la base de datos por las facultaqdes
+            var listFacultad = facultad.LoadUB_FACULTADES("xPKSede", strCod_Sede, "", "", "");
+
             if (listFacultad.Count != 0)
             {
                 ddlFacultad.DataSource = listFacultad;
@@ -167,13 +167,13 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
     public void cargarSoftware()
     {
-        string strCod_Fac = ddlFacultadSoft.SelectedValue;
-        string strCod_Sede = ddlSedeSoft.SelectedValue;
-
-        var listSoftware = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
-
         try
         {
+            string strCod_Fac = ddlFacultadSoft.SelectedValue;
+            string strCod_Sede = ddlSedeSoft.SelectedValue;
+
+            var listSoftware = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
+
             if (listSoftware.Count != 0)
             {
                 gvSoftware.DataSource = listSoftware;
@@ -194,10 +194,10 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     //consultar registro
     public void consultarRegistro(string codSoft)
     {
-        var registroSoftware = software1.LoadLAB_SOFTWARE("xPK", codSoft, "", "", "");
-
         try
         {
+            var registroSoftware = software1.LoadLAB_SOFTWARE("xPK", codSoft, "", "", "");
+
             //Asignar registro al formulario de actualizar software
             lblIdSoftAct.Text = registroSoftware[0].strCod_sof;
             txtNombreAct.Text = registroSoftware[0].strNombre_sof;
@@ -286,7 +286,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
                 //Valida si existe archivos con el mismo nombre caso de que si crea otro nombre oara ek nuevo archivo
                 while (File.Exists(path))
                 {
-                    newFilename = $"{filename}_{counter}{extension}";
+                    newFilename = string.Concat(filename + "_" + counter + extension);
                     path = Path.Combine(rutaCarpeta, newFilename);
                     counter++;
                 }
@@ -308,9 +308,9 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
                        software1.numerr == 2627 ? software1.msg :
                        "Error: " + software1.numerr;
         string icon = software1.resultado ? "success" : "error";
+        string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
-        string script = $"mostrarMensageCRUD('{title}', '{icon}');";
-        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
     }
 
     private string crearDirectorio()
@@ -382,9 +382,9 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
                            software1.numerr == 2627 ? software1.msg :
                            "Error: " + software1.numerr;
             string icon = software1.resultado ? "success" : "error";
+            string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
-            string script = $"mostrarMensageCRUD('{title}', '{icon}');";
-            ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
         }
     }
 
@@ -445,7 +445,7 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
                 int counter = 1;
                 while (File.Exists(path))
                 {
-                    newFilename = $"{filename}_{counter}{extension}";
+                    newFilename = string.Concat(filename + "_" + counter + extension);
                     path = Path.Combine(rutaCarpeta, newFilename);
                     counter++;
                 }
@@ -465,9 +465,9 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
                        software1.numerr == 2627 ? software1.msg :
                        "Error: " + software1.numerr;
         string icon = software1.resultado ? "success" : "error";
+        string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
-        string script = $"mostrarMensageCRUD('{title}', '{icon}');";
-        ClientScript.RegisterStartupScript(this.GetType(), "ShowAlert", script, true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
     }
 
     protected void ddlTipoAct_SelectedIndexChanged(object sender, EventArgs e)

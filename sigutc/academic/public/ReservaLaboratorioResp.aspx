@@ -252,12 +252,27 @@
                             <legend>DATOS DEL SOLICITANTE</legend>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <asp:Label ID="Label6" runat="server" Text="NOMBRES:"></asp:Label>
-                                    <asp:DropDownList ID="DropDownList1" runat="server" CssClass="form-control"></asp:DropDownList>
+                                    <asp:Label ID="lblNombreExt" runat="server" Text="NOMBRES:"></asp:Label>
+                                    <input type="text" id="txtNombreExt" class="form-control" />
                                 </div>
                                 <div class="col-md-6">
-                                    <asp:Label ID="Label7" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
-                                    <asp:TextBox ID="TextBox1" runat="server" CssClass="form-control" Enabled="false"></asp:TextBox>
+                                    <asp:Label ID="lblCorreo" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
+                                    <input type="text" id="txtMailExt" class="form-control" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <asp:Label ID="lblCedula" runat="server" Text="CEDULA:"></asp:Label>
+                                    <input type="text" id="txtCedula" class="form-control" />
+                                </div>
+                                <div class="col-md-4">
+                                    <asp:Label ID="lblTelefono" runat="server" Text="TELEFONÓ:"></asp:Label>
+                                    <input type="tel" id="txtTelefono" class="form-control" />
+                                </div>
+                                <div class="col-md-4">
+                                    <asp:Label ID="lblInstitucion" runat="server" Text="INSTITUCION / EMPRESA:"></asp:Label>
+                                    <input type="text" id="txtInstitucionExt" class="form-control" />
                                 </div>
                             </div>
                         </fieldset>
@@ -265,7 +280,19 @@
                         <fieldset>
                             <legend>DATOS DE RESERVACIÓN</legend>
                             <div class="row">
-                                <div class="col-md-2">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblFechaExt" runat="server" Text="FECHA:"></asp:Label>
+                                    <input id="txtFechaExt" class="form-control" disabled="disabled"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblHoraInicioExt" runat="server" Text="HORA DE INICIO:"></asp:Label>
+                                    <select class="form-control" id="selectHoraInicioExt"></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblHoraFinExt" runat="server" Text="HORA DE FINALIZACION:"></asp:Label>
+                                    <select class="form-control" id="selectHoraFinExt"></select>
+                                </div>
+                                <div class="col-md-3">
                                     <br />
                                     <input type="text" id="id_horario" hidden="hidden"/>
                                     <button type="button" class="btn btn-primary" onclick="validarReservacion()">Verificar</button>  
@@ -273,7 +300,7 @@
                                 </div>
                             </div>
                         </fieldset>
-                        <div id="det_reservacion" style="display:none;">
+                        <div id="det_reservacion">
                             <fieldset>
                                 <legend>DETALLES DE LA RESERVACIÓN</legend>
                                 <div class="row">

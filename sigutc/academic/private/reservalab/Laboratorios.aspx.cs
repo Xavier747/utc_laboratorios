@@ -77,7 +77,9 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
         lblCodFacultad.Text = listaFinal[0].strCod_Fac;
 
         ddlFacultad.DataSource = listaFinal;
-        rptFacultades.DataBind();
+        ddlFacultad.DataTextField = "strNombre_Fac";
+        ddlFacultad.DataValueField = "strCod_Fac";
+        ddlFacultad.DataBind();
     }
 
     protected void rptFacultades_ItemCommand(object source, RepeaterCommandEventArgs e)
@@ -160,20 +162,18 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
                     lab.strFotografia1_lab,
 
                     ResponsableAcademico = (from resp in listResponsable
-                                            join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
                                             where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Academico"
                                             select new
                                             {
-                                                nombre = string.Concat(pers.apellido_alu, " ", pers.apellidom_alu, " ", pers.nombre_alu),
-                                                FotoAcademico = pers.imagen_alu
+                                                nombre = resp.strObs1_respo,
+                                                FotoAcademico = resp.strObs2_respo
                                             }).FirstOrDefault(),
                     ResponsableAdministrativo = (from resp in listResponsable
-                                                 join pers in listPersonal on resp.strCod_res equals pers.cedula_alu
                                                  where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Administrativo"
                                                  select new
                                                  {
-                                                     nombre = string.Concat(pers.apellido_alu, " ", pers.apellidom_alu, " ", pers.nombre_alu),
-                                                     FotoAdministrativo = pers.imagen_alu
+                                                     nombre = resp.strObs1_respo,
+                                                     FotoAdministrativo = resp.strObs2_respo
                                                  }).FirstOrDefault()
                 });
 
@@ -198,8 +198,29 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
 
         if (e.CommandName == "Reservar")
         {
-            SeguridadUTC sutc = new SeguridadUTC();
-            Response.Redirect("~/academic/public/ReservaLaboratorioDocen.aspx?In= " + Server.UrlEncode(sutc.Encripta(codLab)));
+            Label lblNombreAdministrativo = (Label)e.Item.FindControl("lblNombreAdministrativo");
+            string nombre = lblNombreAdministrativo.Text;
+
+            if (nombre != "")
+            {
+                SeguridadUTC sutc = new SeguridadUTC();
+                Response.Redirect("~/academic/public/ReservaLaboratorioDocen.aspx?In= " + Server.UrlEncode(sutc.Encripta(codLab)));
+            }
+            else
+            {
+                //Muestra mensaje de informacion
+                string title = "No puedes reservar este laboratorio, debido a que no cuenta con un responsable administrativo";
+                string icon = "error";
+                string script = string.Concat("mostrarMensage('", title, "', '", icon, "');");
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
+
+                //title = "";
+                //icon = "error";
+                //script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
+
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
+            }
         }
         else if (e.CommandName == "Informacion")
         {

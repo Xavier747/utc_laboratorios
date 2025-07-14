@@ -45,8 +45,9 @@
 }
 
 .lblNombre{
+    display: block;
     height: 50px;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 h6{

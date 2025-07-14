@@ -74,5 +74,5 @@
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
     <!-- Importa archivos js -->
-    <script src='<%= ResolveUrl("Scripts/reservalab/reservas_utilidades.js") %>'></script>
+    <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_utilidades.js") %>'></script>
 </asp:Content>
