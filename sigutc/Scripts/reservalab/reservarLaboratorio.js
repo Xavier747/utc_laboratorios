@@ -403,7 +403,8 @@ $(document).ready(function () {
             if ($('#selectTipoMotivo').val() === "") {
                 isValid = false;
                 $('#selectTipoMotivo').addClass('is-invalid');
-            } else {
+            }
+            else {
                 $('#selectTipoMotivo').removeClass('is-invalid');
             }
 
@@ -411,7 +412,8 @@ $(document).ready(function () {
             if ($('#selectUnidad').val() === "") {
                 isValid = false;
                 $('#selectUnidad').addClass('is-invalid');
-            } else {
+            }
+            else {
                 $('#selectUnidad').removeClass('is-invalid');
             }
 
@@ -419,14 +421,16 @@ $(document).ready(function () {
             if ($('#content_ddlTema').is(':visible') && $('#selectTema').val() === "") {
                 isValid = false;
                 $('#selectTema').addClass('is-invalid');
-            } else {
+            }
+            else {
                 $('#selectTema').removeClass('is-invalid');
             }
 
             if ($('#content_txtTema').is(':visible') && $('#txtTema').val().trim() === "") {
                 isValid = false;
                 $('#txtTema').addClass('is-invalid');
-            } else {
+            }
+            else {
                 $('#txtTema').removeClass('is-invalid');
             }
 
@@ -434,7 +438,8 @@ $(document).ready(function () {
             if ($('#txtDescripcion').val().trim() === "") {
                 isValid = false;
                 $('#txtDescripcion').addClass('is-invalid');
-            } else {
+            } 
+            else {
                 $('#txtDescripcion').removeClass('is-invalid');
             }
 
@@ -442,7 +447,8 @@ $(document).ready(function () {
             if ($('#txtMaterial').val().trim() === "") {
                 isValid = false;
                 $('#txtMaterial').addClass('is-invalid');
-            } else {
+            }
+            else {
                 $('#txtMaterial').removeClass('is-invalid');
             }
 
@@ -454,7 +460,8 @@ $(document).ready(function () {
                     if ($('#txtMaterial').val().trim() === "") {
                         isValid = false;
                         $('#txtSoftware').addClass('is-invalid');
-                    } else {
+                    }
+                    else {
                         $('#txtSoftware').removeClass('is-invalid');
                     }
                 }
@@ -462,7 +469,8 @@ $(document).ready(function () {
                     if (valorSelect == null || valorSelect.length === 0) {
                         isValid = false;
                         $('#countries').addClass('is-invalid');
-                    } else {
+                    }
+                    else {
                         $('#countries').removeClass('is-invalid');
                     }
                 }
@@ -729,11 +737,13 @@ function guardarDatos() {
     reservacion[5] = $('#txtFecha').val() + ' ' + $('#selectHoraInicio').val();
     reservacion[6] = $('#txtFecha').val() + ' ' + $('#selectHoraFin').val();
     reservacion[7] = $('#txtNumeroAsistentes').val();
-    reservacion[8] = '';
+    reservacion[8] = cedula;
     reservacion[9] = '#a4e4af';
     reservacion[10] = tipo;
     reservacion[11] = codLab;
     reservacion[12] = false;
+    reservacion[13] = $('#lblTipoResInt').text();
+    reservacion[14] = "";
 
     guardarReservacion(reservacion);
 }
@@ -867,9 +877,9 @@ function mostrarListado(fecha){
                 tr.append(`<td><div style="width:20px; height:20px; background-color:${item.strColor_reser}; border-radius:3px;"></div></td>`);
 
                 // Botones de acción
-                const btnDetalle = `<button class="btn btn-info" data-id="${item.strCod_reser}">Detalle</button>`;
-                const btnActualizar = `<button class="btn btn-warning" data-id="${item.strCod_reser}">Actualizar</button>`;
-                const btnEliminar = `<button class="btn btn-danger" data-id="${item.strCod_reser}">Eliminar</button>`;
+                const btnDetalle = `<button class="btn btn-info" data-id="${item.strCod_reser}"><i class="fa fa-info-circle" aria-hidden="true"></i></button>`;
+                const btnActualizar = `<button class="btn btn-success" data-id="${item.strCod_reser}"><i class="fa fa-upload" aria-hidden="true"></i></button>`;
+                const btnEliminar = `<button class="btn btn-danger" data-id="${item.strCod_reser}"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
 
                 consultarAlumno('xCEDULA', item.cedula_alu, '', '', '', function(data){
                     var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;

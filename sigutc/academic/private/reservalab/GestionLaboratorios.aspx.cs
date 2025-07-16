@@ -810,7 +810,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         //Definicion de variables
         string codLab = lblCodLab.Text;
         var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
-        var labExclusivo = labExc.LoadLAB_EXCLUSIVO("xLabExclusivo", codLab, "", "", "");
 
         try
         {
@@ -840,11 +839,24 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         ddlRespAdminNuevo.Items.Clear();
 
         //Consulta de registros
-        var laboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
-        string codSede = laboratorio[0].strCod_Sede;
-        string codFacultad = laboratorio[0].strCod_Fac;
+        var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
+        string codSede = listLaboratorio[0].strCod_Sede;
+        string codFacultad = listLaboratorio[0].strCod_Fac;
 
-        var listPersonal = personal1.Load_PERSONAL("xResponsable", codFacultad, codSede, "", "");
+        try
+        {
+            if (listLaboratorio.Count > 0){
+                txtLabNuevo.Text = listLaboratorio[0].strNombre_lab;
+                txtFacNuevo.Text = listLaboratorio[0].strObs2_lab;
+                txtSedeNuevo.Text = listLaboratorio[0].strObs1_lab;
+            } 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
+
+        var listPersonal = personal1.Load_PERSONAL("xLaboratorista", codFacultad, codSede, "", "");
 
         try
         {
@@ -864,14 +876,16 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 ddlRespAdminNuevo.DataBind();
             }
 
-            if (listPersonal.Count > 0)
+            var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
+
+            if (docente.Count > 0)
             {
-                var listaConcatenada = listPersonal
+                var listaConcatenada = docente
                     .Select(labResp => new {
                         CEDULA_ALU = labResp.cedula_alu,
 
-                        // Aquí concatenas lo que necesites
-                        NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu 
+                    // Aquí concatenas lo que necesites
+                    NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu
                     }).ToList();
 
                 ddlRespAcadNuevo.DataSource = listaConcatenada;
@@ -893,11 +907,24 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         ddlRespAcadActualizar.Items.Clear();
         ddlRespAdminActualizar.Items.Clear();
 
-        var laboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
-        string codSede = laboratorio[0].strCod_Sede;
-        string codFacultad = laboratorio[0].strCod_Fac;
+        var listLaboratorio = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
+        string codSede = listLaboratorio[0].strCod_Sede;
+        string codFacultad = listLaboratorio[0].strCod_Fac;
 
-        var listPersonal = personal1.Load_PERSONAL("xResponsable", codFacultad, codSede, "", "");
+        try
+        {
+            if (listLaboratorio.Count > 0){
+                txtLabActualizar.Text = listLaboratorio[0].strNombre_lab;
+                txtFacActualizar.Text = listLaboratorio[0].strObs2_lab;
+                txtSedeActualizar.Text = listLaboratorio[0].strObs1_lab;
+            } 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
+
+        var listPersonal = personal1.Load_PERSONAL("xLaboratorista", codFacultad, codSede, "", "");
 
         try
         {
@@ -917,9 +944,10 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 ddlRespAdminActualizar.DataBind();
             }
 
-            if (listPersonal.Count > 0)
+            var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
+            if (docente.Count > 0)
             {
-                var listaConcatenada = listPersonal
+                var listaConcatenada = docente
                     .Select(labResp => new {
                         CEDULA_ALU = labResp.cedula_alu,
                     

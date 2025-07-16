@@ -552,7 +552,7 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">
     <script>
         var codLabCli = '<%= lblCrono.ClientID %>';
-        var cedula = '<%= Context.User.Identity.Name%>'
+        var cedula = '<%= Context.User.Identity.Name%>';
     </script>
     <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_utilidades.js") %>' type="text/javascript"></script>
     <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_carga.js") %>' type="text/javascript"></script>

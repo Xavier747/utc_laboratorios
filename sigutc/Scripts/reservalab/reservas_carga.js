@@ -139,3 +139,24 @@ function cargarSoftware(data, selectSoftware) {
         selectSoftware.append(opcion);
     });
 }
+
+function llenarHoras(inicioSelect, finSelect) {
+    // Llenar hora inicio: 07:00 a 21:00
+    for (let h = 7; h <= 21; h++) {
+        const hora = h.toString().padStart(2, '0') + ':00';
+        inicioSelect.append($('<option>', {
+            value: hora,
+            text: hora
+        }));
+    }
+
+    // Llenar hora fin por primera vez (usando primer valor de hora inicio)
+    const primerValorInicio = inicioSelect.find('option:first').val();
+    llenarHorasFin(primerValorInicio, finSelect);
+
+    // Cambiar hora fin al cambiar la hora de inicio
+    inicioSelect.on('change', function () {
+        const valorSeleccionado = $(this).val();
+        llenarHorasFin(valorSeleccionado, finSelect);
+    });
+}

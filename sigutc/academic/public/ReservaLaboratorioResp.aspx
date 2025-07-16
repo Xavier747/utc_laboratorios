@@ -95,16 +95,17 @@
                         <legend>TIPO DE RESERVA</legend>
                         <div class="row">
                             <div class="col-md-12 text-center">
-                                <label>Reservacion interna</label>                                           
+                                <label id="lblTipoResInt">Reservacion interna</label>                                           
                                 <label class="switch" style="margin: 0 30px;">
                                     <input type="checkbox" id="switchReserva"/>
                                     <span class="slider round"></span>
                                 </label>
-                                <label>Reservación externa</label>
+                                <label id="lblTipoResExt">Reservación externa</label>
                             </div>
                         </div>
                     </fieldset>
                     <br />
+
                     <div id="reservaInterna">
                         <fieldset>
                             <legend>DATOS DEL SOLICITANTE</legend>
@@ -248,34 +249,6 @@
                         </div>                        
                     </div>
                     <div id="reservaExterna" style="display: none;">
-                        <fieldset>
-                            <legend>DATOS DEL SOLICITANTE</legend>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblNombreExt" runat="server" Text="NOMBRES:"></asp:Label>
-                                    <input type="text" id="txtNombreExt" class="form-control" />
-                                </div>
-                                <div class="col-md-6">
-                                    <asp:Label ID="lblCorreo" runat="server" Text="CORREO ELECTRONICO:"></asp:Label>
-                                    <input type="text" id="txtMailExt" class="form-control" />
-                                </div>
-                            </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <asp:Label ID="lblCedula" runat="server" Text="CEDULA:"></asp:Label>
-                                    <input type="text" id="txtCedula" class="form-control" />
-                                </div>
-                                <div class="col-md-4">
-                                    <asp:Label ID="lblTelefono" runat="server" Text="TELEFONÓ:"></asp:Label>
-                                    <input type="tel" id="txtTelefono" class="form-control" />
-                                </div>
-                                <div class="col-md-4">
-                                    <asp:Label ID="lblInstitucion" runat="server" Text="INSTITUCION / EMPRESA:"></asp:Label>
-                                    <input type="text" id="txtInstitucionExt" class="form-control" />
-                                </div>
-                            </div>
-                        </fieldset>
                         <br />
                         <fieldset>
                             <legend>DATOS DE RESERVACIÓN</legend>
@@ -868,7 +841,7 @@
         var codLabCli = '<%= lblCrono.Text %>';
         var codSedeCli = '<%= lblSede.Text %>';
         var codFacultadCli = '<%= lblFacultad.Text %>';
-        var cedula = '<%= Context.User.Identity.Name%>'
+        var cedula = '<%= Context.User.Identity.Name%>';
     </script>
     <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_utilidades.js") %>'></script>
     <script src='<%= ResolveUrl("~/Scripts/reservalab/reservas_carga.js") %>'></script>

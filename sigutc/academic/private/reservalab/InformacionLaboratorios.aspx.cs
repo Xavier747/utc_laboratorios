@@ -65,7 +65,7 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
                                         where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Academico"
                                         select new
                                         {
-                                            nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                            nombre = string.Concat(pers.apellido_alu + " " + pers.apellidom_alu + " " + pers.nombre_alu),
                                             FotoAcademico = pers.imagen_alu,
                                             correo = pers.correo_alu
                                         }).FirstOrDefault(),
@@ -74,7 +74,7 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
                                              where resp.strCod_lab == lab.strCod_lab && resp.strTipo_respo == "Responsable Administrativo"
                                              select new
                                              {
-                                                 nombre = $"{pers.apellido_alu} {pers.apellidom_alu} {pers.nombre_alu}",
+                                                 nombre = string.Concat(pers.apellido_alu + " " + pers.apellidom_alu + " " + pers.nombre_alu),
                                                  FotoAdministrativo = pers.imagen_alu,
                                                  correo = pers.correo_alu
                                              }).FirstOrDefault(),

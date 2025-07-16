@@ -198,8 +198,8 @@ public class WebServiceCalendar : System.Web.Services.WebService
         reserva1.bitEstado_reser = true;
         reserva1.dtFecha_log = DateTime.Now;
         reserva1.strUser_log = Context.User.Identity.Name;
-        reserva1.strObs1_reser = string.Empty;
-        reserva1.strObs2_reser = string.Empty;
+        reserva1.strObs1_reser = reservacion[13];
+        reserva1.strObs2_reser = reservacion[14];
         reserva1.bitObs1_reser = false;
         reserva1.bitObs2_reser = false;
         reserva1.decObs1_reser = -1;

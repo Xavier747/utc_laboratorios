@@ -8,143 +8,102 @@ var listSoftware = [];
 
 document.addEventListener('DOMContentLoaded', function () {
     // Múltiples rangos permitidos
-    consultarPeriodoAcademico('xGeneral', 'MUTC', 'NA', 'NA', '', function (data) {
-        // Guardar los rangos válidos
-        rangosPermitidos = data.map(r => ({
-            fechaInicio: r.dtFechaIni_per.split('T')[0],
-            fechaFin: r.dtFechaFin_per.split('T')[0]
-        }));
+    var calendarEl = document.getElementById('calendarLab');
 
-        // Calcular min y max para el validRange general
-        const fechasInicio = rangosPermitidos.map(r => new Date(r.fechaInicio));
-        const fechasFin = rangosPermitidos.map(r => new Date(r.fechaFin));
+    var ancho = window.innerWidth;
 
-        const min = new Date(Math.min.apply(null, fechasInicio));
-        const max = new Date(Math.max.apply(null, fechasFin));
+    // Definir altura según el ancho del dispositivo
+    var altura =
+        ancho <= 480 ? 'auto' :
+        ancho <= 1024 ? 650 :
+        1200; // para pantallas grandes
 
-        const rangoValido = {
-            start: min.toISOString().split('T')[0],
-            end: max.toISOString().split('T')[0]
-        };
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        buttonText: {
+            month: 'Mes',
+            week: 'Semana',
+            list: 'Lista'
+        },
+        initialView: 'dayGridMonth', // vista mensual
+        locale: 'es',                // idioma español
+        height: altura,
+        headerToolbar: {
+            left: 'prev,next',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,listWeek'
+        },
+        dateClick: function (info) {
+            var fechaCompleta = info.dateStr;
+            var fecha = fechaCompleta.substring(0, 10);
+            $('#fecha').text(fecha);
+            $('#txtFecha').val(fecha);
+            $('#txtFechaExt').val(fecha);
 
-        var calendarEl = document.getElementById('calendarLab');
+            dia = obtenerDiaSemana(fecha);
+        },
+        events: function (fetchInfo, successCallback, failureCallback) {
+            consultarEventos('xCodLab', codLab, '', '', '', function (data) {
+                const eventos = [];
 
-        var ancho = window.innerWidth;
-
-        // Definir altura según el ancho del dispositivo
-        var altura =
-            ancho <= 480 ? 'auto' :
-            ancho <= 1024 ? 650 :
-            1200; // para pantallas grandes
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            buttonText: {
-                month: 'Mes',
-                week: 'Semana',
-                list: 'Lista'
-            },
-            initialView: 'dayGridMonth', // vista mensual
-            locale: 'es',                // idioma español
-            height: altura,
-            headerToolbar: {
-                left: 'prev,next',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,listWeek'
-            },
-            validRange: rangoValido,
-            dayCellDidMount: function (info) {
-                const fecha = info.date.toISOString().split('T')[0];
-                const dayOfWeek = info.date.getUTCDay(); // 0 = Domingo, 6 = Sábado
-
-                const esDiaValido = rangosPermitidos.some(r => {
-                    return fecha >= r.fechaInicio && fecha <= r.fechaFin;
-                });
-
-                if (!esDiaValido) {
-                    info.el.classList.add('fc-day-disabled');
-                }
-            },
-            dateClick: function (info) {
-                var fechaCompleta = info.dateStr;
-                var fecha = fechaCompleta.substring(0, 10);
-                $('#fecha').text(fecha);
-                $('#txtFecha').val(fecha);
-
-                dia = obtenerDiaSemana(fecha);
-            },
-            events: function (fetchInfo, successCallback, failureCallback) {
-                consultarEventos('xCodLab', codLab, '', '', '', function (data) {
-                    const eventos = [];
-
-                    // Iterar sobre los datos recibidos
-                    $.each(data, function (i, item) {
-                        eventos.push({
-                            id: item.strCod_reser,
-                            title: item.strTema_reser,
-                            start: convertirFechaForFullCalendar(item.dtFechainicio_reser),
-                            end: convertirFechaForFullCalendar(item.dtFechaFin_reser),
-                            backgroundColor: item.strColor_reser,
-                        });
+                // Iterar sobre los datos recibidos
+                $.each(data, function (i, item) {
+                    eventos.push({
+                        id: item.strCod_reser,
+                        title: item.strTema_reser,
+                        start: convertirFechaForFullCalendar(item.dtFechainicio_reser),
+                        end: convertirFechaForFullCalendar(item.dtFechaFin_reser),
+                        backgroundColor: item.strColor_reser,
                     });
-
-                    // Enviar eventos a FullCalendar
-                    successCallback(eventos);
-                }, function (error) {
-                    // En caso de error
-                    console.error("Error consultando eventos", error);
-                    failureCallback(error);
                 });
-            },
-            eventDidMount: function (info) {
-                info.el.classList.add('evento-personalizado');
-            },
-            eventTimeFormat: {
-                hour: 'numeric',
-                hour12: true
-            },
-            eventClick: function (info) {
-                eventId = info.event.id;
-                let fecha = info.event.start.toISOString().split('T')[0];
-                $('#fecha').text(fecha);
+
+                // Enviar eventos a FullCalendar
+                successCallback(eventos);
+            }, function (error) {
+                // En caso de error
+                console.error("Error consultando eventos", error);
+                failureCallback(error);
+            });
+        },
+        eventDidMount: function (info) {
+            info.el.classList.add('evento-personalizado');
+        },
+        eventTimeFormat: {
+            hour: 'numeric',
+            hour12: true
+        },
+        eventClick: function (info) {
+            eventId = info.event.id;
+            let fecha = info.event.start.toISOString().split('T')[0];
+            $('#fecha').text(fecha);
+
+            mostrarListado(fecha);
+            $('#form_listReserva').modal('show');
+        },
+        selectable: true,
+        select: function (info) {
+            var now = new Date();
+            var dayOfWeek = info.start.getUTCDay();
+            let mensaje = '';
+            let icon = '';
+
+            now.setHours(0, 0, 0, 0);
+            if (info.start < now) {
+                mensaje = 'Las fechas pasadas no están disponibles para reservas.';
+                icon = 'warning';
+
+                mostrarMensage(mensaje, icon);
+                calendar.unselect();
+            }
+            else {
+                var fecha = info.start.toISOString().split('T')[0];
 
                 mostrarListado(fecha);
                 $('#form_listReserva').modal('show');
-            },
-
-            selectable: true,
-            select: function (info) {
-                var now = new Date();
-                var dayOfWeek = info.start.getUTCDay();
-                let mensaje = '';
-                let icon = '';
-
-                now.setHours(0, 0, 0, 0);
-                if (info.start < now) {
-                    mensaje = 'Las fechas pasadas no están disponibles para reservas.';
-                    icon = 'warning';
-
-                    mostrarMensage(mensaje, icon);
-                    calendar.unselect();
-                }
-                else {
-                    var fecha = info.start.toISOString().split('T')[0];
-
-                    mostrarListado(fecha);
-                    $('#form_listReserva').modal('show');
-                }
-            },
-            selectAllow: function (selectInfo) {
-                const start = selectInfo.startStr;
-                const end = selectInfo.endStr;
-
-                return rangosPermitidos.some(r => {
-                    return start >= r.fechaInicio && end <= r.fechaFin;
-                });
-            },
-        });
-
-        calendar.render();
+            }
+        },
     });
+
+    calendar.render();
 });
 
 
@@ -167,15 +126,13 @@ $(document).ready(function () {
 
         consultarAlumno('xCEDULA', cedula, '', '', '', function (data) {
             $('#txtEmail').val(data[0].correo_alu);
-
         });
 
         consultarAsignatura('xDocente', cedula, '', '', '', function (data) {
             const dropdown = $("#selectAsignatura");
-            cargarMaterias(data, dropdown);
-
             selectMateria = $('#selectAsignatura option').first().val();
 
+            cargarMaterias(data, dropdown);
             consultarInformacionParaReservacion(selectMateria);
         });
 
@@ -192,9 +149,10 @@ $(document).ready(function () {
     });
 
     $("#selectUnidadInt").on('change', function () {
-        var unidadId = this.value; // Capturar el valor seleccionado
-        consultarTema('xUnidad', unidadId, '', '', '', function (data) {
+        // Capturar el valor seleccionado
+        var unidadId = this.value; 
 
+        consultarTema('xUnidad', unidadId, '', '', '', function (data) {
             if (data.length > 0) {
                 $("#content_ddlTemaInt").css("display", 'block');
                 const dropdown = $("#selectTemaInt");
@@ -308,28 +266,22 @@ $(document).ready(function () {
                     });
                 });
 
-                const inicioSelect = $('#selectHoraInicio');
-                const finSelect = $('#selectHoraFin');
+                var inicioSelect = '';
+                var finSelect = '';
 
-                // Llenar hora inicio: 07:00 a 21:00
-                for (let h = 7; h <= 21; h++) {
-                    const hora = h.toString().padStart(2, '0') + ':00';
-                    inicioSelect.append($('<option>', {
-                        value: hora,
-                        text: hora
-                    }));
+                if($("#switchReserva").is(":checked")){
+                    //Horas reservacion externa
+                    inicioSelect = $('#selectHoraInicio');
+                    finSelect = $('#selectHoraFin');
+                }
+                else {
+                    //Horas reservacion interna
+                    inicioSelect = $('#selectHoraInicioExt');
+                    finSelect = $('#selectHoraFinExt');
                 }
 
-                // Llenar hora fin por primera vez (usando primer valor de hora inicio)
-                const primerValorInicio = inicioSelect.find('option:first').val();
-                llenarHorasFin(primerValorInicio, finSelect);
 
-                // Cambiar hora fin al cambiar la hora de inicio
-                inicioSelect.on('change', function () {
-                    const valorSeleccionado = $(this).val();
-                    llenarHorasFin(valorSeleccionado, finSelect);
-                });
-
+                llenarHoras(inicioSelect, finSelect);
                 $('#form_registrar').modal('show');
             }
         });
@@ -468,7 +420,6 @@ $(document).ready(function () {
                 $('det_reservacionExtAct').css('display', 'none');
             }
 
-
             $('#txtFechaAct').val(reserva.dtFechainicio_reser.split('T')[0]);
             $('#txtHoraInicioAct').val(reserva.dtFechainicio_reser.split('T')[1]);
             $('#txtHoraFinAct').val(reserva.dtFechaFin_reser.split('T')[1]);
@@ -506,7 +457,6 @@ $(document).ready(function () {
             });
 
             consultarTema('xUnidad', codUnidad, '', '', '', function (data) {
-
                 if (data.length > 0) {
                     $("#content_ddlTema").css("display", 'block');
                     const dropdown = $("#selectTemaAct");
@@ -694,15 +644,16 @@ function mostrarListado(fecha) {
                 tr.append(`<td><div style="width:20px; height:20px; background-color:${item.strColor_reser}; border-radius:3px;"></div></td>`);
 
                 // Botones de acción
-                const btnDetalle = `<button class="btn btn-info" data-id="${item.strCod_reser}">Detalle</button>`;
-                const btnActualizar = `<button class="btn btn-warning" data-id="${item.strCod_reser}">Actualizar</button>`;
-                const btnEliminar = `<button class="btn btn-danger" data-id="${item.strCod_reser}">Eliminar</button>`;
+                const btnDetalle = `<button class="btn btn-info" data-id="${item.strCod_reser}"><i class="fa fa-info-circle" aria-hidden="true"></i></button>`;
+                const btnActualizar = `<button class="btn btn-success" data-id="${item.strCod_reser}"><i class="fa fa-upload" aria-hidden="true"></i></button>`;
+                const btnEliminar = `<button class="btn btn-danger" data-id="${item.strCod_reser}"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
+                const btnUso = `<button class="btn btn-active" data-id="${item.strCod_reser}"><i class="fa fa-clock-o" aria-hidden="true"></i></button>`;
 
                 consultarAlumno('xCEDULA', item.cedula_alu, '', '', '', function (data) {
                     var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
 
                     tr.append(`<td>${nombre}</td>`);
-                    tr.append(`<td>${btnDetalle} ${btnActualizar} ${btnEliminar}</td>`);
+                    tr.append(`<td>${btnDetalle} ${btnActualizar} ${btnEliminar} ${btnUso}</td>`);
                 });
                 tbody.append(tr);
             });
