@@ -23,43 +23,43 @@ public partial class academic_private_Default : System.Web.UI.Page
 
         //sedes
 
-        if (listSedes.Count != 0)
-        {
-            gvwPrueba.DataSource = listSedes;
-            gvwPrueba.DataBind();
-            lblMsg.Text = sedes.msg;
-        }
-        else
-        {
-            lblMsg.Text = sedes.msg;
-        }
+        //if (listSedes.Count != 0)
+        //{
+        //    gvwPrueba.DataSource = listSedes;
+        //    gvwPrueba.DataBind();
+        //    lblMsg.Text = sedes.msg;
+        //}
+        //else
+        //{
+        //    lblMsg.Text = sedes.msg;
+        //}
 
-        //Facultades
+        ////Facultades
         
-        if (listFac.Count != 0)
-        {
-            ddlFacultad.DataSource = listFac.ToList();
-            ddlFacultad.DataTextField = "strNombre_fac";
-            ddlFacultad.DataValueField = "strCod_fac";
-            ddlFacultad.DataBind();
+        //if (listFac.Count != 0)
+        //{
+        //    ddlFacultad.DataSource = listFac.ToList();
+        //    ddlFacultad.DataTextField = "strNombre_fac";
+        //    ddlFacultad.DataValueField = "strCod_fac";
+        //    ddlFacultad.DataBind();
           
-            lblMsg.Text = sedes.msg;
-        }
-        else
-        {
-            lblMsg.Text = sedes.msg;
-        }
-        //Carreras
+        //    lblMsg.Text = sedes.msg;
+        //}
+        //else
+        //{
+        //    lblMsg.Text = sedes.msg;
+        //}
+        ////Carreras
 
-        if (listCar.Count != 0)
-        {
-            GridCarrera.DataSource = listCar;
-            GridCarrera.DataBind();
-            lblMsg.Text = sedes.msg;
-        }
-        else
-        {
-            lblMsg.Text = sedes.msg;
-        }
+        //if (listCar.Count != 0)
+        //{
+        //    GridCarrera.DataSource = listCar;
+        //    GridCarrera.DataBind();
+        //    lblMsg.Text = sedes.msg;
+        //}
+        //else
+        //{
+        //    lblMsg.Text = sedes.msg;
+        //}
     }
 }

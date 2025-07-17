@@ -311,7 +311,7 @@ function guardarReservacion(reservacion) {
             var data = JSON.parse(response.d);
             var mensaje = data.msg;
             var icon = data.resultado ? 'success' : 'error';
-            var codReser = data.strCod_reser;
+            var codReser = data.strCod_reserc;
             var software = $('#txtSoftware');
 
 

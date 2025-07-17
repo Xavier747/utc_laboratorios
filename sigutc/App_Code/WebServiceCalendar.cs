@@ -27,8 +27,8 @@ public class WebServiceCalendar : System.Web.Services.WebService
     TEMA tema1 = new TEMA();
     LAB_SOFTWARE software1 = new LAB_SOFTWARE();
     LAB_LABORATORIOS laboratorio1 = new LAB_LABORATORIOS();
-    LAB_RESERVA reserva1 = new LAB_RESERVA();
-    LAB_RESERSOFTWARE reserSoft1 = new LAB_RESERSOFTWARE();
+    LAB_RESERVAC reservac1 = new LAB_RESERVAC();
+    LAB_RESERVAD reservad1 = new LAB_RESERVAD();
     LAB_EXCLUSIVO labEx1 = new LAB_EXCLUSIVO();
     SIG_PERIODOS periodo1 = new SIG_PERIODOS();
 
@@ -165,12 +165,12 @@ public class WebServiceCalendar : System.Web.Services.WebService
         }
         else
         {
-            List<LAB_RESERSOFTWARE> listReserSoftware = reserSoft1.LoadLAB_RESERSOFTWARE(comodin, filtro1, filtro2, filtro3, filtro4);
+            List<LAB_RESERVAD> listReserSoftware = reservad1.LoadLAB_RESERVAD(comodin, filtro1, filtro2, filtro3, filtro4);
 
             resultado = listReserSoftware.Select(software => new
             {
                 strCod_sof = software.strCod_sof,
-                strNombre_sof = software.strNombre_resof,
+                strNombre_sof = software.strNombre_reserd,
             });
         }
 
@@ -180,36 +180,36 @@ public class WebServiceCalendar : System.Web.Services.WebService
     [WebMethod(EnableSession = true)]
     public string GuardarReserva(List<string> reservacion)
     {
-        reserva1.strCod_reser = reservacion[11] + "_" + reservacion[5];
-        reserva1.strCod_lab = reservacion[11].ToString();
-        reserva1.strCod_Mate = reservacion[0];
-        reserva1.cedula_alu = reservacion[8] != "" ? reservacion[8] : Context.User.Identity.Name;
-        reserva1.strCod_unidTem = reservacion[1] ?? "";
-        reserva1.strTema_reser = reservacion[2];
-        reserva1.strProposito_reser = reservacion[10];
-        reserva1.bitTipo_reser = bool.Parse(reservacion[12]);
-        reserva1.strDescripcion_reser = reservacion[3];
-        reserva1.strMateriales_reser = reservacion[4];
-        reserva1.dtFechainicio_reser = DateTime.Parse(reservacion[5]);
-        reserva1.dtFechaFin_reser = DateTime.Parse(reservacion[6]);
-        reserva1.intTotalAsistente_reser = int.Parse(reservacion[7]);
-        reserva1.strColor_reser = reservacion[9];
-        reserva1.dtFechaRegistro_reser = DateTime.Now;
-        reserva1.bitEstado_reser = true;
-        reserva1.dtFecha_log = DateTime.Now;
-        reserva1.strUser_log = Context.User.Identity.Name;
-        reserva1.strObs1_reser = reservacion[13];
-        reserva1.strObs2_reser = reservacion[14];
-        reserva1.bitObs1_reser = false;
-        reserva1.bitObs2_reser = false;
-        reserva1.decObs1_reser = -1;
-        reserva1.decObs2_reser = -1;
-        reserva1.dtObs1_reser = DateTime.Parse("1900-01-01");
-        reserva1.dtObs2_reser = DateTime.Parse("1900-01-01");
+        reservac1.strCod_reserc = reservacion[11] + "_" + reservacion[5];
+        reservac1.strCod_lab = reservacion[11].ToString();
+        reservac1.strCod_Mate = reservacion[0];
+        reservac1.cedula_alu = reservacion[8] != "" ? reservacion[8] : Context.User.Identity.Name;
+        reservac1.strCod_unidTem = reservacion[1] ?? "";
+        reservac1.strTema_reserc = reservacion[2];
+        reservac1.strProposito_reserc = reservacion[10];
+        reservac1.bitTipo_reserc = bool.Parse(reservacion[12]);
+        reservac1.strDescripcion_reserc = reservacion[3];
+        reservac1.strMateriales_reserc = reservacion[4];
+        reservac1.dtFechainicio_reserc = DateTime.Parse(reservacion[5]);
+        reservac1.dtFechaFin_reserc = DateTime.Parse(reservacion[6]);
+        reservac1.intTotalAsistente_reserc = int.Parse(reservacion[7]);
+        reservac1.strColor_reserc = reservacion[9];
+        reservac1.dtFechaRegistro_reserc = DateTime.Now;
+        reservac1.bitEstado_reserc = true;
+        reservac1.dtFecha_log = DateTime.Now;
+        reservac1.strUser_log = Context.User.Identity.Name;
+        reservac1.strObs1_reserc = reservacion[13];
+        reservac1.strObs2_reserc = reservacion[14];
+        reservac1.bitObs1_reserc = false;
+        reservac1.bitObs2_reserc = false;
+        reservac1.decObs1_reserc = -1;
+        reservac1.decObs2_reserc = -1;
+        reservac1.dtObs1_reserc = DateTime.Parse("1900-01-01");
+        reservac1.dtObs2_reserc = DateTime.Parse("1900-01-01");
 
-        reserva1.AddLAB_RESERVA(reserva1);
+        reservac1.AddLAB_RESERVAC(reservac1);
 
-        return JsonConvert.SerializeObject(reserva1);
+        return JsonConvert.SerializeObject(reservac1);
     }
 
     [WebMethod]
@@ -220,26 +220,26 @@ public class WebServiceCalendar : System.Web.Services.WebService
             var listSoftware = software1.LoadLAB_SOFTWARE("xPK", codSoft, "", "", "");
             string codResof = listSoftware.Count > 0 ? codReser + "_" + listSoftware[0].strCod_sof : codReser + "_" + codSoft;
 
-            reserSoft1.strCod_resof = codResof;
-            reserSoft1.strCod_sof = listSoftware.Count > 0 ? listSoftware[0].strCod_sof : string.Empty;
-            reserSoft1.strCod_Sede = listSoftware.Count > 0 ? listSoftware[0].strCod_Sede : string.Empty;
-            reserSoft1.strCod_Fac = listSoftware.Count > 0 ? listSoftware[0].strCod_Fac : string.Empty;
-            reserSoft1.strCod_reser = codReser;
-            reserSoft1.strNombre_resof = listSoftware.Count > 0 ? string.Empty : codSoft;
-            reserSoft1.dtRegistro_resof = DateTime.Now;
-            reserSoft1.dtFecha_log = DateTime.Now;
-            reserSoft1.strUser_log = Context.User.Identity.Name;
-            reserSoft1.strObs1_resof = string.Empty;
-            reserSoft1.strObs2_resof = string.Empty;
-            reserSoft1.bitObs1_resof = false;
-            reserSoft1.bitObs2_resof = false;
-            reserSoft1.decObs1_resof = -1;
-            reserSoft1.decObs2_resof = -1;
-            reserSoft1.dtObs1_resof = DateTime.Parse("1900-01-01");
-            reserSoft1.dtObs2_resof = DateTime.Parse("1900-01-01");
-            reserSoft1.AddLAB_RESERSOFTWARE(reserSoft1);
+            reservad1.strCod_reserd = codResof;
+            reservad1.strCod_sof = listSoftware.Count > 0 ? listSoftware[0].strCod_sof : string.Empty;
+            reservad1.strCod_Sede = listSoftware.Count > 0 ? listSoftware[0].strCod_Sede : string.Empty;
+            reservad1.strCod_Fac = listSoftware.Count > 0 ? listSoftware[0].strCod_Fac : string.Empty;
+            reservad1.strCod_reserc = codReser;
+            reservad1.strNombre_reserd = listSoftware.Count > 0 ? string.Empty : codSoft;
+            reservad1.dtRegistro_reserd = DateTime.Now;
+            reservad1.dtFecha_log = DateTime.Now;
+            reservad1.strUser_log = Context.User.Identity.Name;
+            reservad1.strObs1_reserd = string.Empty;
+            reservad1.strObs2_reserd = string.Empty;
+            reservad1.bitObs1_reserd = false;
+            reservad1.bitObs2_reserd = false;
+            reservad1.decObs1_reserd = -1;
+            reservad1.decObs2_reserd = -1;
+            reservad1.dtObs1_reserd = DateTime.Parse("1900-01-01");
+            reservad1.dtObs2_reserd = DateTime.Parse("1900-01-01");
+            reservad1.AddLAB_RESERVAD(reservad1);
 
-            return JsonConvert.SerializeObject(reserSoft1);
+            return JsonConvert.SerializeObject(reservad1);
         }
         return string.Empty;
     }
@@ -247,37 +247,37 @@ public class WebServiceCalendar : System.Web.Services.WebService
     [WebMethod]
     public string ObtenerReservacion(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        List<LAB_RESERVA> listReservacion = reserva1.LoadLAB_RESERVA(comodin, filtro1, filtro2, filtro3, filtro4);
+        List<LAB_RESERVAC> listReservacion = reservac1.LoadLAB_RESERVAC(comodin, filtro1, filtro2, filtro3, filtro4);
 
         var resultado = listReservacion.Select(reservacion => new
         {
-            strCod_reser = reservacion.strCod_reser,
+            strCod_reser = reservacion.strCod_reserc,
             strCod_lab = reservacion.strCod_lab,
             strCod_Mate = reservacion.strCod_Mate,
             cedula_alu = reservacion.cedula_alu,
             strCod_unidTem = reservacion.strCod_unidTem,
-            strCod_tema = reservacion.strTema_reser ?? "",
-            strTema_reser = ObtenerNombreTema(reservacion.strTema_reser) != "" ? ObtenerNombreTema(reservacion.strTema_reser) : reservacion.strTema_reser,
-            strProposito_reser = reservacion.strProposito_reser,
-            bitTipo_reser = reservacion.bitTipo_reser,
-            strDescripcion_reser = reservacion.strDescripcion_reser,
-            strMateriales_reser = reservacion.strMateriales_reser,
-            dtFechainicio_reser = reservacion.dtFechainicio_reser,
-            dtFechaFin_reser = reservacion.dtFechaFin_reser,
-            intTotalAsistente_reser = reservacion.intTotalAsistente_reser,
-            strColor_reser = reservacion.strColor_reser,
-            dtFechaRegistro_reser = reservacion.dtFechaRegistro_reser,
-            bitEstado_reser = reservacion.bitEstado_reser,
+            strCod_tema = reservacion.strTema_reserc ?? "",
+            strTema_reser = ObtenerNombreTema(reservacion.strTema_reserc) != "" ? ObtenerNombreTema(reservacion.strTema_reserc) : reservacion.strTema_reserc,
+            strProposito_reser = reservacion.strProposito_reserc,
+            bitTipo_reser = reservacion.bitTipo_reserc,
+            strDescripcion_reser = reservacion.strDescripcion_reserc,
+            strMateriales_reser = reservacion.strMateriales_reserc,
+            dtFechainicio_reser = reservacion.dtFechainicio_reserc,
+            dtFechaFin_reser = reservacion.dtFechaFin_reserc,
+            intTotalAsistente_reser = reservacion.intTotalAsistente_reserc,
+            strColor_reser = reservacion.strColor_reserc,
+            dtFechaRegistro_reser = reservacion.dtFechaRegistro_reserc,
+            bitEstado_reser = reservacion.bitEstado_reserc,
             dtFecha_log = reservacion.dtFecha_log,
             strUser_log = reservacion.strUser_log,
-            strObs1_reser = reservacion.strObs1_reser,
-            strObs2_reser = reservacion.strObs2_reser,
-            bitObs1_reser = reservacion.bitObs1_reser,
-            bitObs2_reser = reservacion.bitObs2_reser,
-            decObs1_reser = reservacion.decObs1_reser,
-            decObs2_reser = reservacion.decObs2_reser,
-            dtObs1_reser = reservacion.dtObs1_reser,
-            dtObs2_reser = reservacion.dtObs2_reser,
+            strObs1_reser = reservacion.strObs1_reserc,
+            strObs2_reser = reservacion.strObs2_reserc,
+            bitObs1_reser = reservacion.bitObs1_reserc,
+            bitObs2_reser = reservacion.bitObs2_reserc,
+            decObs1_reser = reservacion.decObs1_reserc,
+            decObs2_reser = reservacion.decObs2_reserc,
+            dtObs1_reser = reservacion.dtObs1_reserc,
+            dtObs2_reser = reservacion.dtObs2_reserc,
         });
 
         return JsonConvert.SerializeObject(resultado);
@@ -335,15 +335,15 @@ public class WebServiceCalendar : System.Web.Services.WebService
     [WebMethod]
     public string EliminarSoftwareReserva(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        reserSoft1.DelLAB_RESERSOFTWARE(comodin, filtro1, "", "", "");
-        return JsonConvert.SerializeObject(reserSoft1);
+        reservad1.DelLAB_RESERVAD(comodin, filtro1, "", "", "");
+        return JsonConvert.SerializeObject(reservad1);
     }
 
     [WebMethod]
     public string EliminarReserva(string comodin, string filtro1, string filtro2, string filtro3, string filtro4)
     {
-        reserva1.DeleteLAB_RESERVA(comodin, filtro1, "", "", "");
-        return JsonConvert.SerializeObject(reserva1);
+        reservac1.DeleteLAB_RESERVAC(comodin, filtro1, "", "", "");
+        return JsonConvert.SerializeObject(reservac1);
     }
 
     [WebMethod]
@@ -369,20 +369,22 @@ public class WebServiceCalendar : System.Web.Services.WebService
     [WebMethod]
     public string ActulizarReservacion(List<string> reservacion)
     {
-        reserva1.strCod_reser = reservacion[0];
-        reserva1.strCod_unidTem = reservacion[1];
-        reserva1.strTema_reser = reservacion[2];
-        reserva1.strProposito_reser = reservacion[3];
-        reserva1.strDescripcion_reser = reservacion[4];
-        reserva1.strMateriales_reser = reservacion[5];
-        reserva1.strColor_reser = reservacion[6];
-        reserva1.bitEstado_reser = true;
-        reserva1.cedula_alu = Context.User.Identity.Name;
-        reserva1.dtFecha_log = DateTime.Now;
-        reserva1.strUser_log = Context.User.Identity.Name;
+        reservac1.strCod_reserc = reservacion[0];
+        reservac1.strCod_unidTem = reservacion[1];
+        reservac1.strTema_reserc = reservacion[2];
+        reservac1.strProposito_reserc = reservacion[3];
+        reservac1.strDescripcion_reserc = reservacion[4];
+        reservac1.strMateriales_reserc = reservacion[5];
+        reservac1.strColor_reserc = reservacion[6];
+        reservac1.bitEstado_reserc = true;
+        reservac1.cedula_alu = Context.User.Identity.Name;
+        reservac1.dtFecha_log = DateTime.Now;
+        reservac1.strUser_log = Context.User.Identity.Name;
+        reservac1.strObs1_reserc = reservacion[7];
+        reservac1.strObs2_reserc = reservacion[8];
 
-        reserva1.UpdateLAB_RESERVA(reserva1);
+        reservac1.UpdateLAB_RESERVAC(reservac1);
 
-        return JsonConvert.SerializeObject(reserva1);
+        return JsonConvert.SerializeObject(reservac1);
     }
 }

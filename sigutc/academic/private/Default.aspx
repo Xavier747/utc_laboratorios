@@ -8,13 +8,7 @@
     DEFAULT
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
-    <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
-
-    <asp:GridView ID="gvwPrueba" runat="server"></asp:GridView>
-
-    <asp:DropDownList ID="ddlFacultad" runat="server"></asp:DropDownList>
-
-    <asp:GridView ID="GridCarrera" runat="server"></asp:GridView>
+    <asp:Image ID="Image1" runat="server" ImageUrl="~/image/control_panel.png" style="width: 100%" />
 
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="FooterContent" Runat="Server">

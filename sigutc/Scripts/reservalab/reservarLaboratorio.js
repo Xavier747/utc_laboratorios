@@ -504,7 +504,7 @@ $(document).ready(function () {
     });
 
     // Editar
-    $('#tbl_det_reservacion').on('click', '.btn-warning', function(event) {
+    $('#tbl_det_reservacion').on('click', '.btn-success', function(event) {
         event.preventDefault();
 
         const idReserva = $(this).data('id');
@@ -669,6 +669,7 @@ $(document).ready(function () {
         reservacion[5] = $('#txtMaterialesAct').val();
         reservacion[6] = '#a4e4af';
         reservacion[7] = '';
+        reservacion[8] = '';
 
         consultarEventos('xPK', idReserva, '', '', '', function (reserva) {
             let fechaHoy = new Date();
