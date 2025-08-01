@@ -9,12 +9,19 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="row">
         <!--Boton para agregar un nuevo laboratorio-->
-        <div class="col-md-12 text-right">
+        <div class="col-md-10">
             <button type="button" class="btn btn-primary btn-nuevo" data-toggle="modal" data-target="#form_registrar">
                 <i class="bi bi-plus-lg"></i>Nuevo software
             </button>
         </div>
+        <div class="col-md-2 text-right">
+            <asp:LinkButton ID="lnkRegresar" runat="server" CssClass="btn btn-default" OnClick="lnkRegresar_Click">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <span>Regresar</span>
+            </asp:LinkButton>
+        </div>
     </div>   
+    <br />
     <div class=" row">
         <!--ddl para mostrar y seleccionar SEDES -->
         <div class="col-md-6">

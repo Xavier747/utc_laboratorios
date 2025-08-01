@@ -45,6 +45,12 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
             cargarTipo();
             cargarCampoAmplio();
         }
+
+        txtBuscarDocente.TextChanged += txtBuscarDocente_TextChanged;
+        txtBuscarDocente.AutoPostBack = true;
+
+        txtBuscarDocenteAct.TextChanged += txtBuscarDocenteAct_TextChanged;
+        txtBuscarDocenteAct.AutoPostBack = true;
     }
 
     //Genera paginacion a la tabla
@@ -133,6 +139,12 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
         ddlTipoAct.Items.Add(new ListItem("DOCENCIA", "DOCENCIA"));
         ddlTipoAct.Items.Add(new ListItem("DOCENCIA E INVESTIGACIÓN", "DOCENCIA E INVESTIGACIÓN"));
+
+        for (int i = 0; i < 30; i++)
+        {
+            string opcion = Convert.ToString(i + 1);
+            ddlIdLab.Items.Add(new ListItem(opcion, opcion));
+        }
     }
 
     //Consutar las areas del conocimiento
@@ -333,118 +345,131 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
         //Generacion de Codigo de laboratorio y carpeta para almacenar imagenes
-        string codLab = generarIdLab();
         string rutaCarpeta = crearDirectorio();
+        string codLab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + ddlIdLab.SelectedValue;
+        var listLab = laboratorio2.LoadLAB_LABORATORIOS("xPK", codLab, "", "", "");
 
-        //Llenado de atributos
-        laboratorio2.strCod_lab = ddlSede.SelectedValue + "_" + ddlFacultad.SelectedValue + "_" + codLab;
-        laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
-        laboratorio2.strCod_Sede = ddlSede.SelectedValue;
-        laboratorio2.strNombre_lab = txtNombre.Text.Trim().ToUpper();
-        laboratorio2.strDescripcion_lab = txtDescripcion.Text.Trim();
-        laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
-        laboratorio2.strUbicacion_lab = txtUbicacion.Text.Trim();
-        laboratorio2.strTipo_lab = ddlTipo.SelectedValue;
-        laboratorio2.strCod_areac = ddlCampoAmplio.Text;
-        laboratorio2.dtFechaRegistro_lab = DateTime.Now;
-        laboratorio2.bitEstado_lab = true;
-        laboratorio2.dtFecha_log = DateTime.Now;
-        laboratorio2.strUser_log = Context.User.Identity.Name;
-        laboratorio2.strObs1_lab = string.Empty;
-        laboratorio2.strObs2_lab = string.Empty;
-        laboratorio2.bitObs1_lab = false;
-        laboratorio2.bitObs2_lab = false;
-        laboratorio2.decObs1_lab = -1;
-        laboratorio2.decObs2_lab = -1;
-        laboratorio2.dtObs1_lab = DateTime.Parse("1900 - 01 - 01");
-        laboratorio2.dtObs2_lab = DateTime.Parse("1900 - 01 - 01");
-
-        //Valida si la imagen existe
-        if (fulImg1.HasFile)
+        if (listLab.Count == 0)
         {
-            try
-            {
-                string filename = Path.GetFileNameWithoutExtension(fulImg1.FileName);
-                string extension = Path.GetExtension(fulImg1.FileName);
-                string newFilename = filename + extension;
-                string path = Path.Combine(rutaCarpeta, newFilename);
+            //Llenado de atributos
+            laboratorio2.strCod_lab = codLab;
+            laboratorio2.strCod_Fac = ddlFacultad.SelectedValue;
+            laboratorio2.strCod_Sede = ddlSede.SelectedValue;
+            laboratorio2.strNombre_lab = txtNombre.Text.Trim().ToUpper();
+            laboratorio2.strDescripcion_lab = txtDescripcion.Text.Trim();
+            laboratorio2.intNumeroEquipos_lab = int.Parse(txtNumeroEquipos.Text);
+            laboratorio2.strUbicacion_lab = txtUbicacion.Text.Trim();
+            laboratorio2.strTipo_lab = ddlTipo.SelectedValue;
+            laboratorio2.strCod_areac = ddlCampoAmplio.Text;
+            laboratorio2.dtFechaRegistro_lab = DateTime.Now;
+            laboratorio2.bitEstado_lab = true;
+            laboratorio2.dtFecha_log = DateTime.Now;
+            laboratorio2.strUser_log = Context.User.Identity.Name;
+            laboratorio2.strObs1_lab = string.Empty;
+            laboratorio2.strObs2_lab = string.Empty;
+            laboratorio2.bitObs1_lab = false;
+            laboratorio2.bitObs2_lab = false;
+            laboratorio2.decObs1_lab = -1;
+            laboratorio2.decObs2_lab = -1;
+            laboratorio2.dtObs1_lab = DateTime.Parse("1900 - 01 - 01");
+            laboratorio2.dtObs2_lab = DateTime.Parse("1900 - 01 - 01");
 
-                // Verificar si el archivo existe y agregar un sufijo numérico
-                int counter = 1;
-                while (File.Exists(path))
+            //Valida si la imagen existe
+            if (fulImg1.HasFile)
+            {
+                try
                 {
-                    newFilename = string.Concat(filename + "_" + counter + extension);
-                    path = Path.Combine(rutaCarpeta, newFilename);
-                    counter++;
+                    string filename = Path.GetFileNameWithoutExtension(fulImg1.FileName);
+                    string extension = Path.GetExtension(fulImg1.FileName);
+                    string newFilename = filename + extension;
+                    string path = Path.Combine(rutaCarpeta, newFilename);
+
+                    // Verificar si el archivo existe y agregar un sufijo numérico
+                    int counter = 1;
+                    while (File.Exists(path))
+                    {
+                        newFilename = string.Concat(filename + "_" + counter + extension);
+                        path = Path.Combine(rutaCarpeta, newFilename);
+                        counter++;
+                    }
+
+                    //Guarda imagen la ruta definida
+                    fulImg1.SaveAs(path);
+                    laboratorio2.strFotografia1_lab = path;
                 }
-
-                //Guarda imagen la ruta definida
-                fulImg1.SaveAs(path);
-                laboratorio2.strFotografia1_lab = path;
-            }
-            catch (Exception ex)
-            {
-                Response.Write("La carga falló: " + ex.Message);
-            }
-        }
-
-        //Valida si la imagen existe
-        if (fulImg2.HasFile)
-        {
-            try
-            {
-                string filename = Path.GetFileNameWithoutExtension(fulImg2.FileName);
-                string extension = Path.GetExtension(fulImg2.FileName);
-                string newFilename = filename + extension;
-                string path = Path.Combine(rutaCarpeta, newFilename);
-
-                // Verificar si el archivo existe y agregar un sufijo numérico
-                int counter = 1;
-                while (File.Exists(path))
+                catch (Exception ex)
                 {
-                    newFilename = string.Concat(filename + "_" + counter + extension);
-                    path = Path.Combine(rutaCarpeta, newFilename);
-                    counter++;
+                    Response.Write("La carga falló: " + ex.Message);
                 }
+            }
 
-                fulImg2.SaveAs(path);
-                laboratorio2.strFotografia2_lab = path;
-            }
-            catch (Exception ex)
+            //Valida si la imagen existe
+            if (fulImg2.HasFile)
             {
-                Response.Write("La carga falló: " + ex.Message);
+                try
+                {
+                    string filename = Path.GetFileNameWithoutExtension(fulImg2.FileName);
+                    string extension = Path.GetExtension(fulImg2.FileName);
+                    string newFilename = filename + extension;
+                    string path = Path.Combine(rutaCarpeta, newFilename);
+
+                    // Verificar si el archivo existe y agregar un sufijo numérico
+                    int counter = 1;
+                    while (File.Exists(path))
+                    {
+                        newFilename = string.Concat(filename + "_" + counter + extension);
+                        path = Path.Combine(rutaCarpeta, newFilename);
+                        counter++;
+                    }
+
+                    fulImg2.SaveAs(path);
+                    laboratorio2.strFotografia2_lab = path;
+                }
+                catch (Exception ex)
+                {
+                    Response.Write("La carga falló: " + ex.Message);
+                }
             }
-        }
         
-        //Guardar datos en la base de datos
-        laboratorio2.AddLAB_LABORATORIOS(laboratorio2);
+            //Guardar datos en la base de datos
+            laboratorio2.AddLAB_LABORATORIOS(laboratorio2);
 
-        //Valida si el usuario es administrador
-        //Si el usario es Laboratorista crea un registro donde se le asigan un laboratorio
-        if (Session["ROL"].ToString() != "ADMINISTRADOR")
-        {
-            responsable1.strCod_lab = laboratorio2.strCod_lab;
-            responsable1.strCod_res = Context.User.Identity.Name;
-            responsable1.strTipo_respo = "Responsable Administrativo";
+            //Valida si el usuario es administrador
+            //Si el usario es Laboratorista crea un registro donde se le asigan un laboratorio
+            if (Session["ROL"].ToString() != "ADMINISTRADOR" && laboratorio2.resultado)
+            {
+                responsable1.strCod_lab = laboratorio2.strCod_lab;
+                responsable1.strCod_res = Context.User.Identity.Name;
+                responsable1.strTipo_respo = "Responsable Administrativo";
 
-            guardarResponsable();
+                guardarResponsable();
+            }
+
+            //Si el laboratorio se guardo con exito tambien puedo guardar software correspondiente al laboratorio
+            if (laboratorio2.resultado)
+            {
+                relacioanarLaboratorioSoftware();
+                guardarLaboratorioSoftware();
+            }
+
+            //Muestra mensaje de informacion
+            string title = laboratorio2.resultado ? laboratorio2.msg :
+                           laboratorio2.numerr == 2627 ? laboratorio2.msg :
+                           "Error: " + laboratorio2.numerr + "!";
+            string icon = laboratorio2.resultado ? "success" : "error";
+            string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
         }
-
-        //Si el laboratorio se guardo con exito tambien puedo guardar software correspondiente al laboratorio
-        if (laboratorio2.resultado)
+        else
         {
-            relacioanarLaboratorioSoftware();
-            guardarLaboratorioSoftware();
+            //Muestra mensaje de informacion
+            string title = "Ya existe un laboratorio con esa identificacion!";
+            string icon = "error";
+            string script = string.Concat("mostrarMensage('", title, "', '", icon, "');");
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
         }
-
-        //Muestra mensaje de informacion
-        string title = laboratorio2.resultado ? laboratorio2.msg :
-                       laboratorio2.numerr == 2627 ? laboratorio2.msg :
-                       "Error: " + laboratorio2.numerr + "!";
-        string icon = laboratorio2.resultado ? "success" : "error";
-        string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
-
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
     }
 
     //Crea una carpeta para almacenar localmente las imagenes
@@ -471,25 +496,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         }
 
         return rutaCarpeta;
-    }
-
-    //Apartir del nombre se genera una clave para codigo de laboratorio
-    private string generarIdLab()
-    {
-        string frase = txtNombre.Text.ToUpper();
-        string[] palabras = frase.Split(' ');
-
-        List<string> partes = new List<string>();
-
-        foreach (string palabra in palabras)
-        {
-            // Si tiene más de 5 caracteres, tomamos solo los primeros 5
-            string parte = palabra.Length > 3 ? palabra.Substring(0, 3) : palabra;
-            partes.Add(parte);
-        }
-
-        string resultado = string.Join("", partes);
-        return resultado;
     }
 
     //Obtener todos los software seleccionados en el formulario Nuevo
@@ -876,23 +882,23 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 ddlRespAdminNuevo.DataBind();
             }
 
-            var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
+            //var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
 
-            if (docente.Count > 0)
-            {
-                var listaConcatenada = docente
-                    .Select(labResp => new {
-                        CEDULA_ALU = labResp.cedula_alu,
+            //if (docente.Count > 0)
+            //{
+            //    var listaConcatenada = docente
+            //        .Select(labResp => new {
+            //            CEDULA_ALU = labResp.cedula_alu,
 
-                    // Aquí concatenas lo que necesites
-                    NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu
-                    }).ToList();
+            //        // Aquí concatenas lo que necesites
+            //        NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu
+            //        }).ToList();
 
-                ddlRespAcadNuevo.DataSource = listaConcatenada;
-                ddlRespAcadNuevo.DataTextField = "NOMBRE_COMPLETO";
-                ddlRespAcadNuevo.DataValueField = "CEDULA_ALU";
-                ddlRespAcadNuevo.DataBind();
-            }
+            //    ddlRespAcadNuevo.DataSource = listaConcatenada;
+            //    ddlRespAcadNuevo.DataTextField = "NOMBRE_COMPLETO";
+            //    ddlRespAcadNuevo.DataValueField = "CEDULA_ALU";
+            //    ddlRespAcadNuevo.DataBind();
+            //}
         }
         catch (Exception ex)
         {
@@ -943,23 +949,6 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
                 ddlRespAdminActualizar.DataValueField = "CEDULA_ALU";
                 ddlRespAdminActualizar.DataBind();
             }
-
-            var docente = personal1.Load_PERSONAL("xDocente", codFacultad, codSede, "", "");
-            if (docente.Count > 0)
-            {
-                var listaConcatenada = docente
-                    .Select(labResp => new {
-                        CEDULA_ALU = labResp.cedula_alu,
-                    
-                        // Aquí concatenas lo que necesites
-                        NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu
-                    }).ToList();
-
-                ddlRespAcadActualizar.DataSource = listaConcatenada;
-                ddlRespAcadActualizar.DataTextField = "NOMBRE_COMPLETO";
-                ddlRespAcadActualizar.DataValueField = "CEDULA_ALU";
-                ddlRespAcadActualizar.DataBind();
-            }
         }
         catch (Exception ex)
         {
@@ -978,6 +967,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         {
             responsable1.strCod_res = i % 2 == 0 ? ddlRespAdminNuevo.SelectedValue : ddlRespAcadNuevo.SelectedValue;
             responsable1.strTipo_respo = tipoResponsable[i].ToString();
+            responsable1.strCod_lab = lblCodLab.Text;
 
             guardarResponsable();
         }
@@ -994,8 +984,7 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
 
     public void guardarResponsable()
     {
-        //Definir los atributos con vsalores del formulario
-        responsable1.strCod_lab = lblCodLab.Text;            
+        //Definir los atributos con vsalores del formulario           
         responsable1.dtFechaInicio_respo = DateTime.Now;
         responsable1.bitEstado_respo = true;
         responsable1.dtFecha_log = DateTime.Now;
@@ -1130,5 +1119,72 @@ public partial class academic_private_reservalab_GestionLaborarios : System.Web.
         string script = string.Concat("mostrarMensageCRUD('", title, "', '", icon, "');");
 
         ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowAlert", script, true);
+    }
+
+    protected void lnkRegresar_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/academic/private/Default.aspx");
+    }
+
+    protected void txtBuscarDocente_TextChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            string nombre = txtBuscarDocente.Text.Trim().ToLower();
+
+            var docente = personal1.Load_PERSONAL("xApellidos", nombre, "", "", "");
+            if (docente.Count > 0)
+            {
+                var listaConcatenada = docente
+                    .Select(labResp => new {
+                        CEDULA_ALU = labResp.cedula_alu,
+
+                        // Aquí concatenas lo que necesites
+                        NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu
+                    }).ToList();
+
+                ddlRespAcadNuevo.DataSource = listaConcatenada;
+                ddlRespAcadNuevo.DataTextField = "NOMBRE_COMPLETO";
+                ddlRespAcadNuevo.DataValueField = "CEDULA_ALU";
+                ddlRespAcadNuevo.DataBind();
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#Form_NuevoResponsable').modal('show');", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
+    }
+
+    protected void txtBuscarDocenteAct_TextChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            string nombre = txtBuscarDocenteAct.Text.Trim().ToLower();
+
+            var docente = personal1.Load_PERSONAL("xApellidos", nombre, "", "", "");
+            if (docente.Count > 0)
+            {
+                var listaConcatenada = docente
+                    .Select(labResp => new {
+                        CEDULA_ALU = labResp.cedula_alu,
+
+                        // Aquí concatenas lo que necesites
+                        NOMBRE_COMPLETO = labResp.apellido_alu + " " + labResp.apellidom_alu + " " + labResp.nombre_alu
+                    }).ToList();
+
+                ddlRespAcadActualizar.DataSource = listaConcatenada;
+                ddlRespAcadActualizar.DataTextField = "NOMBRE_COMPLETO";
+                ddlRespAcadActualizar.DataValueField = "CEDULA_ALU";
+                ddlRespAcadActualizar.DataBind();
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#Form_ActualizarResponsable').modal('show');", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro: ", ex);
+        }
     }
 }

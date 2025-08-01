@@ -225,4 +225,9 @@ public partial class academic_private_reservalab_LaboratorioCarrera : System.Web
             ScriptManager.RegisterStartupScript(this, GetType(), "alert", $"mostrarMensageCRUD('{title}','{icon}');", true);
         }
     }
+
+    protected void lnkRegresar_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("GestionLaboratorios.aspx");
+    }
 }

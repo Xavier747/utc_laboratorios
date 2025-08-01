@@ -77,4 +77,9 @@ public partial class academic_public_reservalab_ReservaLaboratorio : System.Web.
             }
         }
     }
+
+    protected void lnkRegresar_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/academic/private/Default.aspx");
+    }
 }

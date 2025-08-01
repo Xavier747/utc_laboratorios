@@ -108,6 +108,11 @@ public partial class academic_private_reservalab_InformacionLaboratorios : Syste
         }
     }
 
+
+    protected void lnkRegresar_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/academic/private/Default.aspx");
+    }
 }
 
   

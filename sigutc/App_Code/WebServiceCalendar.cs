@@ -30,6 +30,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
     LAB_RESERVAC reservac1 = new LAB_RESERVAC();
     LAB_RESERVAD reservad1 = new LAB_RESERVAD();
     LAB_EXCLUSIVO labEx1 = new LAB_EXCLUSIVO();
+    LAB_USO uso1 = new LAB_USO();
     SIG_PERIODOS periodo1 = new SIG_PERIODOS();
 
 
@@ -180,7 +181,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
     [WebMethod(EnableSession = true)]
     public string GuardarReserva(List<string> reservacion)
     {
-        reservac1.strCod_reserc = reservacion[11] + "_" + reservacion[5];
+        reservac1.strCod_reserc = reservacion[15];
         reservac1.strCod_lab = reservacion[11].ToString();
         reservac1.strCod_Mate = reservacion[0];
         reservac1.cedula_alu = reservacion[8] != "" ? reservacion[8] : Context.User.Identity.Name;
@@ -376,8 +377,7 @@ public class WebServiceCalendar : System.Web.Services.WebService
         reservac1.strDescripcion_reserc = reservacion[4];
         reservac1.strMateriales_reserc = reservacion[5];
         reservac1.strColor_reserc = reservacion[6];
-        reservac1.bitEstado_reserc = true;
-        reservac1.cedula_alu = Context.User.Identity.Name;
+        reservac1.bitEstado_reserc = bool.Parse(reservacion[9]);
         reservac1.dtFecha_log = DateTime.Now;
         reservac1.strUser_log = Context.User.Identity.Name;
         reservac1.strObs1_reserc = reservacion[7];
@@ -386,5 +386,30 @@ public class WebServiceCalendar : System.Web.Services.WebService
         reservac1.UpdateLAB_RESERVAC(reservac1);
 
         return JsonConvert.SerializeObject(reservac1);
+    }
+
+    [WebMethod]
+    public string GuardarUso(List<string> uso)
+    {
+        uso1.strcod_uso = uso[4];
+        uso1.strcod_reser = uso[0];
+        uso1.dthorainicio_uso = DateTime.Parse(uso[2]);
+        uso1.strobservacion_uso = uso[1];
+        uso1.dtfecharegistro_uso = DateTime.Now;
+        uso1.bitestado_uso = bool.Parse(uso[3]);
+        uso1.dtfecha_log = DateTime.Now;
+        uso1.struser_log = Context.User.Identity.Name;
+        uso1.strobs1_uso = string.Empty;
+        uso1.strobs2_uso = string.Empty;
+        uso1.bitobs1_uso = false;
+        uso1.bitobs2_uso = false;
+        uso1.decobs1_uso = -1;
+        uso1.decobs2_uso = -1;
+        uso1.dtobs1_uso = DateTime.Parse("1900-01-01");
+        uso1.dtobs2_uso = DateTime.Parse("1900-01-01");
+
+        uso1.AddLAB_USO(uso1);
+
+        return JsonConvert.SerializeObject(uso1);
     }
 }

@@ -174,16 +174,11 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
 
             var listSoftware = software1.LoadLAB_SOFTWARE("xSedeFacultad", strCod_Fac, strCod_Sede, "", "");
 
-            if (listSoftware.Count != 0)
-            {
-                gvSoftware.DataSource = listSoftware;
-                gvSoftware.DataBind();
-                lblMsg.Text = software1.msg;
-            }
-            else
-            {
-                lblMsg.Text = software1.msg;
-            }
+            gvSoftware.DataSource = listSoftware;
+            gvSoftware.DataBind();
+
+            lblMsg.Text = software1.msg;
+
         }
         catch (Exception ex)
         {
@@ -473,5 +468,10 @@ public partial class academic_private_reservaLab_Software : System.Web.UI.Page
     protected void ddlTipoAct_SelectedIndexChanged(object sender, EventArgs e)
     {
         content_NombreLicenciaAct.Visible = ddlTipoAct.SelectedValue == "Propietario" ? true : false;
+    }
+
+    protected void lnkRegresar_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/academic/private/Default.aspx");
     }
 }

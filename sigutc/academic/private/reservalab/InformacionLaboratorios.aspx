@@ -35,9 +35,15 @@
                                             </label>
                                         </div>
                                         <div class="col-md-5">
-                                            <a href="javascript:history.back()" class="pull-right regresar">
-                                                <b><i class="fa fa-chevron-left"></i></b> REGRESARS
-                                            </a>
+                                            <div class="row">
+                                                <div class="col-md-12 text-right">
+                                                    <asp:LinkButton ID="lnkRegresar" runat="server" CssClass="btn btn-default" OnClick="lnkRegresar_Click">
+                                                        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                                                        <span>Regresar</span>
+                                                    </asp:LinkButton>
+                                                </div>
+                                            </div>
+                                            <br />
                                         </div>
                                     </div>
                                     <br />

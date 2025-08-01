@@ -10,10 +10,16 @@
     
     <!--Boton para agregar un nuevo laboratorio-->
     <div class="row">
-        <div class="col-md-12 text-right">
+        <div class="col-md-10">
             <button type="button" class="btn btn-primary btn-nuevo" data-toggle="modal" data-target="#form_registrar">
                 <i class="bi bi-plus-lg"></i>Nuevo laboratorio
             </button>
+        </div>
+        <div class="col-md-2 text-right">
+            <asp:LinkButton ID="lnkRegresar" runat="server" CssClass="btn btn-default" OnClick="lnkRegresar_Click">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <span>Regresar</span>
+            </asp:LinkButton>
         </div>  
     </div>  
     <br />
@@ -122,7 +128,7 @@
     <!-- Formulario para agregar nuevo laboratorio -->
     <!-- Ventana Modal -->
     <div class="modal fade" id="form_registrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog  modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
+        <div class="modal-dialog  modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cerrar()">
@@ -138,36 +144,53 @@
                                 CssClass="control-label required"></asp:Label>
                             <asp:TextBox ID="txtNombre" runat="server" 
                                 CssClass="form-control custom-input" 
-                                placeholder="Nombre" />
+                                placeholder="Ingrese el nombre del laboratorio sin número" />
                             <asp:RequiredFieldValidator ID="rfv_tbxNombre" runat="server" 
                                 ControlToValidate="txtNombre" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formulario" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
+                            <asp:RegularExpressionValidator ID="rev_txtNombre" runat="server" 
+                                ControlToValidate="txtNombre"
+                                CssClass="alert alert-danger form-control val-msg" 
+                                ErrorMessage="Solo se permiten letras"
+                                ValidationGroup="formulario"
+                                ValidationExpression="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+                                Display="Dynamic" />
                         </div>
+                        <div class="col-md-6">
+                            <asp:Label ID="lblIdLab" runat="server" Text="Identificador del Laboratorio" />
+                            <asp:DropDownList ID="ddlIdLab" runat="server" 
+                                CssClass="form-control"/>                                
+                         </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div class="row">
                         <div class="col-md-6">                                    
                             <asp:Label ID="lblNumeroEquipos" runat="server"
-                                Text="Numero de equipos" 
+                                Text="Total de Equipos" 
                                 CssClass="control-label required"></asp:Label>
                             <asp:TextBox ID="txtNumeroEquipos" runat="server" 
                                 CssClass="form-control custom-input" 
                                 placeholder="50" />
                             <asp:RequiredFieldValidator ID="rfv_txtNumeroEquipos" runat="server" 
                                 ControlToValidate="txtNumeroEquipos" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formulario" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                             <asp:RangeValidator ID="rv_txtNumeroEquipos" runat="server" 
                                 ControlToValidate="txtNumeroEquipos" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 MinimumValue="1" 
                                 MaximumValue="200" 
                                 Type="Integer" 
                                 ErrorMessage="El número debe estar entre 1 y 200" 
-                                CssClass="alert alert-danger form-control" 
-                                ValidationGroup="formulario" />
+                                ValidationGroup="formulario"
+                                Display="Dynamic" />
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             <asp:Label ID="lblTipo" runat="server" 
                                 Text="Tipo de laboratorio" 
@@ -176,23 +199,14 @@
                                 CssClass="form-control custom-input" />
                             <asp:RequiredFieldValidator ID="rfv_ddlTipo" runat="server" 
                                 ControlToValidate="ddlTipo" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control  val-msg" 
                                 ValidationGroup="formulario" 
-                                ErrorMessage="Seleccione una opción" />
-                        </div>
-                        <div class="col-md-6">
-                            <asp:Label ID="lblCampoAmplio" runat="server" 
-                                Text="Campo amplio" 
-                                CssClass="control-label required" />
-                            <asp:DropDownList ID="ddlCampoAmplio" runat="server" 
-                                CssClass="form-control custom-input" />
-                            <asp:RequiredFieldValidator ID="rfv_ddlCampoAmplio" runat="server" 
-                                ControlToValidate="ddlCampoAmplio" 
-                                CssClass="alert alert-danger form-control" 
-                                ValidationGroup="formulario" 
-                                ErrorMessage="Seleccione una opción" />
-                        </div>
+                                ErrorMessage="Seleccione una opción"
+                                Display="Dynamic" />
+                        </div>                        
                     </div>
+                    <br />
+                    <br />
                     <div class="row">
                         <div class="col-md-6">
                             <asp:Label ID="lblImg1" runat="server" 
@@ -205,9 +219,10 @@
                                 data-show-upload="false"/>
                             <asp:RequiredFieldValidator ID="rfv_fulImg1" runat="server" 
                                 ControlToValidate="fulImg1" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formulario" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                         </div>
                         <div class="col-md-6">
                             <asp:Label ID="lblImg2" runat="server" 
@@ -220,12 +235,14 @@
                                 data-show-upload="false"/>
                             <asp:RequiredFieldValidator ID="rfv_fulImg2" runat="server" 
                                 ControlToValidate="fulImg2" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formulario" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                         </div>
                     </div>
-
+                    <br />
+                    <br />
                     <!-- Seleccionar Sede y Facultad -->
                     <div class="row">
                         <div class="col-md-6">
@@ -240,13 +257,13 @@
                                         OnSelectedIndexChanged="ddlSedes_SelectedIndexChanged" />
                                     <asp:RequiredFieldValidator ID="rfv_ddlListSedes" runat="server" 
                                         ControlToValidate="ddlSede" 
-                                        CssClass="alert alert-danger form-control" 
+                                        CssClass="alert alert-danger form-control val-msg" 
                                         ValidationGroup="formulario" 
-                                        ErrorMessage="Seleccione una opción" />
+                                        ErrorMessage="Seleccione una opción"
+                                        Display="Dynamic" />
                                 </ContentTemplate>
                             </asp:UpdatePanel>
                         </div>
-
                         <div class="col-md-6">
                             <asp:UpdatePanel ID="upFacultad" runat="server" UpdateMode="Conditional">
                                 <ContentTemplate>
@@ -259,9 +276,10 @@
                                         OnSelectedIndexChanged="ddlFacultad_SelectedIndexChanged" />
                                     <asp:RequiredFieldValidator ID="rfv_ddlFacultad" runat="server" 
                                         ControlToValidate="ddlFacultad" 
-                                        CssClass="alert alert-danger form-control" 
+                                        CssClass="alert alert-danger form-control val-msg" 
                                         ValidationGroup="formulario"
-                                        ErrorMessage="Seleccione una opción" />
+                                        ErrorMessage="Seleccione una opción"
+                                        Display="Dynamic" />
                                 </ContentTemplate>
                                 <Triggers>
                                     <asp:AsyncPostBackTrigger ControlID="ddlSede" EventName="SelectedIndexChanged" />
@@ -269,6 +287,8 @@
                             </asp:UpdatePanel>
                         </div>
                     </div>
+                    <br />
+                    <br />
                     <div class="row">
                         <div class="col-md-6">
                             <asp:UpdatePanel ID="upRepeaterSoftware" runat="server" UpdateMode="Conditional">
@@ -277,17 +297,21 @@
                                         Text="Software" 
                                         CssClass="control-label" />
                                     <!-- Listado de software -->
-                                    <div id="listSoftware" runat="server" visible="false">
+                                    <div id="listSoftware" runat="server" visible="false" class="listSoftware">
                                         <asp:Repeater ID="rptSoftware" runat="server">
                                             <ItemTemplate>
                                                 <div class="form-control item">
-                                                    <div class="row" style="max-width: 100%;">
-                                                        <div class="col-md-1">
-                                                            <asp:CheckBox ID="chkSoftware" runat="server" 
-                                                                ToolTip='<%# Eval("strCod_sof") %>' />
+                                                    <div class="row check_list" style="max-width: 100%;">
+                                                        <div class="min_check">
+                                                            <div class="col-md-1">
+                                                                <asp:CheckBox ID="chkSoftware" runat="server" 
+                                                                    ToolTip='<%# Eval("strCod_sof") %>' />
+                                                            </div>
                                                         </div>
-                                                        <div class="col-md-10">
-                                                            <label><%# Eval("strNombre_sof") %></label>
+                                                        <div class="min_label">
+                                                            <div class="col-md-12">
+                                                                <label><%# Eval("strNombre_sof") %></label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -306,6 +330,23 @@
                             </asp:UpdatePanel>
                         </div>
                         <div class="col-md-6">
+                            <asp:Label ID="lblCampoAmplio" runat="server" 
+                                Text="Campo amplio" 
+                                CssClass="control-label required" />
+                            <asp:DropDownList ID="ddlCampoAmplio" runat="server" 
+                                CssClass="form-control custom-input" />
+                            <asp:RequiredFieldValidator ID="rfv_ddlCampoAmplio" runat="server" 
+                                ControlToValidate="ddlCampoAmplio" 
+                                CssClass="alert alert-danger form-control val-msg" 
+                                ValidationGroup="formulario" 
+                                ErrorMessage="Seleccione una opción"
+                                Display="Dynamic" />
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
                             <asp:Label ID="lblUbicacion" runat="server" 
                                 Text="Ubicación" 
                                 CssClass="control-label required" />
@@ -316,13 +357,12 @@
                                 Rows="3" />
                             <asp:RequiredFieldValidator ID="rfv_txtUbicacion" runat="server" 
                                 ControlToValidate="txtUbicacion" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formulario" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <asp:Label ID="lblDescripcion" runat="server" 
                                 Text="Descripción" 
                                 CssClass="control-label required" />
@@ -333,11 +373,17 @@
                                 Rows="3" />
                             <asp:RequiredFieldValidator ID="rfv_txtDescripcion" runat="server" 
                                 ControlToValidate="txtDescripcion" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formulario" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                         </div>
                     </div>
+
+
+
+
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default border-radius" data-dismiss="modal">Cerrar</button>
@@ -358,7 +404,7 @@
     <!-- Formulario para actualizar laboratorio -->
     <!-- Ventana Modal -->
     <div class="modal fade" id="form_actualizar1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-lg" role="document" style="margin: 30px auto !important; left: 0% !important;">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -380,9 +426,10 @@
                                 placeholder="Nombre" />
                             <asp:RequiredFieldValidator ID="rfv_txtNombreAct" runat="server" 
                                 ControlToValidate="txtNombreAct" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formularioActualizar" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                         </div>
                         <div class="col-md-6">
                             <asp:Label ID="lblNumeroEquiposAct" runat="server" 
@@ -393,19 +440,23 @@
                                 TextMode="Number" />
                             <asp:RequiredFieldValidator ID="rfv_txtNumeroEquiposAct" runat="server" 
                                 ControlToValidate="txtNumeroEquiposAct" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formularioActualizar" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                             <asp:RangeValidator ID="rv_txtNumeroEquiposAct" runat="server" 
                                 ControlToValidate="txtNumeroEquiposAct" 
                                 MinimumValue="1" 
                                 MaximumValue="200" 
                                 Type="Integer" 
                                 ErrorMessage="El número debe estar entre 1 y 200" 
-                                CssClass="alert alert-danger form-control" 
-                                ValidationGroup="formularioActualizar" />
+                                CssClass="alert alert-danger form-control val-msg" 
+                                ValidationGroup="formularioActualizar"
+                                Display="Dynamic" />
                         </div>
                     </div>
+                    <br />
+                    <br />
                     <div class="row">
                         <div class="col-md-6">
                             <asp:Label ID="lblTipoAct" runat="server" 
@@ -415,9 +466,10 @@
                                 CssClass="form-control custom-input" />
                             <asp:RequiredFieldValidator ID="rfv_ddlTipoAct" runat="server" 
                                 ControlToValidate="ddlTipoAct" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formularioActualizar" 
-                                ErrorMessage="Seleccione una opción" />
+                                ErrorMessage="Seleccione una opción" 
+                                Display="Dynamic"/>
                         </div>         
                         <div class="col-md-6">
                             <asp:Label ID="lblCampoAmplioAct" runat="server" 
@@ -427,11 +479,14 @@
                                 CssClass="form-control custom-input" />
                             <asp:RequiredFieldValidator ID="rfv_ddlCampoAmplioAct" runat="server" 
                                 ControlToValidate="ddlCampoAmplioAct" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formularioActualizar" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic"/>
                         </div>
                     </div>
+                    <br />
+                    <br />
                     <div class="row">
                         <div class="col-md-6">
                             <asp:Label ID="lblImg1Act" runat="server" 
@@ -461,6 +516,7 @@
                         </div>
                     </div>
                     <br />
+                    <br />
                     <div class="row">
                         <div class="col-md-6">
                             <asp:Label ID="lblSedeAct" runat="server" 
@@ -486,18 +542,22 @@
                                 Text="Software" 
                                 CssClass="control-label" />
 
-                            <div id="listSoftwareAct" runat="server">
+                            <div id="listSoftwareAct" runat="server" visible="false" class="listSoftware">
                                 <!-- Listado de software -->
                                 <asp:Repeater ID="rptSoftwareAct" runat="server" >
                                     <ItemTemplate>
                                         <div class="form-control item">
-                                            <div class="row" style="max-width: 100%;" >
-                                                <div class="col-md-1">
-                                                    <asp:CheckBox ID="chkSoftwareAct" runat="server" 
-                                                        ToolTip='<%# Eval("strCod_sof") %>' />
+                                            <div class="row check_list" style="max-width: 100%;" >
+                                                <div class="min_check">
+                                                    <div class="col-md-1">
+                                                        <asp:CheckBox ID="chkSoftwareAct" runat="server" 
+                                                            ToolTip='<%# Eval("strCod_sof") %>' />
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-10">
-                                                    <label for="chkSoftwareAct"><%# Eval("strNombre_sof") %></label>
+                                                <div class="min_label">
+                                                    <div class="col-md-12">
+                                                        <label for="chkSoftwareAct"><%# Eval("strNombre_sof") %></label>
+                                                    </div>
                                                 </div>
                                             </div> 
                                         </div>
@@ -519,6 +579,7 @@
                         </div>
                     </div>
                     <br />
+                    <br />
                     <div class="row">
                         <div class="col-md-6">
                             <asp:Label ID="lblDescripcionAct" runat="server" 
@@ -531,9 +592,10 @@
                                 Rows="3" />
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
                                 ControlToValidate="txtUbicacionAct" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formularioActualizar" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                         </div>
                         <div class="col-md-6">
                             <asp:Label ID="lblUbicacionAct" runat="server" 
@@ -546,9 +608,10 @@
                                 Rows="3" />
                             <asp:RequiredFieldValidator ID="rfv_txtUbicacionAct" runat="server" 
                                 ControlToValidate="txtUbicacionAct" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formularioActualizar" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                         </div>
                     </div>
                 </div>
@@ -699,20 +762,32 @@
                                 CssClass="form-control custom-input" />
                             <asp:RequiredFieldValidator ID="rfv_ddlRespAdminNuevo" runat="server" 
                                 ControlToValidate="ddlRespAdminNuevo" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formNuevoResponsable" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                         </div>
                         <div class="col-md-6">
-                            <asp:Label ID="lblRespAcadNuevo" runat="server" 
-                                Text="Responsable Academico:"></asp:Label>
-                            <asp:DropDownList ID="ddlRespAcadNuevo" runat="server" 
-                                CssClass="form-control custom-input" />
-                            <asp:RequiredFieldValidator ID="rfv_ddlRespAcadNuevo" runat="server" 
-                                ControlToValidate="ddlRespAcadNuevo" 
-                                CssClass="alert alert-danger form-control" 
-                                ValidationGroup="formNuevoResponsable" 
-                                ErrorMessage="Campo requerido" />
+                            <asp:UpdatePanel ID="upModal" runat="server" UpdateMode="Conditional">
+                                <ContentTemplate>
+                                    <asp:Label ID="lblRespAcadNuevo" runat="server" 
+                                        Text="Responsable Academico:"></asp:Label>
+                                    <asp:TextBox ID="txtBuscarDocente" runat="server" 
+                                        CssClass="form-control"
+                                        onkeypress="if(event.keyCode==13) { __doPostBack('txtBuscarDocente', ''); return false; }" />
+                                    <asp:DropDownList ID="ddlRespAcadNuevo" runat="server" 
+                                        CssClass="form-control custom-input" />
+                                    <asp:RequiredFieldValidator ID="rfv_ddlRespAcadNuevo" runat="server" 
+                                        ControlToValidate="ddlRespAcadNuevo" 
+                                        CssClass="alert alert-danger form-control val-msg" 
+                                        ValidationGroup="formNuevoResponsable" 
+                                        ErrorMessage="Campo requerido"
+                                        Display="Dynamic" />
+                                </ContentTemplate>
+                                <Triggers>
+                                    <asp:AsyncPostBackTrigger ControlID="txtBuscarDocente" EventName="TextChanged" />
+                                </Triggers>
+                            </asp:UpdatePanel>
                         </div>
                     </div>
                 </div>
@@ -779,31 +854,45 @@
 
                             <asp:RequiredFieldValidator ID="rfv_ddlRespAdminActualizar" runat="server" 
                                 ControlToValidate="ddlRespAdminActualizar" 
-                                CssClass="alert alert-danger form-control" 
+                                CssClass="alert alert-danger form-control val-msg" 
                                 ValidationGroup="formActulizarResponsable" 
-                                ErrorMessage="Campo requerido" />
+                                ErrorMessage="Campo requerido"
+                                Display="Dynamic" />
                         </div>
                         <div class="col-md-6">
-                            <asp:Label ID="lblRespAcadActualizar" runat="server" 
-                                Text="Responsable Academico:" />
+                            <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+                                <ContentTemplate>
+                                    <asp:Label ID="lblRespAcadActualizar" runat="server" 
+                                        Text="Responsable Academico:" />
 
-                            <!-- Numero de cedula del anterior responsable -->
-                            <asp:Label ID="lblCedulaRespAcad" runat="server" 
-                                Visible="false" />
+                                    <!-- Numero de cedula del anterior responsable -->
+                                    <asp:Label ID="lblCedulaRespAcad" runat="server" 
+                                        Visible="false" />
 
-                            <!-- Codigo de registro -->
-                            <asp:Label ID="lblInfoRespAcad" runat="server" 
-                                Visible="false" />
+                                    <!-- Codigo de registro -->
+                                    <asp:Label ID="lblInfoRespAcad" runat="server" 
+                                        Visible="false" />
+                                    
+                                    <asp:TextBox ID="txtBuscarDocenteAct" runat="server" 
+                                        CssClass="form-control"
+                                        onkeypress="if(event.keyCode==13) { __doPostBack('txtBuscarDocenteAct', ''); return false; }" />
 
-                            <!-- Lista desplegable de los docentes -->
-                            <asp:DropDownList ID="ddlRespAcadActualizar" runat="server" 
-                                CssClass="form-control custom-input" />
+                                    <!-- Lista desplegable de los docentes -->
+                                    <asp:DropDownList ID="ddlRespAcadActualizar" runat="server" 
+                                        CssClass="form-control custom-input" />
 
-                            <asp:RequiredFieldValidator ID="rfv_ddlRespAcadActualizar" runat="server" 
-                                ControlToValidate="ddlRespAcadActualizar" 
-                                CssClass="alert alert-danger form-control" 
-                                ValidationGroup="formActulizarResponsable" 
-                                ErrorMessage="Campo requerido" />
+                                    <asp:RequiredFieldValidator ID="rfv_ddlRespAcadActualizar" runat="server" 
+                                        ControlToValidate="ddlRespAcadActualizar" 
+                                        CssClass="alert alert-danger form-control val-msg" 
+                                        ValidationGroup="formActulizarResponsable" 
+                                        ErrorMessage="Campo requerido" 
+                                        Display="Dynamic" />
+
+                                </ContentTemplate>
+                                <Triggers>
+                                    <asp:AsyncPostBackTrigger ControlID="txtBuscarDocenteAct" EventName="TextChanged" />
+                                </Triggers>
+                            </asp:UpdatePanel>
                         </div>
                     </div>
                 </div>

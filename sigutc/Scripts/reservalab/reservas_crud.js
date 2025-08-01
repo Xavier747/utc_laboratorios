@@ -386,3 +386,24 @@ function actualizarReservacion(reservacion) {
         }
     });
 }
+
+function guardarUso(uso, callback) {
+    $.ajax({
+        type: "POST",
+        // Página y método del backend que procesará la solicitud
+        url: "http://localhost:10873/ws/WebServiceCalendar.asmx/GuardarUso",
+        // Enviar la fecha como parámetro
+        data: JSON.stringify({ uso: uso }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            var data = JSON.parse(response.d);
+            callback(data);
+        },
+        error: function (xhr, status, error) {
+            console.log("Status: " + xhr.status);
+            console.log("Response: " + xhr.responseText);
+            callback([]);
+        }
+    });
+}

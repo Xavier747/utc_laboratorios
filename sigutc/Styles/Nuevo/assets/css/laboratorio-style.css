@@ -21,15 +21,39 @@
     text-align:center;
 }
 
-.softwareContainer{
+.listSoftware{
     max-height: 75px; 
     overflow-y: auto; 
     border: 1px solid #cccccc; 
     border-radius: 5px;
 }
 
-.softwareContainer .item{
+.listSoftware .item{
     width:100%; 
-    border:none; 
+    border:none !important; 
     box-shadow:none;
+}
+
+.val-msg {
+    display: none;
+}
+
+.val-msg[style*="display: inline"] {
+    display: block !important; /* o inline según necesites */
+    color: red;
+}
+
+@media screen (max-width: 768px){
+    .check_list{
+        display: flex !important;
+        align-items: center;
+        gap: 1vw;
+    }
+    .min_check{
+        width: 10vw !important;
+    }
+
+    .min_label{
+        width: 90vw !important;
+    }
 }

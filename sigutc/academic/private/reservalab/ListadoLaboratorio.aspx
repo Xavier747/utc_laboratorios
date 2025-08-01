@@ -6,7 +6,17 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="TitleContent" Runat="Server">
     Listado de laboratorios
 </asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">     
+<asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">  
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <asp:LinkButton ID="lnkRegresar" runat="server" CssClass="btn btn-default" OnClick="lnkRegresar_Click">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <span>Regresar</span>
+            </asp:LinkButton>
+        </div>
+    </div>
+    <br />
+
     <!-- GridView para listar laboratorios -->
     <div class="table-responsive">
         <asp:GridView ID="gvLaboratorios" runat="server" 

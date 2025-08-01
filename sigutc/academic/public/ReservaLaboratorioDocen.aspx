@@ -7,6 +7,15 @@
     Reservar Laboratorio
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <asp:LinkButton ID="lnkRegresar" runat="server" CssClass="btn btn-default" OnClick="lnkRegresar_Click">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <span>Regresar</span>
+            </asp:LinkButton>
+        </div>
+    </div>
+    <br />
     <div class="contenedor-general">
         <div class="cabecera">
             <h4 runat="server" id="titulo" class="text-center"></h4>
@@ -285,77 +294,127 @@
                         </div>
                     </fieldset>
                     <br />
-                    <fieldset>
-                        <legend>FECHA Y HORA</legend>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <asp:Label ID="lblFechaDet" runat="server" Text="FECHA:"></asp:Label>
-                                <input type="text" class="form-control" id="txtFechaDet" disabled="disabled" />
+                    <div id="detInterno">
+                        <fieldset>
+                            <legend>FECHA Y HORA</legend>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblFechaDet" runat="server" Text="FECHA:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtFechaDet" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="Label1" runat="server" Text="ASIGNATURA:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtAsigDet" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblHoraInicioDet" runat="server" Text="HORA DE INICIO:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtHoraInicioDet" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblHoraFinDet" runat="server" Text="HORA DE FINALIZACION:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtHoraFinDet" disabled="disabled" />
+                                </div>                            
                             </div>
-                            <div class="col-md-3">
-                                <asp:Label ID="Label1" runat="server" Text="ASIGNATURA:"></asp:Label>
-                                <input type="text" class="form-control" id="txtAsigDet" disabled="disabled" />
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <asp:Label ID="lblCicloDet" runat="server" Text="CICLO:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtCicloDet" disabled="disabled" />
+                                </div>
+                                <div class="col-md-2">
+                                    <asp:Label ID="lblParaleloDet" runat="server" Text="PARALELO:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtParaleloDet" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblCarreraDet" runat="server" Text="CARRERA:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtCarreraDet" disabled="disabled" />
+                                </div>
+                                <div class="col-md-2">
+                                    <asp:Label ID="lblTotalDet" runat="server" Text="TOTAL DE ASISTENTES:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtAsistentes" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblSoftware" runat="server" Text="SOFTWARE:"></asp:Label>
+                                    <select id="ddlSoftwareDet" class="form-control"></select>
+                                </div>                         
                             </div>
-                            <div class="col-md-3">
-                                <asp:Label ID="lblHoraInicioDet" runat="server" Text="HORA DE INICIO:"></asp:Label>
-                                <input type="text" class="form-control" id="txtHoraInicioDet" disabled="disabled" />
+                        </fieldset>
+                        <br />
+                        <fieldset>
+                            <legend>DETALLES DE LA RESERVACIÓN</legend>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblTipoMotivoDet" runat="server" Text="PROPÓSITO DE RESERVA:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtTipoMotivoDet" disabled="disabled" />
+                                </div>
+                                <div id="content_unidadDet" class="col-md-3">
+                                    <asp:Label ID="lblUnidadDet" runat="server" Text="UNIDAD:" class="form-label"></asp:Label>
+                                    <input type="text" id="txtUnidadDet" class="form-control" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblTemaDet" runat="server" Text="TEMA:" class="form-label"></asp:Label>
+                                    <input type="text" id="txtTemaDet" class="form-control" disabled="disabled" />
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <asp:Label ID="lblHoraFinDet" runat="server" Text="HORA DE FINALIZACION:"></asp:Label>
-                                <input type="text" class="form-control" id="txtHoraFinDet" disabled="disabled" />
-                            </div>                            
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <asp:Label ID="Label" runat="server" Text="CICLO:"></asp:Label>
-                                <input type="text" class="form-control" id="txtCicloDet" disabled="disabled" />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <asp:Label ID="lblDescripcioDet" runat="server" Text="DESCRIPCION / COMENTARIO" class="form-label"></asp:Label>
+                                    <textarea class="form-control" id="txtDescDet" disabled="disabled" ></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <asp:Label ID="lblMaterialesDet" runat="server" Text="MATERIALES / EQUIPOS:" class="form-label"></asp:Label>
+                                    <textarea class="form-control" id="txtMaterialDet" disabled="disabled" ></textarea>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <asp:Label ID="Label3" runat="server" Text="PARALELO:"></asp:Label>
-                                <input type="text" class="form-control" id="txtParaleloDet" disabled="disabled" />
+                        </fieldset>
+                    </div>
+                    <div id="detExterno">
+                        <fieldset>
+                            <legend>FECHA Y HORA</legend>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblFechaExtDet" runat="server" Text="FECHA:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtFechaExtDet" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblHoraInicioExtDet" runat="server" Text="HORA DE INICIO:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtHoraInicioExtDet" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblHoraFinExtDet" runat="server" Text="HORA DE FINALIZACION:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtHoraFinExtDet" disabled="disabled" />
+                                </div>                            
                             </div>
-                            <div class="col-md-3">
-                                <asp:Label ID="Label4" runat="server" Text="CARRERA:"></asp:Label>
-                                <input type="text" class="form-control" id="txtCarreraDet" disabled="disabled" />
+                        </fieldset>
+                        <fieldset>
+                            <legend>DETALLES DE LA RESERVACIÓN</legend>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblPropositoExtDet" runat="server" Text="PROPÓSITO DE RESERVA:"></asp:Label>
+                                    <input type="text" class="form-control" id="txtTipoMotivoExtDet" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblTemaExtDet" runat="server" Text="TEMA:" class="form-label"></asp:Label>
+                                    <input type="text" id="txtTemaExtDet" class="form-control" disabled="disabled" />
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblObExtDet" runat="server" Text="OBSERVACIÓN:" class="form-label"></asp:Label>
+                                    <textarea id="txtObExtDet" class="form-control" disabled="disabled" ></textarea>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <asp:Label ID="Label5" runat="server" Text="TOTAL DE ASISTENTES:"></asp:Label>
-                                <input type="text" class="form-control" id="txtAsistentes" disabled="disabled" />
+                            <br />
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <asp:Label ID="lblDescripcion" runat="server" Text="DESCRIPCION / COMENTARIO" class="form-label"></asp:Label>
+                                    <textarea class="form-control" id="txtDescExtDet" disabled="disabled" ></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <asp:Label ID="lblMateriales" runat="server" Text="MATERIALES / EQUIPOS:" class="form-label"></asp:Label>
+                                    <textarea class="form-control" id="txtMaterialExtDet" disabled="disabled" ></textarea>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <asp:Label ID="Label2" runat="server" Text="SOFTWARE:"></asp:Label>
-                                <select id="ddlSoftwareDet" class="form-control"></select>
-                            </div>                         
-                        </div>
-                    </fieldset>
-                    <br />
-                    <fieldset>
-                        <legend>DETALLES DE LA RESERVACIÓN</legend>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <asp:Label ID="lblTipoMotivoDet" runat="server" Text="PROPÓSITO DE RESERVA:"></asp:Label>
-                                <input type="text" class="form-control" id="txtTipoMotivoDet" disabled="disabled" />
-                            </div>
-                            <div class="col-md-3">
-                                <asp:Label ID="lblUnidadDet" runat="server" Text="UNIDAD:" class="form-label"></asp:Label>
-                                <input type="text" id="txtUnidadDet" class="form-control" disabled="disabled" />
-                            </div>
-                            <div class="col-md-3">
-                                <asp:Label ID="lblTemaDet" runat="server" Text="TEMA:" class="form-label"></asp:Label>
-                                <input type="text" id="txtTemaDet" class="form-control" disabled="disabled" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <asp:Label ID="lblDescripcioDet" runat="server" Text="DESCRIPCION / COMENTARIO" class="form-label"></asp:Label>
-                                <textarea class="form-control" id="txtDescDet" disabled="disabled" ></textarea>
-                            </div>
-                            <div class="col-md-6">
-                                <asp:Label ID="lblMaterialesDet" runat="server" Text="MATERIALES / EQUIPOS:" class="form-label"></asp:Label>
-                                <textarea class="form-control" id="txtMaterialDet" disabled="disabled" ></textarea>
-                            </div>
-                        </div>
-                    </fieldset> 
+                        </fieldset> 
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerrar()">CERRAR</button>
@@ -450,6 +509,8 @@
                                 <select id="ddlSoftwareAct" class="form-control"></select>
                             </div>
                     </fieldset>
+                    <br />
+                    <br />
                     <div id="det_reservacionAct">
                         <fieldset>
                             <legend>DETALLES DE LA RESERVACIÓN</legend>
@@ -503,25 +564,21 @@
                                         <option value="evento ocasional">EVENTO OCASIONAL</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
-                                    <div id="content_unidadAct">
-                                        <asp:Label ID="lblUnidadAct" runat="server" Text="UNIDAD:"></asp:Label>
-                                        <select id="selectUnidadAct" class="form-control"></select>
-                                    </div>
+                                <div id="content_unidadAct" class="col-md-3">
+                                    <asp:Label ID="lblUnidadAct" runat="server" Text="UNIDAD:"></asp:Label>
+                                    <select id="selectUnidadAct" class="form-control"></select>
                                 </div>
-                                <div class="col-md-3">
-                                    <div id="content_ddlTemaAct" style="display:none;">
-                                        <asp:Label ID="lblTemaAct" runat="server" Text="TEMA:"></asp:Label>
-                                        <select id="selectTemaAct" class="form-control"></select>
-                                    </div>
+                                <div id="content_ddlTemaAct" style="display:none;" class="col-md-3">
+                                    <asp:Label ID="lblTemaAct" runat="server" Text="TEMA:"></asp:Label>
+                                    <select id="selectTemaAct" class="form-control"></select>
                                 </div>
-                                <div class="col-md-3">
-                                    <div id="content_txtTemaAct" style="display:none;">
-                                        <label>TEMA:</label>
-                                        <input type="text" id="txtTemaAct" class="form-control"/>
-                                    </div>
+                                <div id="content_txtTemaAct" style="display:none;" class="col-md-3">
+                                    <label>TEMA:</label>
+                                    <input type="text" id="txtTemaAct" class="form-control"/>
                                 </div>
                             </div>
+                            <br />
+                            <br />
                             <div class="row">
                                 <div class="col-md-6">
                                     <asp:Label ID="lblDescripcionAct" runat="server" Text="DESCRIPCION / COMENTARIO" class="form-label"></asp:Label>

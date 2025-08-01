@@ -6,6 +6,14 @@
     Listado de laboratorios
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <asp:LinkButton ID="lnkRegresar" runat="server" CssClass="btn btn-default" OnClick="lnkRegresar_Click1">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <span>Regresar</span>
+            </asp:LinkButton>
+        </div>
+    </div>
     <br />
     <nav style="display: flex; justify-content: flex-end;">
         <asp:UpdatePanel ID="updFacultades" runat="server">

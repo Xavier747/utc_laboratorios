@@ -6,8 +6,18 @@
     Laboratorio exclusivo
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <asp:LinkButton ID="lnkRegresar" runat="server" CssClass="btn btn-default" OnClick="lnkRegresar_Click">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <span>Regresar</span>
+            </asp:LinkButton>
+        </div>
+    </div>
+    <br />
     <h5 id="nombreLboratorio" runat="server" class="text-center"></h5>
     <hr />
+
     <div class="container">
         <asp:Label ID="lblCarrera" runat="server" 
             Text="SELECCIONE UNA CARRERA" 

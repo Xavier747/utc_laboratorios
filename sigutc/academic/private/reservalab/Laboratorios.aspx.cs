@@ -36,50 +36,60 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
 
     public void cargarFacultad()
     {
-        string cedula = Context.User.Identity.Name;
+        try
+        {
+            string cedula = Context.User.Identity.Name;
 
-        var listDistributivo = distributivo1.LoadAC_DISTRIBUTIVO("xCEDULA", cedula, "", "", "");
-        var listCurso = curso1.Load_CURSO("ALL", "", "", "", "");
-        var listPeriodo = periodoAcademico.LoadSIG_PERIODOS("ALL", "", "", "", "");
+            var listDistributivo = distributivo1.LoadAC_DISTRIBUTIVO("xCEDULA", cedula, "", "", "");
+            var listCurso = curso1.Load_CURSO("ALL", "", "", "", "");
+            var listPeriodo = periodoAcademico.LoadSIG_PERIODOS("ALL", "", "", "", "");
 
-        var listaFacultad = (
-            from d in listDistributivo
-            join c in listCurso on d.strCod_curso equals c.strcod_curso
-            join p in listPeriodo on c.strcod_per equals p.strCod_per
-            select new
-            {
-                strCod_Fac = p.strCod_Fac,
-                strCod_Sede = p.strCod_Sede
-            }
-        )
-        .Distinct()
-        .ToList();
-
-        var listaFinal = listaFacultad
-            .Select(item =>
-            {
-                // Obtener la facultad por su clave
-                var facultad = facultad1.LoadUB_FACULTADES("xSedeFacultad", item.strCod_Sede, item.strCod_Fac, "", "").FirstOrDefault(); // en caso de que retorne lista
-
-                // Devuelve datos anónimos si existe
-                return facultad != null ? new
+            var listaFacultad = (
+                from d in listDistributivo
+                join c in listCurso on d.strCod_curso equals c.strcod_curso
+                join p in listPeriodo on c.strcod_per equals p.strCod_per
+                select new
                 {
-                    strCod_Fac = item.strCod_Fac,
-                    strCod_Sede = item.strCod_Sede,
-                    strNombre_Fac = facultad.strnombre_fac
-                } : null;
-            })
-            .Where(f => f != null) // eliminar nulos si alguna búsqueda falló
+                    strCod_Fac = p.strCod_Fac,
+                    strCod_Sede = p.strCod_Sede
+                }
+            )
+            .Distinct()
             .ToList();
 
+            var listaFinal = listaFacultad
+                .Select(item =>
+                {
+                    // Obtener la facultad por su clave
+                    var facultad = facultad1.LoadUB_FACULTADES("xSedeFacultad", item.strCod_Sede, item.strCod_Fac, "", "").FirstOrDefault(); // en caso de que retorne lista
 
-        lblCodSede.Text = listaFinal[0].strCod_Sede;
-        lblCodFacultad.Text = listaFinal[0].strCod_Fac;
+                    // Devuelve datos anónimos si existe
+                    return facultad != null ? new
+                    {
+                        strCod_Fac = item.strCod_Fac,
+                        strCod_Sede = item.strCod_Sede,
+                        strNombre_Fac = facultad.strnombre_fac
+                    } : null;
+                })
+                .Where(f => f != null) // eliminar nulos si alguna búsqueda falló
+                .ToList();
 
-        ddlFacultad.DataSource = listaFinal;
-        ddlFacultad.DataTextField = "strNombre_Fac";
-        ddlFacultad.DataValueField = "strCod_Fac";
-        ddlFacultad.DataBind();
+
+            lblCodSede.Text = listaFinal[0].strCod_Sede;
+            lblCodFacultad.Text = listaFinal[0].strCod_Fac;
+
+            ddlFacultad.DataSource = listaFinal;
+            ddlFacultad.DataTextField = "strNombre_Fac";
+            ddlFacultad.DataValueField = "strCod_Fac";
+            ddlFacultad.DataBind();
+
+        }
+        catch(Exception ex)
+        {
+            Console.Write(ex);
+        }
+
+
     }
 
     protected void rptFacultades_ItemCommand(object source, RepeaterCommandEventArgs e)
@@ -227,5 +237,10 @@ public partial class academic_private_reservalab_Laboratorios : System.Web.UI.Pa
             SeguridadUTC sutc = new SeguridadUTC();
             Response.Redirect("~/academic/private/reservalab/InformacionLaboratorios.aspx?In= " + Server.UrlEncode(sutc.Encripta(codLab)));
         }
+    }
+
+    protected void lnkRegresar_Click1(object sender, EventArgs e)
+    {
+        Response.Redirect("~/academic/private/Default.aspx");
     }
 }

@@ -14,8 +14,6 @@ public partial class academic_private_Login : System.Web.UI.Page
     string cadenaConexion;
     SqlConnection conexion;
 
-    string rol = "";
-
     protected void Page_Load(object sender, EventArgs e)
     {
         this.cadenaConexion = ConfigurationManager.AppSettings["conexionBddProductos"];

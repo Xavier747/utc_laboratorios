@@ -92,5 +92,10 @@ public partial class academic_private_reservalab_ListadoLaboratorio : System.Web
         ScriptManager.RegisterStartupScript(this, GetType(), "OpenModal", "$('#view-image').modal('show');", true);
     }
 
+
+    protected void lnkRegresar_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/academic/private/Default.aspx");
+    }
 }
 

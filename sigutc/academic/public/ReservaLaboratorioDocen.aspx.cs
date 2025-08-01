@@ -84,4 +84,9 @@ public partial class academic_public_ReservaLaboratorioDocen : System.Web.UI.Pag
         txtEmail.Text = listPersonal[0].correo_alu;
         txtNombreSolicitante.Text = listPersonal[0].apellido_alu + " " + listPersonal[0].apellidom_alu + " " + listPersonal[0].nombre_alu;
     }
+
+    protected void lnkRegresar_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/academic/private/Default.aspx");
+    }
 }

@@ -559,7 +559,7 @@ $(document).ready(function () {
 
                 $('#selectTipoMotivoAct').val(reserva.strProposito_reser);
 
-                if (reserva.strTipo_reser === 'evento ocasional') {
+                if (reserva.strProposito_reser === 'evento ocasional') {
                     $('#content_txtTemaAct').css('display', 'block');
                     $('#content_unidadAct').css('display', 'none');
                     $('#content_ddlTemaAct').css('display', 'none');
@@ -633,17 +633,8 @@ $(document).ready(function () {
 
                 $('#form_listReserva').on('hidden.bs.modal', function () {
                     eliminarReservacion('xCodReserva', idReserva, '', '', '', function (data) {
-                        let mensaje = '';
-                        let icon = '';
-
-                        if (data.resultado) {
-                            mensaje = data.msg;
-                            icon = 'success';
-                        }
-                        else {
-                            mensaje = data.msg;
-                            icon = 'error';
-                        }
+                        let mensaje = data.resultado ? data.msg : data.msg;
+                        let icon = data.resultado ? 'success' : 'error';
 
                         $('#form_listReserva').modal('hide');
                         mostrarMensageCRUD(mensaje, icon)
@@ -664,12 +655,18 @@ $(document).ready(function () {
         reservacion[0] = idReserva;
         reservacion[1] = $('#selectUnidadAct').is(':visible') ? $('#selectUnidadAct').val() : '';
         reservacion[2] = $('#selectTemaAct').is(':visible') ? $('#selectTemaAct').val() : $('#selectUnidadAct').val();
+
+        if ($('#txtTemaAct').is(':visible')) {
+            reservacion[2] = $('#txtTemaAct').val();
+        }
+
         reservacion[3] = $('#selectTipoMotivoAct').val();
         reservacion[4] = $('#txtDescripcionAct').val();
         reservacion[5] = $('#txtMaterialesAct').val();
         reservacion[6] = '#a4e4af';
         reservacion[7] = '';
         reservacion[8] = '';
+        reservacion[9] = true;
 
         consultarEventos('xPK', idReserva, '', '', '', function (reserva) {
             let fechaHoy = new Date();
@@ -724,6 +721,9 @@ function guardarDatos() {
     let reservacion = [];
     let unidad = $('#selectUnidad');
     let tipo = $('#selectTipoMotivo').val()
+    let fecha = $('#txtFecha').val();
+    let hora_inicio = $('#selectHoraInicio').val();
+    let hora_fin = $('#selectHoraFin').val();
 
     reservacion[0] = $('#selectAsignatura').val();
     reservacion[1] = unidad.is(':visible') ? unidad.val() : '';        
@@ -735,18 +735,30 @@ function guardarDatos() {
 
     reservacion[3] = $('#txtDescripcion').val();
     reservacion[4] = $('#txtMaterial').val();
-    reservacion[5] = $('#txtFecha').val() + ' ' + $('#selectHoraInicio').val();
-    reservacion[6] = $('#txtFecha').val() + ' ' + $('#selectHoraFin').val();
+    reservacion[5] = fecha + ' ' + hora_inicio;
+    reservacion[6] = fecha + ' ' + hora_fin;
     reservacion[7] = $('#txtNumeroAsistentes').val();
     reservacion[8] = cedula;
     reservacion[9] = '#a4e4af';
     reservacion[10] = tipo;
     reservacion[11] = codLab;
     reservacion[12] = false;
-    reservacion[13] = $('#lblTipoResInt').text();
+    reservacion[13] = 'Reservacion interna';
     reservacion[14] = "";
+    reservacion[15] = codReservacion(fecha, hora_inicio, hora_fin);
 
     guardarReservacion(reservacion);
+}
+
+function codReservacion(fecha, hora_inicio, hora_fin) {
+    // Procesar cada parte
+    let horaInicioSinPuntos = hora_inicio.replace(':', ''); // "0700"
+    let horaFinSinPuntos = hora_fin.replace(':', '');       // "0759"
+
+    // Concatenar con guiones bajos
+    let resultado = `${codLab}_${fecha.split('-')[2]}${fecha.split('-')[1]}${fecha.split('-')[0]}_${horaInicioSinPuntos}_${horaFinSinPuntos}`;
+
+    return resultado
 }
 
 function validarReservacion(fechaHoy) {
@@ -912,18 +924,7 @@ function mostrarListado(fecha){
 function mostrarDetalle(idReserva){
     consultarEventos('xPK', idReserva, '', '', '', function(data) {
         var reserva = data[0];
-        var codAsignatura = data[0].strCod_Mate;
-        var cedula = data[0].cedula_alu;
-        var codUnidad = data[0].strCod_unidTem;
-
-        $('#txtFechaDet').val(data[0].dtFechainicio_reser.split('T')[0]);
-        $('#txtHoraInicioDet').val(data[0].dtFechainicio_reser.split('T')[1]);
-        $('#txtHoraFinDet').val(data[0].dtFechaFin_reser.split('T')[1]);
-        $('#txtAsistentes').val(data[0].intTotalAsistente_reser);
-        $('#txtTemaDet').val(data[0].strTema_reser);
-        $('#txtDescDet').val(data[0].strDescripcion_reser);
-        $('#txtMaterialDet').val(data[0].strMateriales_reser);
-        $('#txtTipoMotivoDet').val(data[0].strProposito_reser.toUpperCase());
+        var cedula = reserva.cedula_alu;
 
         consultarAlumno('xCEDULA', cedula, '', '', '', function(data){
             var nombre = data[0].apellido_alu + ' ' + data[0].apellidom_alu + ' ' + data[0].nombre_alu;
@@ -932,28 +933,64 @@ function mostrarDetalle(idReserva){
             $('#txtNombresDet').val(nombre);
         });
 
-        consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
-            $('#txtAsigDet').val(data[0].strNombre_mate);
-        });                
+        if (!reserva.bitTipo_reser) {
+            var codAsignatura = reserva.strCod_Mate;
+            var codUnidad = reserva.strCod_unidTem;
 
-        consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
-            $('#txtCicloDet').val(data[0].strnombre_curso);
-            $('#txtParaleloDet').val(data[0].strparalelo_curso);
-        });
+            $('#txtFechaDet').val(reserva.dtFechainicio_reser.split('T')[0]);
+            $('#txtHoraInicioDet').val(reserva.dtFechainicio_reser.split('T')[1]);
+            $('#txtHoraFinDet').val(reserva.dtFechaFin_reser.split('T')[1]);
+            $('#txtAsistentes').val(reserva.intTotalAsistente_reser);
+            $('#txtTemaDet').val(reserva.strTema_reser);
+            $('#txtDescDet').val(reserva.strDescripcion_reser);
+            $('#txtMaterialDet').val(reserva.strMateriales_reser);
+            $('#txtTipoMotivoDet').val(reserva.strProposito_reser.toUpperCase());
 
-        consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
-            $('#txtCarreraDet').val(data[0].strnombre_car);
-        });
+            if (reserva.strProposito_reser === 'evento ocasional') {
+                $('#content_unidadDet').css('display', 'none');
+            } else {
+                $('#content_unidadDet').css('display', 'block');
+            }
+
+            consultarAsignatura('xPK', codAsignatura, '', '', '', function(data){
+                $('#txtAsigDet').val(data[0].strNombre_mate);
+            });                
+
+            consultarCiclo('xAsignatura', codAsignatura, '', '', '', function(data){
+                $('#txtCicloDet').val(data[0].strnombre_curso);
+                $('#txtParaleloDet').val(data[0].strparalelo_curso);
+            });
+
+            consultarCarrera('xAsignatura', codAsignatura, '', '', '', function(data){
+                $('#txtCarreraDet').val(data[0].strnombre_car);
+            });
         
-        consultarSoftware('xCodReserva', idReserva, '', '', '', function(data) {
-            // Llenar el select con datos
-            let selectSoftware = $('#ddlSoftwareDet');
-            cargarSoftware(data, selectSoftware);
-        });
+            consultarSoftware('xCodReserva', idReserva, '', '', '', function(data) {
+                // Llenar el select con datos
+                let selectSoftware = $('#ddlSoftwareDet');
+                cargarSoftware(data, selectSoftware);
+            });
 
-        consultarUnidad('xPK', codUnidad, '', '', '', function(data){
-            $('#txtUnidadDet').val(data[0].strdesc_unidtem);
-        });
+            consultarUnidad('xPK', codUnidad, '', '', '', function (data) {
+                $('#txtUnidadDet').val(data[0].strdesc_unidtem);
+            });
+
+            $('#detInterno').css('display', 'block');
+            $('#detExterno').css('display', 'none');
+        }
+        else {
+            $('#txtFechaExtDet').val(reserva.dtFechainicio_reser.split('T')[0]);
+            $('#txtHoraInicioExtDet').val(reserva.dtFechainicio_reser.split('T')[1]);
+            $('#txtHoraFinExtDet').val(reserva.dtFechaFin_reser.split('T')[1]);
+            $('#txtTipoMotivoExtDet').val(reserva.strProposito_reser);
+            $('#txtTemaExtDet').val(reserva.strTema_reser);
+            $('#txtObExtDet').val(reserva.strObs1_reser);
+            $('#txtDescExtDet').val(reserva.strDescripcion_reser);
+            $('#txtMaterialExtDet').val(reserva.strMateriales_reser);
+
+            $('#detExterno').css('display', 'block');
+            $('#detInterno').css('display', 'none');
+        }
 
     }, function(error) {
         // En caso de error
